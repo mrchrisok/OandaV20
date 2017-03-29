@@ -103,7 +103,8 @@ namespace OANDAV20.REST20
             {
                var serializer = new DataContractJsonSerializer(typeof(T));
                var stream = GetResponseStream(response);
-               return (T)serializer.ReadObject(stream);
+               T result = (T)serializer.ReadObject(stream);
+               return result;
             }
          }
          catch (WebException ex)
