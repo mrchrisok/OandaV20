@@ -61,7 +61,7 @@ namespace OANDAV20.REST20
          if (instruments != null)
          {
             string instrumentsParam = GetCommaSeparatedList(instruments);
-            requestString += "&instruments=" + Uri.EscapeDataString(instrumentsParam);
+            requestString += "?instruments=" + Uri.EscapeDataString(instrumentsParam);
          }
 
          var response = await MakeRequestAsync<AccountInstrumentsResponse>(requestString);
