@@ -1,0 +1,17 @@
+﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Transaction;
+using System.Collections.Generic;
+
+namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications
+{
+   public class OrderPostResponse : Response
+   {
+      public Transaction.Transaction orderCreateTransaction { get; set; }
+      public OrderFillTransaction orderFillTransaction { get; set; }
+      public OrderCancelTransaction orderCancelTransaction { get; set; }
+      public Transaction.Transaction orderReissueTransaction { get; set; }
+      public Transaction.Transaction orderReissueRejectTransaction { get; set; }
+      public List<long> transactionIDs { get; set; }
+      public long lastTransactionID { get; set; }
+   }
+}
+ 
