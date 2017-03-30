@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace MarketMiner.Api.Tests.OANDAv20
+namespace OANDAv20Tests
 {
    public class Restv20TestResult
    {

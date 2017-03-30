@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace OANDAV20
 {
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/order-ep/
+   /// </summary>
    public partial class Rest20
    {
       /// <summary>

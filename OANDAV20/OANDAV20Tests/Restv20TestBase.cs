@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MarketMiner.Api.Tests.OANDAv20
+namespace OANDAv20Tests
 {
    public class Restv20TestBase
    {

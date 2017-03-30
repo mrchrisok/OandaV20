@@ -1,5 +1,8 @@
 ﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Account
 {
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/account-df/#AccountSummary
+   /// </summary>
    public class AccountSummary
    {
       public string id { get; set; }

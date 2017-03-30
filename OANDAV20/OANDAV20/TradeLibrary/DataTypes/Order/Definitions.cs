@@ -1,9 +1,8 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
+﻿/// <summary>
+/// http://developer.oanda.com/rest-live-v20/order-df/
+/// </summary>
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
 {
-
-   /// <summary>
-   /// http://developer.oanda.com/rest-live-v20/order-df/
-   /// </summary>
    public class OrderPositionFill
    {
       public const string OpenOnly = "OPEN_ONLY";
@@ -12,9 +11,6 @@
       public const string Default = "DEFAULT";
    }
 
-   /// <summary>
-   /// http://developer.oanda.com/rest-live-v20/order-df/
-   /// </summary>
    public class OrderState
    {
       public const string Pending = "PENDING";
@@ -40,7 +36,7 @@
       public const string MarketIfTouched = "MARKET_IF_TOUCHED";
       public const string TakeProfit = "TAKE_PROFIT";
       public const string StopLoss = "STOP_LOSS";
-      public const string TrailingStopLoss = "TRAILING_STOP_LOSS"; 
+      public const string TrailingStopLoss = "TRAILING_STOP_LOSS";
    }
 
    public class TimeInForce
