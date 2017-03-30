@@ -1,17 +1,16 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Instrument;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Stream;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Stream;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace OANDAV20.REST20.TradeLibrary
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public class PricingSession : StreamSession<PricingStreamResponse>
    {
-      private readonly List<Instrument> _instruments;
+      private readonly List<Instrument.Instrument> _instruments;
       private bool _snapshot;
 
-      public PricingSession(string accountId, List<Instrument> instruments, bool snapshot = true) : base(accountId)
+      public PricingSession(string accountId, List<Instrument.Instrument> instruments, bool snapshot = true) : base(accountId)
       {
          _instruments = instruments;
          _snapshot = snapshot;

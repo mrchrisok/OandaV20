@@ -1,8 +1,8 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Order;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Order;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
 using System.Collections.Generic;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Trade
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Trade
 {
    public class Trade
    {

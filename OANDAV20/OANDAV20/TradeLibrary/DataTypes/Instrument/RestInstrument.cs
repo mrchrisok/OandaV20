@@ -1,10 +1,10 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Communications.Requests;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Instrument;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OANDAV20.REST20
+namespace OANDAV20
 {
    public partial class Rest20
    {

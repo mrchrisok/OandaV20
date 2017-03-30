@@ -1,7 +1,7 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Instrument;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
 using System.Collections.Generic;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
 {
    public class CandlesResponse
    {

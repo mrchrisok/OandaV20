@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Order
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
 {
    public class StopLossOrder : Order
    {

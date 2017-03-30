@@ -1,7 +1,7 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
 using System.Collections.Generic;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
 {
    public class OrderClientExtensionsModifyResponse : Response
    {

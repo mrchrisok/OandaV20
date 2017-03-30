@@ -1,5 +1,8 @@
-﻿namespace OANDAV20.REST20.TradeLibrary.DataTypes.Position
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Position
 {
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/position-df/#CalculatedPositionState
+   /// </summary>
    public class CalculatedPositionState
    {
       public string instrument { get; set; }

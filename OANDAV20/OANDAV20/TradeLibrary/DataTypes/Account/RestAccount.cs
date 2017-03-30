@@ -1,11 +1,12 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Account;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.REST20.TradeLibrary.DataTypes.Instrument;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OANDAV20.REST20
+namespace OANDAV20
 {
    public partial class Rest20
    {
@@ -45,7 +46,7 @@ namespace OANDAV20.REST20
          string requestString = Server(EServer.Account) + "accounts/" + accountId + "/summary";
 
          var response = await MakeRequestAsync<AccountSummaryResponse>(requestString);
-         return response.accountSummary;
+         return response.account;
       }
 
       /// <summary>
@@ -66,6 +67,29 @@ namespace OANDAV20.REST20
 
          var response = await MakeRequestAsync<AccountInstrumentsResponse>(requestString);
          return response.instruments;
+      }
+
+      /// <summary>
+      /// Updates the client-configurable values for the given account
+      /// </summary>
+      /// <param name="accountId">AccountId to apply the updates to.</param>
+      /// <param name="bodyParams">Name-value dictionary of updates to apply</param>
+      /// <returns>The updated values that were applied to the account</returns>
+      public static async Task<AccountConfigurationResponse> PatchAccountConfigurationAsync(string accountId, Dictionary<string, string> bodyParams)
+      {
+         string requestString = Server(EServer.Account) + "accounts/" + accountId + "/configuration";
+
+         // api only accepts 'alias' and 'marginRate'
+         foreach(var key in bodyParams.Keys)
+         {
+            if (key == "alias" || key == "marginRate")
+               continue;
+            bodyParams.Remove(key);
+         }
+
+         var response = await MakeRequestWithJSONBody<AccountConfigurationResponse, Dictionary<string, string>>("PATCH", bodyParams, requestString);
+
+         return response;
       }
    }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OANDAV20.REST20.Framework
+namespace OANDAV20.Framework
 {
    public class IsOptionalAttribute : Attribute
    {

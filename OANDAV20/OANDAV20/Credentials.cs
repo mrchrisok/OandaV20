@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.REST20
+namespace OANDAV20
 {
    public enum EServer
    {

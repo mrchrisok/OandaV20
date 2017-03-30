@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Transaction
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Transaction
 {
    public class DailyFinancingTransaction : Transaction
    {

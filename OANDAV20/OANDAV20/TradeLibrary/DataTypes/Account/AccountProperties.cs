@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.REST20.TradeLibrary.DataTypes.Account
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Account
 {
    public class AccountProperties
    {

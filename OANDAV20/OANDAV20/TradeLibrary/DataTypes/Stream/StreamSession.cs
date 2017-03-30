@@ -1,4 +1,4 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Stream;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Stream;
 using System;
 using System.IO;
 using System.Net;
@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OANDAV20.REST20.TradeLibrary
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public abstract class StreamSession<T> where T : IHeartbeat
    {

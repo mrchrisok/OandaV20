@@ -1,10 +1,10 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Account;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
 {
    public class AccountSummaryResponse
    {
-      public AccountSummary accountSummary;
+      public AccountSummary account;
       public string lastTransactionID;
    }
 }

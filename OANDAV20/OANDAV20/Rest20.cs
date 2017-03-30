@@ -1,4 +1,4 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Communications.Requests;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,11 +10,8 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OANDAV20.REST20
+namespace OANDAV20
 {
-   /// Best Practices Notes
-   /// 
-   /// Keep alive is on by default
    public partial class Rest20
    {
       // Convenience helpers
@@ -240,15 +237,15 @@ namespace OANDAV20.REST20
       private static string CreateJSONBody<P>(P obj, bool simpleDictionary = false)
       {
          // trap this in case of forgetting
-         if (typeof(P) == typeof(IDictionary<string, string>))
+         List<Type> types = new List<Type>()
          {
+            typeof(IDictionary<string, string>),
+            typeof(IDictionary<string, object>),
+            typeof(Dictionary<string, string>),
+            typeof(Dictionary<string, object>)
+         };
+         if (types.Contains(typeof(P)))
             simpleDictionary = true;
-         }
-         if (typeof(P) == typeof(IDictionary<string, object>))
-         {
-            simpleDictionary = true;
-         }
-
 
          var settings = new DataContractJsonSerializerSettings();
          settings.UseSimpleDictionaryFormat = simpleDictionary;

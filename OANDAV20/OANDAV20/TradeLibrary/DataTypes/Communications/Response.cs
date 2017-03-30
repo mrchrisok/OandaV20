@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Text;
-using OANDACommon = OANDAV20.REST20.Framework.Common;
+using OANDACommon = OANDAV20.Framework.Common;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
 {
    public class Response
    {

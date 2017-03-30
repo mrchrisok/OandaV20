@@ -49,10 +49,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest20.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\Account.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Account\AccountChangesState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\AccountProperties.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\AccountSummary.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\Definitions.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\RestAccount.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Communications\AccountConfigurationResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountInstrumentsResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountsResponse.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="TradeLibrary\DataTypes\Instrument\Instrument.cs" />
     <Compile Include="TradeLibrary\DataTypes\Instrument\RestInstrument.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\Definitions.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Order\DynamicOrderState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\LimitOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\MarketIfTouchedOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\MarketOrder.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="TradeLibrary\DataTypes\Stream\StreamSession.cs" />
     <Compile Include="TradeLibrary\DataTypes\Stream\TransactionSession.cs" />
     <Compile Include="TradeLibrary\DataTypes\Stream\TransactionStreamResponse.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Trade\CalculatedTradeState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\RestTrade.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\Trade.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\TradeSummary.cs" />

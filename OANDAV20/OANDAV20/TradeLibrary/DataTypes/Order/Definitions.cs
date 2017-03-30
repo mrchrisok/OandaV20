@@ -1,5 +1,9 @@
-﻿namespace OANDAV20.REST20.TradeLibrary.DataTypes.Order
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
 {
+
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/order-df/
+   /// </summary>
    public class OrderPositionFill
    {
       public const string OpenOnly = "OPEN_ONLY";
@@ -8,6 +12,9 @@
       public const string Default = "DEFAULT";
    }
 
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/order-df/
+   /// </summary>
    public class OrderState
    {
       public const string Pending = "PENDING";

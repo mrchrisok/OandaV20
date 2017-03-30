@@ -1,6 +1,6 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Stream
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Stream
 {
    /// <summary>
    /// Events are authorized transactions posted to the subject account.

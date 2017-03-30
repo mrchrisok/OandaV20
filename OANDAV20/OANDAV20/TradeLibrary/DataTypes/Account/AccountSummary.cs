@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.REST20.TradeLibrary.DataTypes.Account
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Account
 {
    public class AccountSummary
    {
@@ -6,12 +6,12 @@
       public string alias { get; set; }
       public string currency { get; set; }
       public double balance { get; set; }
-      public int createdByUserId { get; set; }
+      public int createdByUserID { get; set; }
       public string createdTime { get; set; }
       public double pl { get; set; }
       public double resettablePL { get; set; }
       public string resettablePLTime { get; set; }
-      public double marginRate { get; set; }
+      public double? marginRate { get; set; }
       public string marginCallEnterTime { get; set; }
       public int marginCallExtensionCount { get; set; }
       public string lastMarginCallExtensionTime { get; set; }

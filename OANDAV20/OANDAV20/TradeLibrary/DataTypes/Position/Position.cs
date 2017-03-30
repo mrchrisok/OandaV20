@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.REST20.TradeLibrary.DataTypes.Position
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Position
 {
    public class Position
    {

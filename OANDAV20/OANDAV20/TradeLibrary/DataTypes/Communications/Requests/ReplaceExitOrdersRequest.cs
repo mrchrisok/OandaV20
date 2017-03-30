@@ -1,7 +1,7 @@
-﻿using OANDAV20.REST20.TradeLibrary.DataTypes.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
 using System.Runtime.Serialization;
 
-namespace OANDAV20.REST20.TradeLibrary.DataTypes.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests
 {
    [DataContract]
    public class ReplaceExitOrdersRequest
