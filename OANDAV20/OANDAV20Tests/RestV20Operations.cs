@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OANDAV20;
 using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Pricing;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
+using OANDAV20.TradeLibrary.DataTypes.Account;
+using OANDAV20.TradeLibrary.DataTypes.Instrument;
+using OANDAV20.TradeLibrary.DataTypes.Pricing;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace OANDAv20Tests
 {
+   /// <summary>
+   /// http://developer.oanda.com/rest-live-v20/introduction/
+   /// </summary>
    public partial class Restv20Test
    {
       #region Declarations
@@ -19,6 +22,7 @@ namespace OANDAv20Tests
       static EEnvironment _testEnvironment;
       static string _testToken;
       static string _testAccount;
+      static short _tokenAccounts;
       static string _currency = "USD";
 
       static List<Instrument> _instruments;
@@ -28,20 +32,15 @@ namespace OANDAv20Tests
       private bool _marketHalted;
       private const string TEST_INSTRUMENT = "EUR_USD";
       #endregion
-
-      #region Properties
+ 
       static string _accountId { get { return Credentials.GetDefaultCredentials().DefaultAccountId; } }
-      #endregion
 
       #region Constructors
       public Restv20Test()
       {
-         // Practice or Trade
          _testEnvironment = EEnvironment.Trade;
-
-         // token should correspond to environment
-         // For token help, see "Getting Started" at http://developer.oanda.com/rest-live-v20/introduction/
          _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
+         _tokenAccounts = 5;
       }
       #endregion
 
@@ -59,13 +58,15 @@ namespace OANDAv20Tests
 
             if (Credentials.GetDefaultCredentials().HasServer(EServer.Account))
             {
-               await Account_AccountsListTest(5);
-               await Account_GetAccountSummaryTest();
-               await Account_GetAccountsInstrumentsTest();
-               await Account_GetSingleAccountInstrumentTest();
-               await Account_PatchAccountConfigurationTest();
+               await Account_GetAccountsList(_tokenAccounts);
+               await Account_GetAccountSummary();
+               await Account_GetAccountsInstruments();
+               await Account_GetSingleAccountInstrument();
+               await Account_PatchAccountConfiguration();
+               //await Account_GetAccountChanges();
 
-               //await Pricing_GetPricingInformationTest();
+
+               await Pricing_GetPricing();
 
 
 
@@ -77,22 +78,23 @@ namespace OANDAv20Tests
 
                // stop transactions stream 
             }
-
-            _apiOperationsComplete = true;
          }
          catch (Exception ex)
          {
-            _results.Add(ex.Message);
+            throw new Exception("An unhandled error occured during execution of REST V20 operations.", ex);
+         }
+         finally
+         {
+            _apiOperationsComplete = true;
          }
       }
 
-      #region Api operations
-      #region Api operations - Account
+      #region Account
       /// <summary>
       /// Retrieve the list of accounts associated with the account token
       /// </summary>
       /// <param name="listCount"></param>
-      private static async Task Account_AccountsListTest(short? listCount = null)
+      private static async Task Account_GetAccountsList(short? listCount = null)
       {
          short count = 0;
 
@@ -112,7 +114,8 @@ namespace OANDAv20Tests
          foreach (var account in result)
          {
             count++;
-            _results.Verify("01." + count.ToString(), account.id.Split('-').Length == 4, string.Format("Account id {0} has correct format.", account.id));
+            string description = string.Format("Account id {0} has correct format.", account.id);
+            _results.Verify("01." + count.ToString(), account.id.Split('-').Length == 4, description);
          }
 
          _testAccount = result[0].id;
@@ -122,7 +125,7 @@ namespace OANDAv20Tests
       /// <summary>
       /// Retrieve the list of instruments associated with the given accountId
       /// </summary>
-      //private static async Task Account_GetAccountDetailsTest()
+      //private static async Task Account_GetAccountDetails()
       //{
       //   // Get an instrument list (basic)
       //   Account result = await Rest20.GetAccountDetailsAsync(_accountId);
@@ -135,7 +138,7 @@ namespace OANDAv20Tests
       /// <summary>
       /// Retrieve the list of instruments associated with the given accountId
       /// </summary>
-      private static async Task Account_GetAccountsInstrumentsTest()
+      private static async Task Account_GetAccountsInstruments()
       {
          // Get an instrument list (basic)
          List<Instrument> result = await Rest20.GetAccountInstrumentsAsync(_accountId);
@@ -148,7 +151,7 @@ namespace OANDAv20Tests
       /// <summary>
       /// Retrieve the list of instruments associated with the given accountId
       /// </summary>
-      private static async Task Account_GetSingleAccountInstrumentTest()
+      private static async Task Account_GetSingleAccountInstrument()
       {
          // Get an instrument list (basic)
          string instrument = "EUR_USD";
@@ -163,7 +166,7 @@ namespace OANDAv20Tests
       /// <summary>
       /// Retrieve summary information for the given accountId
       /// </summary>
-      private static async Task Account_GetAccountSummaryTest()
+      private static async Task Account_GetAccountSummary()
       {
          // 04
          AccountSummary result = await Rest20.GetAccountSummaryAsync(_accountId);
@@ -175,7 +178,7 @@ namespace OANDAv20Tests
       /// <summary>
       /// Retrieve summary information for the given accountId
       /// </summary>
-      private static async Task Account_PatchAccountConfigurationTest()
+      private static async Task Account_PatchAccountConfiguration()
       {
          // 05
          AccountSummary summary = await Rest20.GetAccountSummaryAsync(_accountId);
@@ -207,15 +210,16 @@ namespace OANDAv20Tests
       #endregion
 
       #region Pricing
-      //public void test_Pricing_get_pricing_info()
-      //{
-      //   string key = "04.0";
-      //   var results = _results.Items.Where(x => x.Key == key);
-      //   var failure = results.FirstOrDefault(x => x.Value.Success == false);
+      private static async Task Pricing_GetPricing()
+      {
+         List<string> instruments = new List<string>();
+         _instruments.ForEach(x => instruments.Add(x.name));
 
-      //   Assert.IsTrue(failure.Key == null, failure.Key + ": " + failure.Value);
-      //}
-      #endregion
+         List<Price> prices = await Rest20.GetPriceListAsync(_accountId, instruments);
+
+         _results.Verify("06.0", prices != null, string.Format("Prices retrieved successfully."));
+         _results.Verify("06.1", prices.Count == _instruments.Count, string.Format("Correct count ({0}) of prices retrieved.", prices.Count));
+      }
       #endregion
    }
 }

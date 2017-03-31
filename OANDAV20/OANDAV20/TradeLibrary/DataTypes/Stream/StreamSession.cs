@@ -1,4 +1,4 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Stream;
+﻿using OANDAV20.TradeLibrary.DataTypes.Stream;
 using System;
 using System.IO;
 using System.Net;

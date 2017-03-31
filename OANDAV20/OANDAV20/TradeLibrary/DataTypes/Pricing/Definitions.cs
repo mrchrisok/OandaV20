@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Pricing
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Pricing
 {
    public class PriceStatus
    {

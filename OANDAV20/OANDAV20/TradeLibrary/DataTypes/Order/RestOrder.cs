@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Order;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
+using OANDAV20.TradeLibrary.DataTypes.Order;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

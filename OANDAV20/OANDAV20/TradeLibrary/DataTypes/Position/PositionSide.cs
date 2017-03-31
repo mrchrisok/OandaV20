@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Position
+namespace OANDAV20.TradeLibrary.DataTypes.Position
 {
    public class PositionSide
    {

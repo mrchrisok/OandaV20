@@ -1,7 +1,7 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
+using OANDAV20.TradeLibrary.DataTypes.Account;
+using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Instrument;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

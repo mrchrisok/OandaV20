@@ -49,11 +49,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest20.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\Account.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Account\AccountChanges.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\AccountChangesState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\AccountProperties.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\AccountSummary.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\Definitions.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\RestAccount.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Communications\AccountChangesResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountConfigurationResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountInstrumentsResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\AccountResponse.cs" />
@@ -69,7 +71,7 @@
     <Compile Include="TradeLibrary\DataTypes\Communications\PositionCloseResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\PositionResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\PositionsResponse.cs" />
-    <Compile Include="TradeLibrary\DataTypes\Communications\PricesResponse.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Communications\PricingResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\CandlesRequest.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\ClosePositionRequest.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\OrderRequest.cs" />

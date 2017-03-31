@@ -1,5 +1,5 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Pricing;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Pricing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace OANDAV20
    public partial class Rest20
    {
       /// <summary>
-      /// Retrieves the list of prices of the provided instruments.
+      /// Retrieves the list of prices of the provided instrument names
       /// http://developer.oanda.com/rest-live-v20/pricing-ep/
       /// </summary>
       /// <param name="account">the account to retrieve the list for</param>
@@ -21,12 +21,19 @@ namespace OANDAV20
          string requestString = Server(EServer.Account) + "accounts/" + account + "/pricing";
 
          // instruments should only be in the list
-         if (requestParams.ContainsKey("instruments")) requestParams.Remove("instruments");
+         if (requestParams != null)
+         {
+            if (requestParams.Count > 0)
+               if (requestParams.ContainsKey("instruments")) requestParams.Remove("instruments");
+         }
+
+         if (instruments == null)
+            throw new ArgumentException("List of instruments cannot be null.");
 
          string instrumentsParam = GetCommaSeparatedList(instruments);
-         requestParams.Add("?instruments", Uri.EscapeDataString(instrumentsParam));
+         requestString += "?instruments=" + Uri.EscapeDataString(instrumentsParam);
 
-         PricesResponse response = await MakeRequestAsync<PricesResponse>(requestString, "GET", requestParams);
+         PricingResponse response = await MakeRequestAsync<PricingResponse>(requestString, "GET", requestParams);
 
          var prices = new List<Price>();
          prices.AddRange(response.prices);

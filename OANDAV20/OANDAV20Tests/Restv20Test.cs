@@ -11,11 +11,10 @@ namespace OANDAv20Tests
       [TestInitialize]
       public void CheckIfAllApiOperationsHaveCompleted()
       {
-         while (!_apiOperationsComplete) Task.Delay(5000);
+         while (!_apiOperationsComplete) Task.Delay(250).Wait();
       }
 
-      #region Test methods
-      #region Test methods - Account
+      #region Credentials
       [TestMethod]
       public void test_Credentials_get_credentials()
       {
@@ -23,7 +22,9 @@ namespace OANDAv20Tests
          Assert.IsTrue(Credentials.GetDefaultCredentials().AccessToken == _testToken, "Credentials Token is incorrect.");
          Assert.IsTrue(Credentials.GetDefaultCredentials().DefaultAccountId == _testAccount, "Credentials AccountId is incorrect.");
       }
+      #endregion
 
+      #region Account
       [TestMethod]
       public void test_Account_retrieve_accounts_list()
       {
@@ -108,7 +109,7 @@ namespace OANDAv20Tests
       }
       #endregion
 
-      #region Test methods - Instrument
+      #region Instrument
       //[TestMethod]
       //public void test_Instrument_retrieve_instrument_details()
       //{
@@ -119,6 +120,29 @@ namespace OANDAv20Tests
       //   Assert.IsTrue(failure.Key == null, failure.Key + ": " + failure.Value);
       //}
       #endregion
+
+      #region Order
+      #endregion
+
+      #region Trade
+      #endregion
+
+      #region Position
+      #endregion
+
+      #region Transaction
+      #endregion
+
+      #region Pricing
+      [TestMethod]
+      public void test_Pricing_get_prices_list()
+      {
+         var pricesReceived = _results.Items.FirstOrDefault(x => x.Key == "06.0").Value as Restv20TestResult;
+         var priceCountMatches = _results.Items.FirstOrDefault(x => x.Key == "06.1").Value as Restv20TestResult;
+
+         Assert.IsTrue(pricesReceived.Success, pricesReceived.Success.ToString() + ": " + pricesReceived.Details);
+         Assert.IsTrue(priceCountMatches.Success, priceCountMatches.Success.ToString() + ": " + priceCountMatches.Details);
+      }
       #endregion
    }
 }

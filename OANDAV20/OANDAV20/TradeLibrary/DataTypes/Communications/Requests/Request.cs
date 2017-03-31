@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
 {
    public abstract class Request
    {

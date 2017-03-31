@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    class TradeReplaceExitOrdersErrorResponse : Response
    {

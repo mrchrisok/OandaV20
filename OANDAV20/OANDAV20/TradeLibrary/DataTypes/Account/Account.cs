@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Trade;
+﻿using OANDAV20.TradeLibrary.DataTypes.Trade;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Account
+namespace OANDAV20.TradeLibrary.DataTypes.Account
 {
    public class Account : AccountSummary
    {

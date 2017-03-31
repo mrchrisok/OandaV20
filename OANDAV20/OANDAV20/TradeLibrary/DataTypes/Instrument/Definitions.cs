@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Instrument
+namespace OANDAV20.TradeLibrary.DataTypes.Instrument
 {
    public class CandleStickGranularity
    {

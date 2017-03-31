@@ -1,6 +1,6 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
+﻿using OANDAV20.TradeLibrary.DataTypes.Account;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public class AccountSummaryResponse
    {

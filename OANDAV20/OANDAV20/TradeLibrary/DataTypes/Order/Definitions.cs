@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// http://developer.oanda.com/rest-live-v20/order-df/
 /// </summary>
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
+namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
    public class OrderPositionFill
    {

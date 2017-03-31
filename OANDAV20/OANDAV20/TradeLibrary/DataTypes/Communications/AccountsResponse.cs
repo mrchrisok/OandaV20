@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Account;
+﻿using OANDAV20.TradeLibrary.DataTypes.Account;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public class AccountsResponse
 	{

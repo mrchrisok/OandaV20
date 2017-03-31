@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Stream
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Stream
 {
    public interface IHeartbeat
    {

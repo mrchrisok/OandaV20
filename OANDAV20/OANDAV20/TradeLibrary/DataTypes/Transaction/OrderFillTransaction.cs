@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Transaction
+namespace OANDAV20.TradeLibrary.DataTypes.Transaction
 {
    public class OrderFillTransaction : Transaction
    {

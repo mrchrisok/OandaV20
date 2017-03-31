@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Order
+namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
    public class TrailingStopLossOrder
    {

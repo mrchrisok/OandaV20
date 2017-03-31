@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public class AccountInstrumentsResponse
    {

@@ -1,4 +1,4 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Position;
+﻿using OANDAV20.TradeLibrary.DataTypes.Position;
 using OANDAV20.TradeLibrary.DataTypes.Order;
 using OANDAV20.TradeLibrary.DataTypes.Trade;
 using System.Collections.Generic;

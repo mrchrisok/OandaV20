@@ -1,6 +1,6 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Position;
+﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
+using OANDAV20.TradeLibrary.DataTypes.Position;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

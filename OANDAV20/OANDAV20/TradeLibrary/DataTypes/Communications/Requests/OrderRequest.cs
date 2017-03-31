@@ -1,8 +1,8 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Order;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Order;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.ComponentModel;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
 {
    public class OrderRequest : Request
    {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Pricing
+namespace OANDAV20.TradeLibrary.DataTypes.Pricing
 {
    public class Price
    {

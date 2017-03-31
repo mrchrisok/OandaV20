@@ -1,4 +1,4 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
+﻿using OANDAV20.TradeLibrary.DataTypes.Instrument;
 using System;
 using System.Collections.Generic;
 using System.IO;

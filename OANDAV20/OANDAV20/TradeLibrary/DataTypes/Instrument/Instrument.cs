@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Communications.Instrument
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Instrument
 {
    public class Instrument
    {

@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Transaction;
+﻿using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.Runtime.Serialization;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
 {
    [DataContract]
    public class ClosePositionRequest

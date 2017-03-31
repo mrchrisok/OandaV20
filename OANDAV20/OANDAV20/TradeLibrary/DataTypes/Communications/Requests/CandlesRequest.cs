@@ -1,8 +1,8 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Instrument;
+﻿using OANDAV20.TradeLibrary.DataTypes.Instrument;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
 {
    public class CandlesRequest : Request
    {

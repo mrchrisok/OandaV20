@@ -2,7 +2,7 @@
 using System.Text;
 using OANDACommon = OANDAV20.Framework.Common;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Communications
+namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
    public class Response
    {
