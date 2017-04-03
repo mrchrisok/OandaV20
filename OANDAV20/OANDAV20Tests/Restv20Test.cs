@@ -148,6 +148,19 @@ namespace OANDAv20Tests
 
       #region Transaction
       [TestMethod]
+      public void test_Transaction_get_transactions_by_date_range()
+      {
+         var transactionsReceived = _results.Items.FirstOrDefault(x => x.Key == "09.0").Value as Restv20TestResult;
+         var clientConfigureReceived = _results.Items.FirstOrDefault(x => x.Key == "09.1").Value as Restv20TestResult;
+         var notClientConfigureReceived = _results.Items.FirstOrDefault(x => x.Key == "09.2").Value as Restv20TestResult;
+
+         Assert.IsTrue(transactionsReceived.Success, transactionsReceived.Success.ToString() + ": " + transactionsReceived.Details);
+         Assert.IsTrue(clientConfigureReceived.Success, clientConfigureReceived.Success.ToString() + ": " + clientConfigureReceived.Details);
+         Assert.IsTrue(transactionsReceived.Success, transactionsReceived.Success.ToString() + ": " + transactionsReceived.Details);
+         Assert.IsFalse(notClientConfigureReceived.Success, notClientConfigureReceived.Success.ToString() + ": " + notClientConfigureReceived.Details);
+      }
+
+      [TestMethod]
       public void test_Transaction_get_transactions_since_id()
       {
          var transactionsReceived = _results.Items.FirstOrDefault(x => x.Key == "10.0").Value as Restv20TestResult;

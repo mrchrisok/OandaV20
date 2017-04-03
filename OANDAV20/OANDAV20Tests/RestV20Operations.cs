@@ -32,6 +32,7 @@ namespace OANDAv20Tests
       static List<Transaction> _transactions;
       static List<Instrument> _instruments;
       static long _lastTransactionID;
+      static string _lastTransactionTime;
 
       protected List<Price> _prices;
       protected Semaphore _tickReceived;
@@ -70,6 +71,7 @@ namespace OANDAv20Tests
                await Account_GetSingleAccountInstrument();
                await Account_PatchAccountConfiguration();
 
+               await Transaction_GetTransactionsByDateRange();
                await Transaction_GetTransactionsSinceId();
 
                await Pricing_GetPricing();
@@ -212,7 +214,6 @@ namespace OANDAv20Tests
          // 05
          AccountSummary summary = await Rest20.GetAccountSummaryAsync(_accountId);
 
-         // use this to test Transactionn_GetTransactionsSinceId()
          _lastTransactionID = summary.lastTransactionID;
 
          string alias = summary.alias;
@@ -223,6 +224,8 @@ namespace OANDAv20Tests
          Dictionary<string, string> accountConfig = new Dictionary<string, string>();
          accountConfig.Add("alias", testAlias);
          accountConfig.Add("marginRate", testMarginRate.ToString());
+
+         _lastTransactionTime = ConvertDateTimeToAcceptDateFormat(DateTime.UtcNow, AcceptDatetimeFormat.RFC3339);
 
          AccountConfigurationResponse response = await Rest20.PatchAccountConfigurationAsync(_accountId, accountConfig);
          ClientConfigureTransaction newConfig = response.clientConfigureTransaction;
@@ -246,13 +249,14 @@ namespace OANDAv20Tests
       {
          // 09
          Dictionary<string, string> parameters = new Dictionary<string, string>();
-         parameters.Add("from", ConvertDateTimeToAcceptDateFormat(DateTime.UtcNow));
+         parameters.Add("from", _lastTransactionTime);
+         parameters.Add("type", TransactionType.ClientConfigure);
 
-         List<ITransaction> result = await Rest20.GetTransactionsByDateRangeAsync(_accountId, parameters);
+         List<ITransaction> results = await Rest20.GetTransactionsByDateRangeAsync(_accountId, parameters);
 
-         //_results.Verify("09.0", result != null, string.Format("Account {0} info received.", _accountId));
-         //_results.Verify("09.1", result.id == _accountId, string.Format("AccounSummary.id ({0}) is correct.", result.id));
-         //_results.Verify("09.2", result.currency == _currency, string.Format("AccountSummary.currency ({0}) is correct.", result.currency));
+         _results.Verify("09.0", results != null, string.Format("Transactions info received.", _accountId));
+         _results.Verify("09.1", results.Where(x => x.type == TransactionType.ClientConfigure).Count() > 0, "Client configure transactions returned.");
+         _results.Verify("09.2", results.Where(x => x.type != TransactionType.ClientConfigure).Count() > 0, "Non-client configure transactions returned.");
       }
 
       private static async Task Transaction_GetTransactionsSinceId()
