@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
-   public class TransactionSession : StreamSession<TransactionStreamResponse>
+   public class TransactionsSession : StreamSession<TransactionStreamResponse>
    {
-      public TransactionSession(string accountId) : base(accountId)
+      public TransactionsSession(string accountId) : base(accountId)
       {
       }
 

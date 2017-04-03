@@ -1,8 +1,23 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Transaction
+﻿using System;
+using System.Collections.Generic;
+
+namespace OANDAV20.TradeLibrary.DataTypes.Transaction
 {
    public class TransactionFactory
    {
-      public static Transaction Create(string type)
+      public static List<ITransaction> Create (IEnumerable<ITransaction> data)
+      {
+         var transactions = new List<ITransaction>();
+
+         foreach (ITransaction transaction in data)
+         {
+            transactions.Add(Create(transaction.type));
+         }
+
+         return transactions;
+      }
+
+      public static ITransaction Create(string type)
       {
          switch(type)
          {

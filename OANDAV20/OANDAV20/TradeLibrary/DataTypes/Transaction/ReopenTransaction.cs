@@ -2,6 +2,5 @@
 {
    public class ReopenTransaction : Transaction
    {
-      public string type { get; set; }
    }
 }

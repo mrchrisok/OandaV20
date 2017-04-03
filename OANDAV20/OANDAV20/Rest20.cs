@@ -1,4 +1,6 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
+﻿using Newtonsoft.Json;
+using OANDAV20.TradeLibrary.DataTypes.Communications;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -93,15 +95,27 @@ namespace OANDAV20
          request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
          request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
          request.Method = method;
+         request.ContentType = "application/json";
 
          try
          {
             using (WebResponse response = await request.GetResponseAsync())
             {
-               var serializer = new DataContractJsonSerializer(typeof(T));
-               var stream = GetResponseStream(response);
-               T result = (T)serializer.ReadObject(stream);
-               return result;
+               if (typeof(T) == typeof(TransactionsResponse))
+               {
+                  var stream = GetResponseStream(response);
+                  var reader = new StreamReader(stream);
+                  var json = reader.ReadToEnd();
+                  var result = JsonConvert.DeserializeObject<T>(json);
+                  return result;
+               }
+               else
+               {
+                  var serializer = new DataContractJsonSerializer(typeof(T));
+                  var stream = GetResponseStream(response);
+                  T result = (T)serializer.ReadObject(stream);
+                  return result;
+               }
             }
          }
          catch (WebException ex)
@@ -135,53 +149,13 @@ namespace OANDAV20
       /// <param name="requestParams">the parameters to pass in the request body</param>
       /// <param name="requestString">the request to make</param>
       /// <returns>response, via type T</returns>
-      private static async Task<T> MakeRequestWithParamString<T>(string method, Dictionary<string, string> requestParams, string requestString)
-      {
-         // Create the body
-         var paramString = CreateParamString(requestParams);
-         HttpWebRequest request = WebRequest.CreateHttp(requestString);
-         request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
-         request.Method = method;
-         request.ContentType = "application/x-www-form-urlencoded";
-
-         using (var writer = new StreamWriter(await request.GetRequestStreamAsync()))
-         {
-            // Write the body
-            await writer.WriteAsync(paramString);
-         }
-
-         // Handle the response
-         try
-         {
-            using (WebResponse response = await request.GetResponseAsync())
-            {
-               var serializer = new DataContractJsonSerializer(typeof(T));
-               return (T)serializer.ReadObject(response.GetResponseStream());
-            }
-         }
-         catch (WebException ex)
-         {
-            var response = (HttpWebResponse)ex.Response;
-            var stream = new StreamReader(response.GetResponseStream());
-            var result = stream.ReadToEnd();
-            throw new Exception(result);
-         }
-      }
-
-      /// <summary>
-      /// Secondary (internal) request handler. differs from primary in that parameters are placed in the body instead of the request string
-      /// </summary>
-      /// <typeparam name="T">response type</typeparam>
-      /// <param name="method">method to use (usually POST or PATCH)</param>
-      /// <param name="requestParams">the parameters to pass in the request body</param>
-      /// <param name="requestString">the request to make</param>
-      /// <returns>response, via type T</returns>
       private static async Task<T> MakeRequestWithJSONBody<T, P>(string method, P requestParams, string requestString)
       {
          // Create the body
          var requestBody = CreateJSONBody(requestParams);
          HttpWebRequest request = WebRequest.CreateHttp(requestString);
          request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
+         request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
          request.Method = method;
          request.ContentType = "application/json";
 
@@ -197,16 +171,14 @@ namespace OANDAV20
             using (WebResponse response = await request.GetResponseAsync())
             {
                var serializer = new DataContractJsonSerializer(typeof(T));
-               return (T)serializer.ReadObject(response.GetResponseStream());
+               var stream = GetResponseStream(response);
+               T result = (T)serializer.ReadObject(stream);
+               return result;
             }
          }
          catch (WebException ex)
          {
             var response = (HttpWebResponse)ex.Response;
-
-            // oco: if you want to get fancy, you can hook up an ErrorResponseFactory here
-            // and use it to serialize the error object for storage, etc.
-
             var stream = new StreamReader(response.GetResponseStream());
             var result = stream.ReadToEnd();
             throw new Exception(result);

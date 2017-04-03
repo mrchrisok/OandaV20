@@ -2,7 +2,6 @@
 {
    public class MarketIfTouchedOrderTransaction : Transaction
    {
-      public string type { get; set; }
       public string instrument { get; set; }
       public double units { get; set; }
       public double price { get; set; }

@@ -2,6 +2,5 @@
 {
    public class ResetResettablePLTransaction : Transaction
    {
-      public string type { get; set; }
    }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using OANDAV20.Framework;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
+using System.Collections.Generic;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
@@ -7,7 +10,8 @@ namespace OANDAV20.TradeLibrary.DataTypes.Communications
    /// </summary>
    public class TransactionsResponse : Response
    {
-      public List<Transaction.Transaction> transactions;
+      [JsonConverter(typeof(TransactionConverter))]
+      public List<ITransaction> transactions;
       public long lastTransactionID;
    }
 }

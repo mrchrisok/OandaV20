@@ -2,6 +2,5 @@
 {
    public class MarginCallExitTransaction : Transaction
    {
-      public string type { get; set; }
    }
 }

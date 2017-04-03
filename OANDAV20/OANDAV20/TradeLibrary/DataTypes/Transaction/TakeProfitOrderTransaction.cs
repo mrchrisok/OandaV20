@@ -2,7 +2,6 @@
 {
    public class TakeProfitOrderTransaction : Transaction
    {
-      public string type { get; set; }
       public long tradeID { get; set; }
       public string clientTradeID { get; set; }
       public double price { get; set; }

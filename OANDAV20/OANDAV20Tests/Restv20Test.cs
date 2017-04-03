@@ -28,10 +28,9 @@ namespace OANDAv20Tests
       [TestMethod]
       public void test_Account_retrieve_accounts_list()
       {
-         string key = "01.0";
-         var result = _results.Items.FirstOrDefault(x => x.Key == key).Value as Restv20TestResult;
+         var accountsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "01.0").Value as Restv20TestResult;
 
-         Assert.IsTrue(result.Success, result.Success.ToString() + ": " + result.Details);
+         Assert.IsTrue(accountsRetrieved.Success, accountsRetrieved.Success.ToString() + ": " + accountsRetrieved.Details);
       }
 
       [TestMethod]
@@ -53,6 +52,23 @@ namespace OANDAv20Tests
          string message = failure.Key != null ? failure.Value.Success.ToString() + ": " + failure.Value.Details : "";
 
          Assert.IsTrue(failure.Key == null, failure.Key + ": " + message);
+      }
+
+      [TestMethod]
+      public void test_Account_retrieve_account_detail_info()
+      {
+         // 08
+         var accountRetrieved = _results.Items.FirstOrDefault(x => x.Key == "08.0").Value as Restv20TestResult;
+         var idIsCorrect = _results.Items.FirstOrDefault(x => x.Key == "08.1").Value as Restv20TestResult;
+         var correctCurrency = _results.Items.FirstOrDefault(x => x.Key == "08.2").Value as Restv20TestResult;
+         var correctOpenTradeCount = _results.Items.FirstOrDefault(x => x.Key == "08.3").Value as Restv20TestResult;
+         var tradesMatchTradeCount = _results.Items.FirstOrDefault(x => x.Key == "08.4").Value as Restv20TestResult;
+
+         Assert.IsTrue(accountRetrieved.Success, accountRetrieved.Success.ToString() + ": " + accountRetrieved.Details);
+         Assert.IsTrue(idIsCorrect.Success, idIsCorrect.Success.ToString() + ": " + idIsCorrect.Details);
+         Assert.IsTrue(correctCurrency.Success, correctCurrency.Success.ToString() + ": " + correctCurrency.Details);
+         Assert.IsTrue(correctOpenTradeCount.Success, correctOpenTradeCount.Success.ToString() + ": " + correctOpenTradeCount.Details);
+         Assert.IsTrue(tradesMatchTradeCount.Success, tradesMatchTradeCount.Success.ToString() + ": " + tradesMatchTradeCount.Details);
       }
 
       [TestMethod]
@@ -131,6 +147,19 @@ namespace OANDAv20Tests
       #endregion
 
       #region Transaction
+      [TestMethod]
+      public void test_Transaction_get_transactions_since_id()
+      {
+         var transactionsReceived = _results.Items.FirstOrDefault(x => x.Key == "10.0").Value as Restv20TestResult;
+         var firstIdIsNextId = _results.Items.FirstOrDefault(x => x.Key == "10.1").Value as Restv20TestResult;
+         var allIdsGreaterThanLastId = _results.Items.FirstOrDefault(x => x.Key == "10.2").Value as Restv20TestResult;
+         var clientConfigureReceived = _results.Items.FirstOrDefault(x => x.Key == "10.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(transactionsReceived.Success, transactionsReceived.Success.ToString() + ": " + transactionsReceived.Details);
+         Assert.IsTrue(firstIdIsNextId.Success, firstIdIsNextId.Success.ToString() + ": " + firstIdIsNextId.Details);
+         Assert.IsTrue(allIdsGreaterThanLastId.Success, allIdsGreaterThanLastId.Success.ToString() + ": " + allIdsGreaterThanLastId.Details);
+         Assert.IsTrue(clientConfigureReceived.Success, clientConfigureReceived.Success.ToString() + ": " + clientConfigureReceived.Details);
+      }
       #endregion
 
       #region Pricing

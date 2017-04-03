@@ -2,7 +2,6 @@
 {
    public class MarginCallExtendTransaction : Transaction
    {
-      public string type { get; set; }
       public int extensionNumber { get; set; }
    }
 }

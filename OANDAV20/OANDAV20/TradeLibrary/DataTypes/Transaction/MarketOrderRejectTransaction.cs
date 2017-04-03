@@ -2,7 +2,6 @@
 {
    public class MarketOrderRejectTransaction : Transaction
    {
-      public string type { get; set; }
       public string instrument { get; set; }
       public double units { get; set; }
       public string timeInForce { get; set; }

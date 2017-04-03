@@ -2,6 +2,5 @@
 {
    public class MarginCallEnterTransaction : Transaction
    {
-      public string type { get; set; }
    }
 }
