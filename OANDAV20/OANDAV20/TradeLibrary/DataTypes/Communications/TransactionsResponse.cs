@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using OANDAV20.Framework;
+using OANDAV20.Framework.JsonConverters;
 using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 

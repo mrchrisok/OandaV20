@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Linq;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
+using OANDAV20.TradeLibrary.DataTypes.Order;
 
 namespace OANDAv20Tests
 {
@@ -241,6 +243,64 @@ namespace OANDAv20Tests
 
          _results.Verify("05.3", newConfig2.alias == alias, string.Format("Account alias {0} reverted successfully.", newConfig2.alias));
          _results.Verify("05.4", newConfig2.marginRate == marginRate, string.Format("Account marginRate {0} reverted succesfully.", newConfig2.marginRate));
+      }
+      #endregion
+
+      #region Order
+      private async Task RunOrderOperations()
+      {
+         string instrument = InstrumentName.Currency.EURUSD;
+         string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));
+
+         // create new pending order
+         var request = new MarketIfTouchedOrderRequest()
+         {
+            instrument = instrument,
+            units = 1, // buy
+            timeInForce = TimeInForce.GoodUntilDate,
+            gtdTime = expiry,
+            price = 1.0
+         };
+
+         var response = await Rest20.PostOrderAsync(_accountId, request);
+         var orderTransaction = response.orderCreateTransaction;
+
+         _results.Verify("11.0", orderTransaction != null && orderTransaction.id > 0, "Order successfully opened");
+         _results.Verify("11.1", orderTransaction.type == OrderType.MarketIfTouched, "Order type is correct.");
+
+         // Get all orders
+         var allOrders = await Rest20.GetOrderListAsync(_accountId);
+         _results.Verify("11.2", allOrders != null && allOrders.Count > 0, "All orders list successfully retrieved");
+         _results.Verify("11.3", allOrders.FirstOrDefault(x => x.id == orderTransaction.id) != null, "Test order in all orders return.");
+
+         // Get pending orders
+         var pendingOrders = await Rest20.GetPendingOrderListAsync(_accountId);
+         _results.Verify("11.4", pendingOrders != null && pendingOrders.Count > 0, "Pending orders list successfully retrieved");
+         _results.Verify("11.5", pendingOrders.FirstOrDefault(x => x.id == orderTransaction.id) != null, "Test order in pending orders return.");
+
+         // Get order details
+            var order = await Rest20.GetOrderDetailsAsync(_accountId, pendingOrders[0].id);
+            _results.Verify("11.6", order != null && order.id == orderTransaction.id, "Test order details successfully retrieved.");
+
+         // Cancel & Replace an existing order
+         request.units += 10;
+         var cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(_accountId, order.id, request);
+         var cancelTransaction = cancelReplaceResponse.orderCancelTransaction;
+         var newOrderTransaction = cancelReplaceResponse.orderCreateTransaction;
+
+         _results.Verify("11.7", cancelTransaction != null && cancelTransaction.orderID == order.id, "Order ancel+replace cancelled successfully.");
+         _results.Verify("11.8", newOrderTransaction != null && newOrderTransaction.id > 0 && newOrderTransaction.id != order.id, "Order cancel+replace replaced successfully.");
+
+         // Get new order details
+         var newOrder = await Rest20.GetOrderDetailsAsync(_accountId, newOrderTransaction.id) as MarketIfTouchedOrder;
+         _results.Verify("11.9", newOrder != null && newOrder.units == request.units, "New order details are correct.");
+
+         // Cancel an order
+         var cancelOrderResponse = await Rest20.CancelOrderAsync(_accountId, newOrder.id);
+         _results.Verify("11.10", cancelOrderResponse != null, "Cancelled order retrieved successfully.");
+
+         var cancelTransaction2 = cancelOrderResponse.orderCancelTransaction;
+         _results.Verify("11.11", cancelTransaction2.orderID == newOrder.id, "Order cancelled successfully.");
       }
       #endregion
 

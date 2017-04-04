@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
-   public class StopOrder
+   public class StopOrder : Order
    {
-      public string type { get; set; }
       public string instrument { get; set; }
       public long units { get; set; }
       public double price { get; set; }

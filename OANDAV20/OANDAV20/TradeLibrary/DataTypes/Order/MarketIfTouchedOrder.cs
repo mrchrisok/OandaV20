@@ -5,7 +5,6 @@ namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
    public class MarketIfTouchedOrder : Order
    {
-      public string type { get; set; }
       public string instrument { get; set; }
       public long units { get; set; }
       public double price { get; set; }

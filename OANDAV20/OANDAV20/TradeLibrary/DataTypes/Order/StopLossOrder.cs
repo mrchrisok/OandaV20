@@ -4,7 +4,6 @@ namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
    public class StopLossOrder : Order
    {
-      public string type { get; set; }
       public long tradeID { get; set; }
       public string clientTradeID { get; set; }
       public double price { get; set; }

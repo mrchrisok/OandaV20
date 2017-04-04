@@ -38,7 +38,7 @@ namespace OANDAV20
       /// <param name="orderIDs">the order IDs to retrieve</param>
       /// <param name="requestParams">optional additional parameters for the request (name, value pairs)</param>
       /// <returns>List of Order objects (or empty list, if no orders)</returns>
-      public static async Task<List<Order>> GetOrderListAsync(string account, List<string> orderIDs = null, Dictionary<string, string> requestParams = null)
+      public static async Task<List<IOrder>> GetOrderListAsync(string account, List<string> orderIDs = null, Dictionary<string, string> requestParams = null)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders";
 
@@ -53,7 +53,7 @@ namespace OANDAV20
 
          OrdersResponse response = await MakeRequestAsync<OrdersResponse>(requestString, "GET", requestParams);
 
-         var orders = new List<Order>();
+         var orders = new List<IOrder>();
          orders.AddRange(response.orders);
 
          return orders;
@@ -65,13 +65,13 @@ namespace OANDAV20
       /// <param name="account">the account to retrieve the list for</param>
       /// <param name="requestParams">optional additional parameters for the request (name, value pairs)</param>
       /// <returns>List of Order objects (or empty list, if no orders)</returns>
-      public static async Task<List<Order>> GetPendingOrderListAsync(string account)
+      public static async Task<List<IOrder>> GetPendingOrderListAsync(string account)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/pendingOrders";
 
          OrdersResponse response = await MakeRequestAsync<OrdersResponse>(requestString);
 
-         var orders = new List<Order>();
+         var orders = new List<IOrder>();
          orders.AddRange(response.orders);
 
          return orders;
@@ -83,7 +83,7 @@ namespace OANDAV20
       /// <param name="account">the account that the order belongs to</param>
       /// <param name="orderId">the id of the order to retrieve</param>
       /// <returns>Order object containing the order details</returns>
-      public static async Task<Order> GetOrderDetailsAsync(string account, long orderId)
+      public static async Task<IOrder> GetOrderDetailsAsync(string account, long orderId)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders/" + orderId;
 

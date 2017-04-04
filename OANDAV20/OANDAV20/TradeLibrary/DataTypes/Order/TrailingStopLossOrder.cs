@@ -2,9 +2,8 @@
 
 namespace OANDAV20.TradeLibrary.DataTypes.Order
 {
-   public class TrailingStopLossOrder
+   public class TrailingStopLossOrder : Order
    {
-      public string type { get; set; }
       public long tradeID { get; set; }
       public string clientTradeID { get; set; }
       public double distance { get; set; }

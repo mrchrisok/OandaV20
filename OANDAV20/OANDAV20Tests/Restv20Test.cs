@@ -85,26 +85,26 @@ namespace OANDAv20Tests
       public void test_Account_retrieve_single_instrument_info()
       {
          // 03
-         var instrument = _results.Items.FirstOrDefault(x => x.Key == "03.0").Value as Restv20TestResult;
-         var type = _results.Items.FirstOrDefault(x => x.Key == "03.1").Value as Restv20TestResult;
-         var name = _results.Items.FirstOrDefault(x => x.Key == "03.2").Value as Restv20TestResult;
+         var instrumentReceived = _results.Items.FirstOrDefault(x => x.Key == "03.0").Value as Restv20TestResult;
+         var instrumentTypeCorrect = _results.Items.FirstOrDefault(x => x.Key == "03.1").Value as Restv20TestResult;
+         var instrumentNameCorrect = _results.Items.FirstOrDefault(x => x.Key == "03.2").Value as Restv20TestResult;
 
-         Assert.IsTrue(instrument.Success, instrument.Success.ToString() + ": " + instrument.Details);
-         Assert.IsTrue(type.Success, type.Success.ToString() + ": " + type.Details);
-         Assert.IsTrue(name.Success, name.Success.ToString() + ": " + name.Details);
+         Assert.IsTrue(instrumentReceived.Success, instrumentReceived.Success.ToString() + ": " + instrumentReceived.Details);
+         Assert.IsTrue(instrumentTypeCorrect.Success, instrumentTypeCorrect.Success.ToString() + ": " + instrumentTypeCorrect.Details);
+         Assert.IsTrue(instrumentNameCorrect.Success, instrumentNameCorrect.Success.ToString() + ": " + instrumentNameCorrect.Details);
       }
 
       [TestMethod]
       public void test_Account_retrieve_account_summary_info()
       {
          // 04
-         var account = _results.Items.FirstOrDefault(x => x.Key == "04.0").Value as Restv20TestResult;
-         var id = _results.Items.FirstOrDefault(x => x.Key == "04.1").Value as Restv20TestResult;
-         var currency = _results.Items.FirstOrDefault(x => x.Key == "04.2").Value as Restv20TestResult;
+         var summaryRetrieved = _results.Items.FirstOrDefault(x => x.Key == "04.0").Value as Restv20TestResult;
+         var accountIdIsCorrect = _results.Items.FirstOrDefault(x => x.Key == "04.1").Value as Restv20TestResult;
+         var currencyIsCorrect = _results.Items.FirstOrDefault(x => x.Key == "04.2").Value as Restv20TestResult;
 
-         Assert.IsTrue(account.Success, account.Success.ToString() + ": " + account.Details);
-         Assert.IsTrue(id.Success, id.Success.ToString() + ": " + id.Details);
-         Assert.IsTrue(currency.Success, currency.Success.ToString() + ": " + currency.Details);
+         Assert.IsTrue(summaryRetrieved.Success, summaryRetrieved.Success.ToString() + ": " + summaryRetrieved.Details);
+         Assert.IsTrue(accountIdIsCorrect.Success, accountIdIsCorrect.Success.ToString() + ": " + accountIdIsCorrect.Details);
+         Assert.IsTrue(currencyIsCorrect.Success, currencyIsCorrect.Success.ToString() + ": " + currencyIsCorrect.Details);
       }
 
       [TestMethod]
