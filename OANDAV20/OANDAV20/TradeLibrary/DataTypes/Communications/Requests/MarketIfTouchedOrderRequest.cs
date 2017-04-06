@@ -8,7 +8,6 @@ namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
       {
          type = OrderType.MarketIfTouched;
          timeInForce = TimeInForce.GoodUntilCancelled;
-         positionFill = OrderPositionFill.Default;
          triggerCondition = OrderTriggerCondition.Default;
       }
 

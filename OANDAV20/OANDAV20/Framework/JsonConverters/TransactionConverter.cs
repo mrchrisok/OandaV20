@@ -35,7 +35,7 @@ namespace OANDAV20.Framework.JsonConverters
          else if (jsonToken.Type == JTokenType.Object)
          {
             ITransaction transaction = TransactionFactory.Create(jsonToken["type"].Value<string>());
-
+            serializer.Populate(jsonToken.CreateReader(), transaction);
             return transaction;
          }
          else

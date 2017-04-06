@@ -11,6 +11,8 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections;
 
 namespace OANDAV20
 {
@@ -101,21 +103,11 @@ namespace OANDAV20
          {
             using (WebResponse response = await request.GetResponseAsync())
             {
-               if (typeof(T) == typeof(TransactionsResponse))
-               {
-                  var stream = GetResponseStream(response);
-                  var reader = new StreamReader(stream);
-                  var json = reader.ReadToEnd();
-                  var result = JsonConvert.DeserializeObject<T>(json);
-                  return result;
-               }
-               else
-               {
-                  var serializer = new DataContractJsonSerializer(typeof(T));
-                  var stream = GetResponseStream(response);
-                  T result = (T)serializer.ReadObject(stream);
-                  return result;
-               }
+               var stream = GetResponseStream(response);
+               var reader = new StreamReader(stream);
+               var json = reader.ReadToEnd();
+               var result = JsonConvert.DeserializeObject<T>(json);
+               return result;
             }
          }
          catch (WebException ex)
@@ -146,13 +138,12 @@ namespace OANDAV20
       /// </summary>
       /// <typeparam name="T">response type</typeparam>
       /// <param name="method">method to use (usually POST or PATCH)</param>
-      /// <param name="requestParams">the parameters to pass in the request body</param>
+      /// <param name="body">request body (must be a valid json string)</param>
       /// <param name="requestString">the request to make</param>
       /// <returns>response, via type T</returns>
-      private static async Task<T> MakeRequestWithJSONBody<T, P>(string method, P requestParams, string requestString)
+      private static async Task<T> MakeRequestWithJSONBody<T>(string method, string requestBody, string requestString)
       {
-         // Create the body
-         var requestBody = CreateJSONBody(requestParams);
+         // Create the request
          HttpWebRequest request = WebRequest.CreateHttp(requestString);
          request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
          request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
@@ -170,9 +161,10 @@ namespace OANDAV20
          {
             using (WebResponse response = await request.GetResponseAsync())
             {
-               var serializer = new DataContractJsonSerializer(typeof(T));
                var stream = GetResponseStream(response);
-               T result = (T)serializer.ReadObject(stream);
+               var reader = new StreamReader(stream);
+               var json = reader.ReadToEnd();
+               var result = JsonConvert.DeserializeObject<T>(json);
                return result;
             }
          }
@@ -183,6 +175,21 @@ namespace OANDAV20
             var result = stream.ReadToEnd();
             throw new Exception(result);
          }
+      }
+
+      /// <summary>
+      /// Secondary (internal) request handler. differs from primary in that parameters are placed in the body instead of the request string
+      /// </summary>
+      /// <typeparam name="T">response type</typeparam>
+      /// <param name="method">method to use (usually POST or PATCH)</param>
+      /// <param name="requestParams">the parameters to pass in the request body</param>
+      /// <param name="requestString">the request to make</param>
+      /// <returns>response, via type T</returns>
+      private static async Task<T> MakeRequestWithJSONBody<T, P>(string method, P requestParams, string requestString)
+      {
+         var requestBody = CreateJSONBody(requestParams);
+
+         return await MakeRequestWithJSONBody<T>(method, requestBody, requestString);
       }
 
       /// <summary>
@@ -209,14 +216,7 @@ namespace OANDAV20
       private static string CreateJSONBody<P>(P obj, bool simpleDictionary = false)
       {
          // trap this in case of forgetting
-         List<Type> types = new List<Type>()
-         {
-            typeof(IDictionary<string, string>),
-            typeof(IDictionary<string, object>),
-            typeof(Dictionary<string, string>),
-            typeof(Dictionary<string, object>)
-         };
-         if (types.Contains(typeof(P)))
+         if(typeof(P).GetInterfaces().Contains(typeof(IDictionary)))
             simpleDictionary = true;
 
          var settings = new DataContractJsonSerializerSettings();
@@ -229,6 +229,26 @@ namespace OANDAV20
             var msBytes = ms.ToArray();
             return Encoding.UTF8.GetString(msBytes, 0, msBytes.Length);
          }
+      }
+
+      /// <summary>
+      /// Serializes an object to a JSON string
+      /// </summary>
+      /// <param name="input">the object to serialize</param>
+      /// <returns>A JSON string representing the input object</returns>
+      private static string ConvertToJSON(object input)
+      {
+         // oco: look into the DateFormatting
+         // might be able to use DateTime instead of string in objects
+         var settings = new JsonSerializerSettings()
+         {
+            TypeNameHandling = TypeNameHandling.None,
+            NullValueHandling = NullValueHandling.Ignore
+         };
+
+         string result = JsonConvert.SerializeObject(input, settings);
+
+         return result;
       }
    }
 }

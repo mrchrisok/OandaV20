@@ -1,4 +1,6 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Transaction;
+﻿using Newtonsoft.Json;
+using OANDAV20.Framework.JsonConverters;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
@@ -9,10 +11,13 @@ namespace OANDAV20.TradeLibrary.DataTypes.Communications
    public class OrderCancelReplaceResponse : Response
    {
       public OrderCancelTransaction orderCancelTransaction;
-      public Transaction.Transaction orderCreateTransaction;
+      [JsonConverter(typeof(TransactionConverter))]
+      public ITransaction orderCreateTransaction;
       public OrderFillTransaction orderFillTransaction;
-      public Transaction.Transaction orderReissueTransaction;
-      public Transaction.Transaction orderReissueRejectTransaction;
+      [JsonConverter(typeof(TransactionConverter))]
+      public ITransaction orderReissueTransaction;
+      [JsonConverter(typeof(TransactionConverter))]
+      public ITransaction orderReissueRejectTransaction;
       public OrderCancelTransaction replacingOrderCancelTransaction;
       public List<long> relatedTransactionIDs;
       public long lastTransactionID;

@@ -34,9 +34,9 @@ namespace OANDAV20.Framework.JsonConverters
          }
          else if (jsonToken.Type == JTokenType.Object)
          {
-            IOrder transaction = OrderFactory.Create(jsonToken["type"].Value<string>());
-
-            return transaction;
+            IOrder order = OrderFactory.Create(jsonToken["type"].Value<string>());
+            serializer.Populate(jsonToken.CreateReader(), order);
+            return order;
          }
          else
             throw new ArgumentException(string.Format("Unexpected JTokenType ({0}) in reader.", jsonToken.Type.ToString()));

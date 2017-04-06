@@ -138,6 +138,85 @@ namespace OANDAv20Tests
       #endregion
 
       #region Order
+      [TestMethod]
+      public void test_Order_create_order()
+      {
+         var orderCreated = _results.Items.FirstOrDefault(x => x.Key == "11.0").Value as Restv20TestResult;
+         var orderTypeIsCorrect = _results.Items.FirstOrDefault(x => x.Key == "11.1").Value as Restv20TestResult;
+
+         Assert.IsTrue(orderCreated.Success, orderCreated.Success.ToString() + ": " + orderCreated.Details);
+         Assert.IsTrue(orderTypeIsCorrect.Success, orderTypeIsCorrect.Success.ToString() + ": " + orderTypeIsCorrect.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_get_all_orders()
+      {
+         var allOrdersRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.2").Value as Restv20TestResult;
+         var testOrderTypeReturned = _results.Items.FirstOrDefault(x => x.Key == "11.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(allOrdersRetrieved.Success, allOrdersRetrieved.Success.ToString() + ": " + allOrdersRetrieved.Details);
+         Assert.IsTrue(testOrderTypeReturned.Success, testOrderTypeReturned.Success.ToString() + ": " + testOrderTypeReturned.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_get_pending_orders()
+      {
+         var pendingOrdersRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.4").Value as Restv20TestResult;
+         var onlyPendingOrderRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.5").Value as Restv20TestResult;
+         var testPendingOrderRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.6").Value as Restv20TestResult;
+
+         Assert.IsTrue(pendingOrdersRetrieved.Success, pendingOrdersRetrieved.Success.ToString() + ": " + pendingOrdersRetrieved.Details);
+         Assert.IsTrue(onlyPendingOrderRetrieved.Success, onlyPendingOrderRetrieved.Success.ToString() + ": " + onlyPendingOrderRetrieved.Details);
+         Assert.IsTrue(testPendingOrderRetrieved.Success, testPendingOrderRetrieved.Success.ToString() + ": " + testPendingOrderRetrieved.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_get_order_details()
+      {
+         var orderDetailsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.7").Value as Restv20TestResult;
+         var clientExtensionsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.8").Value as Restv20TestResult;
+         var tradeExtensionsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "11.9").Value as Restv20TestResult;
+
+         Assert.IsTrue(orderDetailsRetrieved.Success, orderDetailsRetrieved.Success.ToString() + ": " + orderDetailsRetrieved.Details);
+         Assert.IsTrue(clientExtensionsRetrieved.Success, clientExtensionsRetrieved.Success.ToString() + ": " + clientExtensionsRetrieved.Details);
+         Assert.IsTrue(tradeExtensionsRetrieved.Success, tradeExtensionsRetrieved.Success.ToString() + ": " + tradeExtensionsRetrieved.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_update_order_extensions()
+      {
+         var extensionsUpdated = _results.Items.FirstOrDefault(x => x.Key == "11.10").Value as Restv20TestResult;
+         var extensionsOrderCorrect = _results.Items.FirstOrDefault(x => x.Key == "11.11").Value as Restv20TestResult;
+         var clientExtensionCommentCorrect = _results.Items.FirstOrDefault(x => x.Key == "11.12").Value as Restv20TestResult;
+         var tradeExtensionCommentCorrect = _results.Items.FirstOrDefault(x => x.Key == "11.13").Value as Restv20TestResult;
+
+         Assert.IsTrue(extensionsUpdated.Success, extensionsUpdated.Success.ToString() + ": " + extensionsUpdated.Details);
+         Assert.IsTrue(extensionsOrderCorrect.Success, extensionsOrderCorrect.Success.ToString() + ": " + extensionsOrderCorrect.Details);
+         Assert.IsTrue(clientExtensionCommentCorrect.Success, clientExtensionCommentCorrect.Success.ToString() + ": " + clientExtensionCommentCorrect.Details);
+         Assert.IsTrue(tradeExtensionCommentCorrect.Success, tradeExtensionCommentCorrect.Success.ToString() + ": " + tradeExtensionCommentCorrect.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_cancel_replace_order()
+      {
+         var orderWasCancelled = _results.Items.FirstOrDefault(x => x.Key == "11.14").Value as Restv20TestResult;
+         var orderWasReplaced = _results.Items.FirstOrDefault(x => x.Key == "11.15").Value as Restv20TestResult;
+         var newOrderDetailsCorrect = _results.Items.FirstOrDefault(x => x.Key == "11.16").Value as Restv20TestResult;
+
+         Assert.IsTrue(orderWasCancelled.Success, orderWasCancelled.Success.ToString() + ": " + orderWasCancelled.Details);
+         Assert.IsTrue(orderWasReplaced.Success, orderWasReplaced.Success.ToString() + ": " + orderWasReplaced.Details);
+         Assert.IsTrue(newOrderDetailsCorrect.Success, newOrderDetailsCorrect.Success.ToString() + ": " + newOrderDetailsCorrect.Details);
+      }
+
+      [TestMethod]
+      public void test_Order_cancel_order()
+      {
+         var cancelledOrderReturned = _results.Items.FirstOrDefault(x => x.Key == "11.17").Value as Restv20TestResult;
+         var orderWasCancelled = _results.Items.FirstOrDefault(x => x.Key == "11.18").Value as Restv20TestResult;
+
+         Assert.IsTrue(cancelledOrderReturned.Success, cancelledOrderReturned.Success.ToString() + ": " + cancelledOrderReturned.Details);
+         Assert.IsTrue(orderWasCancelled.Success, orderWasCancelled.Success.ToString() + ": " + orderWasCancelled.Details);
+      }
       #endregion
 
       #region Trade

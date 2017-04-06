@@ -26,7 +26,8 @@ namespace OANDAV20
          Dictionary<string, OrderRequest> order = new Dictionary<string, OrderRequest>();
          order.Add("order", request);
 
-         var response = await MakeRequestWithJSONBody<OrderPostResponse, Dictionary<string, OrderRequest>>("POST", order, requestString);
+         string body = ConvertToJSON(order);
+         var response = await MakeRequestWithJSONBody<OrderPostResponse>("POST", body, requestString);
 
          return response;
       }
@@ -41,6 +42,8 @@ namespace OANDAV20
       public static async Task<List<IOrder>> GetOrderListAsync(string account, List<string> orderIDs = null, Dictionary<string, string> requestParams = null)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders";
+
+         if (requestParams == null) requestParams = new Dictionary<string, string>();
 
          // order IDs should only be in the list
          if (requestParams.ContainsKey("ids")) requestParams.Remove("ids");
@@ -106,7 +109,8 @@ namespace OANDAV20
          Dictionary<string, OrderRequest> order = new Dictionary<string, OrderRequest>();
          order.Add("order", request);
 
-         var response = await MakeRequestWithJSONBody<OrderCancelReplaceResponse, Dictionary<string, OrderRequest>>("PUT", order, requestString);
+         string body = ConvertToJSON(order);
+         var response = await MakeRequestWithJSONBody<OrderCancelReplaceResponse>("PUT", body, requestString);
 
          return response;
       }
