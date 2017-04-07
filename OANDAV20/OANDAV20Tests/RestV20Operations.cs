@@ -78,6 +78,8 @@ namespace OANDAv20Tests
 
                await Pricing_GetPricing();
 
+               await Instrument_GetInstrumentCandles();
+
                //if (!await IsMarketHalted())
                //{
                //   // start & stop the pricing stream
@@ -94,7 +96,7 @@ namespace OANDAv20Tests
                //   }
 
                //   // create stream traffic
-               await RunOrderOperations();
+               await Order_RunOrderOperations();
                //   await RunTradeOperations();
                //   await RunPositionOperations();
 
@@ -246,8 +248,37 @@ namespace OANDAv20Tests
       }
       #endregion
 
+      #region Instrument
+      // <summary>
+      // Retrieve the full details for the test accountId
+      // </summary>
+      private static async Task Instrument_GetInstrumentCandles()
+      {
+         short count = 500;
+         string price = "MBA";
+         string instrument = InstrumentName.Currency.EURUSD;
+         string granularity = CandleStickGranularity.Hours01;
+
+         var parameters = new Dictionary<string, string>();
+         parameters.Add("price", price);
+         parameters.Add("granularity", granularity);
+         parameters.Add("count", count.ToString());
+
+         List<CandlestickPlus> result = await Rest20.GetCandlesAsync(instrument, parameters);
+         CandlestickPlus candle = result.FirstOrDefault();
+
+         _results.Verify("19.0", result != null, "Candles list received.");
+         _results.Verify("19.1", result.Count() == count, "Candles count is correct.");
+         _results.Verify("19.2", candle.instrument == instrument, "Candles instrument is correct.");
+         _results.Verify("19.3", candle.granularity == granularity, "Candles granularity is correct.");
+         _results.Verify("19.4", candle.mid != null && candle.mid.o > 0, "Candle has mid prices");
+         _results.Verify("19.5", candle.bid != null && candle.bid.o > 0, "Candle has bid prices");
+         _results.Verify("19.6", candle.ask != null && candle.ask.o > 0, "Candle has ask prices");
+      }
+      #endregion
+
       #region Order
-      private static async Task RunOrderOperations()
+      private static async Task Order_RunOrderOperations()
       {
          string instrument = InstrumentName.Currency.EURUSD;
          string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));

@@ -1,5 +1,4 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using OANDAV20.TradeLibrary.DataTypes.Instrument;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,31 +13,14 @@ namespace OANDAV20
       /// <param name="instrument">the instrument to retrieve candles for</param>
       /// <param name="requestParams">the parameters for the request</param>
       /// <returns>List of Candlestick objects (or empty list) </returns>
-      public static async Task<List<Candlestick>> GetCandlesAsync(string instrument, Dictionary<string, string> requestParams)
+      public static async Task<List<CandlestickPlus>> GetCandlesAsync(string instrument, Dictionary<string, string> requestParams)
       {
          string requestString = Server(EServer.Account) + "instruments/" + instrument + "/candles";
 
          CandlesResponse response = await MakeRequestAsync<CandlesResponse>(requestString, "GET", requestParams);
 
-         var candles = new List<Candlestick>();
-         candles.AddRange(response.candles);
-
-         return candles;
-      }
-
-      /// <summary>
-      /// More detailed request to retrieve candles
-      /// </summary>
-      /// <param name="request">the request data to use when retrieving the candles</param>
-      /// <returns>List of Candlestick received (or empty list)</returns>
-      public static async Task<List<Candlestick>> GetCandlesAsync(string instrument, CandlesRequest request)
-      {
-         string requestString = Server(EServer.Account) + "instruments/" + instrument + "/candles" + request.GetRequestString();
-
-         CandlesResponse response = await MakeRequestAsync<CandlesResponse>(requestString);
-
-         var candles = new List<Candlestick>();
-         candles.AddRange(response.candles);
+         var candles = new List<CandlestickPlus>();
+         response.candles.ForEach(x => candles.Add(new CandlestickPlus(x) { instrument = instrument, granularity = response.granularity }));
 
          return candles;
       }

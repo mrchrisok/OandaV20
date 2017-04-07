@@ -80,7 +80,6 @@
     <Compile Include="TradeLibrary\DataTypes\Communications\PositionResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\PositionsResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\PricingResponse.cs" />
-    <Compile Include="TradeLibrary\DataTypes\Communications\Requests\CandlesRequest.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\ClosePositionRequest.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\MarketIfTouchedOrderRequest.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\Requests\OrderRequest.cs" />

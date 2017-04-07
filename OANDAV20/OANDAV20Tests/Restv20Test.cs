@@ -126,15 +126,31 @@ namespace OANDAv20Tests
       #endregion
 
       #region Instrument
-      //[TestMethod]
-      //public void test_Instrument_retrieve_instrument_details()
-      //{
-      //   string key = "01";
-      //   var results = _results.Items.Where(x => x.Key.StartsWith(key) && x.Key != "01.0");
-      //   var failure = results.FirstOrDefault(x => x.Value.Success = false);
+      [TestMethod]
+      public void test_Instrument_retrieve_candlestick_list()
+      {
+         var candlesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "19.0").Value as Restv20TestResult;
+         var candlesCountCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.1").Value as Restv20TestResult;
 
-      //   Assert.IsTrue(failure.Key == null, failure.Key + ": " + failure.Value);
-      //}
+         Assert.IsTrue(candlesRetrieved.Success, candlesRetrieved.Success.ToString() + ": " + candlesRetrieved.Details);
+         Assert.IsTrue(candlesCountCorrect.Success, candlesCountCorrect.Success.ToString() + ": " + candlesCountCorrect.Details);
+      }
+
+      [TestMethod]
+      public void test_Instrument_retrieve_candlestick_details()
+      {
+         var candlesInstrumentCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.2").Value as Restv20TestResult;
+         var candlesGranularityCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.3").Value as Restv20TestResult;
+         var candlesHaveMidPrice = _results.Items.FirstOrDefault(x => x.Key == "19.4").Value as Restv20TestResult;
+         var candlesHaveBidPrice = _results.Items.FirstOrDefault(x => x.Key == "19.5").Value as Restv20TestResult;
+         var candlesHaveAskPrice = _results.Items.FirstOrDefault(x => x.Key == "19.6").Value as Restv20TestResult;
+
+         Assert.IsTrue(candlesInstrumentCorrect.Success, candlesInstrumentCorrect.Success.ToString() + ": " + candlesInstrumentCorrect.Details);
+         Assert.IsTrue(candlesGranularityCorrect.Success, candlesGranularityCorrect.Success.ToString() + ": " + candlesGranularityCorrect.Details);
+         Assert.IsTrue(candlesHaveMidPrice.Success, candlesHaveMidPrice.Success.ToString() + ": " + candlesHaveMidPrice.Details);
+         Assert.IsTrue(candlesHaveBidPrice.Success, candlesHaveBidPrice.Success.ToString() + ": " + candlesHaveBidPrice.Details);
+         Assert.IsTrue(candlesHaveAskPrice.Success, candlesHaveAskPrice.Success.ToString() + ": " + candlesHaveAskPrice.Details);
+      }
       #endregion
 
       #region Order

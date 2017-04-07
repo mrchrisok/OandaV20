@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OANDAV20.TradeLibrary.DataTypes.Instrument
+﻿namespace OANDAV20.TradeLibrary.DataTypes.Instrument
 {
    public class CandleStickGranularity
    {
@@ -50,5 +44,12 @@ namespace OANDAV20.TradeLibrary.DataTypes.Instrument
       public const string Friday = "Friday";
       public const string Saturday = "Saturday";
       public const string Sunday = "Sunday";
+   }
+
+   public class CandleStickPriceType
+   {
+      public const string Ask = "A";
+      public const string Bid = "B";
+      public const string Midpoint = "M";
    }
 }
