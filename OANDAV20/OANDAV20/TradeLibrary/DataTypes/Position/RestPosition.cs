@@ -67,7 +67,9 @@ namespace OANDAV20
       {
          string requestString = Server(EServer.Account) + "accounts/" + accountId + "/positions/" + instrument + "/close";
 
-         var response = await MakeRequestWithJSONBody<PositionCloseResponse, ClosePositionRequest>("PUT", request, requestString);
+         var requestBody = ConvertToJSON(request);
+
+         var response = await MakeRequestWithJSONBody<PositionCloseResponse>("PUT", requestBody, requestString);
 
          return response;
       }

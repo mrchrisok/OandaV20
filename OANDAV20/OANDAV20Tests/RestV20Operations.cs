@@ -35,6 +35,7 @@ namespace OANDAv20Tests
       static string _testInstrument = InstrumentName.Currency.EURUSD;
       static List<Transaction> _transactions;
       static List<Instrument> _instruments;
+      static long _firstTransactionID;
       static long _lastTransactionID;
       static string _lastTransactionTime;
 
@@ -45,20 +46,15 @@ namespace OANDAv20Tests
 
       static string _accountId { get { return Credentials.GetDefaultCredentials().DefaultAccountId; } }
 
-      #region Constructors
-      public Restv20Test()
-      {
-         _testEnvironment = EEnvironment.Trade;
-         _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
-         _tokenAccounts = 5;
-      }
-      #endregion
-
       [ClassInitialize]
       public static async void RunApiOperations(TestContext context)
       {
          try
          {
+            _testEnvironment = EEnvironment.Trade;
+            _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
+            _tokenAccounts = 5;
+
             Credentials.SetCredentials(_testEnvironment, _testToken, null);
 
             if (Credentials.GetDefaultCredentials() == null)
@@ -75,7 +71,7 @@ namespace OANDAv20Tests
                await Account_GetSingleAccountInstrument();
                await Account_PatchAccountConfiguration();
 
-               await Transaction_GetTransactionsByDateRange();
+               await Transaction_GetTransactionDetails();
                await Transaction_GetTransactionsSinceId();
 
                await Pricing_GetPricing();
@@ -97,14 +93,14 @@ namespace OANDAv20Tests
                //      transactionsStreamCheck = Stream_GetStreamingTransactions();
                //   }
 
-               //   // create stream traffic
+               // create stream traffic
                await Order_RunOrderOperations();
                await Trade_RunTradeOperations();
-               //   await Position_RunPositionOperations();
+               await Position_RunPositionOperations();
 
-
-               //   // review the stream traffic
-               //   await Transaction_GetTransactionsByDateRange();
+               // review the stream traffic
+               await Transaction_GetTransactionsByDateRange();
+               await Transaction_GetTransactionsByIdRange();
                //   await Account_GetAccountChanges();
 
                //   // stop transactions stream 
@@ -117,14 +113,14 @@ namespace OANDAv20Tests
          }
          catch (Exception ex)
          {
-             throw new Exception("An unhandled error occured during execution of REST V20 operations.", ex);
+            throw new Exception("An unhandled error occured during execution of REST V20 operations.", ex);
          }
          finally
          {
             _apiOperationsComplete = true;
          }
       }
-       
+
       #region Account
       /// <summary>
       /// Retrieve the list of accounts associated with the account token
@@ -155,7 +151,10 @@ namespace OANDAv20Tests
          }
 
          _testAccount = result[0].id;
+
+         // using this as it has funds
          _testAccount = "001-001-432582-001";
+
          Credentials.SetCredentials(_testEnvironment, _testToken, _testAccount);
       }
 
@@ -221,6 +220,7 @@ namespace OANDAv20Tests
          // 05
          AccountSummary summary = await Rest20.GetAccountSummaryAsync(_accountId);
 
+         _firstTransactionID = summary.lastTransactionID;
          _lastTransactionID = summary.lastTransactionID;
 
          string alias = summary.alias;
@@ -539,7 +539,7 @@ namespace OANDAv20Tests
 
       #region Position
       /// <summary>
-      /// Runs operations available at OANDA's POsition endpoint
+      /// Runs operations available at OANDA's Position endpoint
       /// </summary>
       /// <returns></returns>
       private static async Task Position_RunPositionOperations()
@@ -568,16 +568,18 @@ namespace OANDAv20Tests
 
          // get position for a given instrument
          var onePosition = await Rest20.GetPositionAsync(_accountId, _testInstrument);
-         VerifyPosition(onePosition, increment);
+         increment = VerifyPosition(onePosition, increment);
 
          // closeout a position
          var request = new ClosePositionRequest() { longUnits = "ALL" };
          var response = await Rest20.ClosePositionAsync(_accountId, _testInstrument, request);
-         _results.Verify("14.4", response.longOrderCreateTransaction != null && response.longOrderCreateTransaction.id > 0, "Position close order created.");
-         _results.Verify("14.5", response.longOrderFillTransaction != null && response.longOrderFillTransaction.id > 0, "Position close fill order created.");
-         _results.Verify("14.6", response.longOrderFillTransaction.units == units, "Position close units correct.");
+         _lastTransactionID = response.lastTransactionID;
+         _results.Verify("14." + increment.ToString(), response.longOrderCreateTransaction != null && response.longOrderCreateTransaction.id > 0, "Position close order created.");
+         _results.Verify("14." + (increment + 1).ToString(), response.longOrderFillTransaction != null && response.longOrderFillTransaction.id > 0, "Position close fill order created.");
+         _results.Verify("14." + (increment + 2).ToString(), response.longOrderFillTransaction.units == -1 * units, "Position close units correct.");
 
       }
+
       private static short VerifyPosition(Position position, short increment)
       {
          string key = "14.";
@@ -604,6 +606,34 @@ namespace OANDAv20Tests
          _results.Verify("09.0", results != null, string.Format("Transactions info received.", _accountId));
          _results.Verify("09.1", results.Where(x => x.type == TransactionType.ClientConfigure).Count() > 0, "Client configure transactions returned.");
          _results.Verify("09.2", results.Where(x => x.type != TransactionType.ClientConfigure).Count() > 0, "Non-client configure transactions returned.");
+      }
+
+      private static async Task Transaction_GetTransactionDetails()
+      {
+         //15
+         ITransaction result = await Rest20.GetTransactionDetailsAsync(_accountId, _lastTransactionID);
+
+         _results.Verify("15.0", result != null, string.Format("Transaction info received."));
+         _results.Verify("15.1", result.id > 0, "Transaction has id.");
+         _results.Verify("15.2", result.type != null, "Transaction has type.");
+         _results.Verify("15.3", result.time != null, "Transaction has time.");
+      }
+
+      private static async Task Transaction_GetTransactionsByIdRange()
+      {
+         // 16
+         Dictionary<string, string> parameters = new Dictionary<string, string>();
+         parameters.Add("from", _firstTransactionID.ToString());
+         parameters.Add("to", _lastTransactionID.ToString());
+
+         List<ITransaction> results = await Rest20.GetTransactionsByIdRangeAsync(_accountId, parameters);
+         results.OrderBy(x => x.id);
+
+         _results.Verify("16.0", results != null, string.Format("Transactions info received.", _accountId));
+         _results.Verify("16.1", results.First().id == _firstTransactionID, string.Format("Id of first transaction is correct.", results.First().id));
+         _results.Verify("16.2", results.Where(x => x.id < _firstTransactionID).Count() == 0, "All Id's are greater than first transactionId.");
+         _results.Verify("16.3", results.Where(x => x.type == TransactionType.ClientConfigure).Count() > 0, "Client configure transactions returned.");
+         _results.Verify("16.4", results.Where(x => x.type == TransactionType.MarketOrder).Count() > 0, "Market order transactions returned.");
       }
 
       private static async Task Transaction_GetTransactionsSinceId()

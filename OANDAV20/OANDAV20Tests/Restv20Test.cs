@@ -319,6 +319,57 @@ namespace OANDAv20Tests
       #endregion
 
       #region Position
+      [TestMethod]
+      public void test_Position_get_positions()
+      {
+         // 14.0 & 14.1 do not need to be tested.
+
+         var allPositionsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "14.2").Value as Restv20TestResult;
+         var openPositionsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "14.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(allPositionsRetrieved.Success, allPositionsRetrieved.Success.ToString() + ": " + allPositionsRetrieved.Details);
+         Assert.IsTrue(openPositionsRetrieved.Success, openPositionsRetrieved.Success.ToString() + ": " + openPositionsRetrieved.Details);
+      }
+
+      [TestMethod]
+      public void test_Position_get_open_positions()
+      {
+         var postionHasDirection = _results.Items.FirstOrDefault(x => x.Key == "14.4").Value as Restv20TestResult;
+         var positionHasUnits = _results.Items.FirstOrDefault(x => x.Key == "14.5").Value as Restv20TestResult;
+         var positionHasAvgPrice = _results.Items.FirstOrDefault(x => x.Key == "14.6").Value as Restv20TestResult;
+         var positionHasInstrument = _results.Items.FirstOrDefault(x => x.Key == "14.7").Value as Restv20TestResult;
+
+         Assert.IsTrue(postionHasDirection.Success, postionHasDirection.Success.ToString() + ": " + postionHasDirection.Details);
+         Assert.IsTrue(positionHasUnits.Success, positionHasUnits.Success.ToString() + ": " + positionHasUnits.Details);
+         Assert.IsTrue(positionHasAvgPrice.Success, positionHasAvgPrice.Success.ToString() + ": " + positionHasAvgPrice.Details);
+         Assert.IsTrue(positionHasInstrument.Success, positionHasInstrument.Success.ToString() + ": " + positionHasInstrument.Details);
+      }
+
+      [TestMethod]
+      public void test_Position_get_position_details()
+      {
+         var postionHasDirection = _results.Items.FirstOrDefault(x => x.Key == "14.8").Value as Restv20TestResult;
+         var positionHasUnits = _results.Items.FirstOrDefault(x => x.Key == "14.9").Value as Restv20TestResult;
+         var positionHasAvgPrice = _results.Items.FirstOrDefault(x => x.Key == "14.10").Value as Restv20TestResult;
+         var positionHasInstrument = _results.Items.FirstOrDefault(x => x.Key == "14.11").Value as Restv20TestResult;
+
+         Assert.IsTrue(postionHasDirection.Success, postionHasDirection.Success.ToString() + ": " + postionHasDirection.Details);
+         Assert.IsTrue(positionHasUnits.Success, positionHasUnits.Success.ToString() + ": " + positionHasUnits.Details);
+         Assert.IsTrue(positionHasAvgPrice.Success, positionHasAvgPrice.Success.ToString() + ": " + positionHasAvgPrice.Details);
+         Assert.IsTrue(positionHasInstrument.Success, positionHasInstrument.Success.ToString() + ": " + positionHasInstrument.Details);
+      }
+
+      [TestMethod]
+      public void test_Position_close_position()
+      {
+         var closeOrderCreated = _results.Items.FirstOrDefault(x => x.Key == "14.12").Value as Restv20TestResult;
+         var closeOrderFilled = _results.Items.FirstOrDefault(x => x.Key == "14.13").Value as Restv20TestResult;
+         var closeUnitsCorrect = _results.Items.FirstOrDefault(x => x.Key == "14.14").Value as Restv20TestResult;
+
+         Assert.IsTrue(closeOrderCreated.Success, closeOrderCreated.Success.ToString() + ": " + closeOrderCreated.Details);
+         Assert.IsTrue(closeOrderFilled.Success, closeOrderFilled.Success.ToString() + ": " + closeOrderFilled.Details);
+         Assert.IsTrue(closeUnitsCorrect.Success, closeUnitsCorrect.Success.ToString() + ": " + closeUnitsCorrect.Details);
+      }
       #endregion
 
       #region Transaction
@@ -347,6 +398,36 @@ namespace OANDAv20Tests
          Assert.IsTrue(firstIdIsNextId.Success, firstIdIsNextId.Success.ToString() + ": " + firstIdIsNextId.Details);
          Assert.IsTrue(allIdsGreaterThanLastId.Success, allIdsGreaterThanLastId.Success.ToString() + ": " + allIdsGreaterThanLastId.Details);
          Assert.IsTrue(clientConfigureReceived.Success, clientConfigureReceived.Success.ToString() + ": " + clientConfigureReceived.Details);
+      }
+
+      [TestMethod]
+      public void test_Transaction_get_transaction_detail()
+      {
+         var transactionReceived = _results.Items.FirstOrDefault(x => x.Key == "15.0").Value as Restv20TestResult;
+         var transactionHasId = _results.Items.FirstOrDefault(x => x.Key == "15.1").Value as Restv20TestResult;
+         var transactionHasType = _results.Items.FirstOrDefault(x => x.Key == "15.2").Value as Restv20TestResult;
+         var transactionHasTime = _results.Items.FirstOrDefault(x => x.Key == "15.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(transactionReceived.Success, transactionReceived.Success.ToString() + ": " + transactionReceived.Details);
+         Assert.IsTrue(transactionHasId.Success, transactionHasId.Success.ToString() + ": " + transactionHasId.Details);
+         Assert.IsTrue(transactionHasType.Success, transactionHasType.Success.ToString() + ": " + transactionHasType.Details);
+         Assert.IsTrue(transactionHasTime.Success, transactionHasTime.Success.ToString() + ": " + transactionHasTime.Details);
+      }
+
+      [TestMethod]
+      public void test_Transaction_get_transactions_by_id_range()
+      {
+         var transactionsReceived = _results.Items.FirstOrDefault(x => x.Key == "16.0").Value as Restv20TestResult;
+         var firstIdIsCorrect = _results.Items.FirstOrDefault(x => x.Key == "16.1").Value as Restv20TestResult;
+         var allIdsGreaterThanFirst = _results.Items.FirstOrDefault(x => x.Key == "16.2").Value as Restv20TestResult;
+         var clientConfiguredReturned = _results.Items.FirstOrDefault(x => x.Key == "16.3").Value as Restv20TestResult;
+         var marketOrdersReturned = _results.Items.FirstOrDefault(x => x.Key == "16.4").Value as Restv20TestResult;
+
+         Assert.IsTrue(transactionsReceived.Success, transactionsReceived.Success.ToString() + ": " + transactionsReceived.Details);
+         Assert.IsTrue(firstIdIsCorrect.Success, firstIdIsCorrect.Success.ToString() + ": " + firstIdIsCorrect.Details);
+         Assert.IsTrue(allIdsGreaterThanFirst.Success, allIdsGreaterThanFirst.Success.ToString() + ": " + allIdsGreaterThanFirst.Details);
+         Assert.IsTrue(clientConfiguredReturned.Success, clientConfiguredReturned.Success.ToString() + ": " + clientConfiguredReturned.Details);
+         Assert.IsTrue(marketOrdersReturned.Success, marketOrdersReturned.Success.ToString() + ": " + marketOrdersReturned.Details);
       }
       #endregion
 

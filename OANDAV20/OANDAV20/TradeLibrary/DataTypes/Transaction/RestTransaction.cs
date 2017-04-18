@@ -91,9 +91,9 @@ namespace OANDAV20
       {
          string requestString = Server(EServer.Account) + "accounts/" + accountId + "/transactions/" + transactionId;
 
-         var transaction = await MakeRequestAsync<ITransaction>(requestString);
+         var response = await MakeRequestAsync<TransactionResponse>(requestString);
 
-         return transaction;
+         return response.transaction;
       }
    }
 }

@@ -97,6 +97,7 @@
     <Compile Include="TradeLibrary\DataTypes\Communications\TradeResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\TradesResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\TransactionPagesResponse.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Communications\TransactionResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Communications\TransactionsResponse.cs" />
     <Compile Include="TradeLibrary\DataTypes\Instrument\Candlestick.cs" />
     <Compile Include="TradeLibrary\DataTypes\Instrument\CandleStickData.cs" />
