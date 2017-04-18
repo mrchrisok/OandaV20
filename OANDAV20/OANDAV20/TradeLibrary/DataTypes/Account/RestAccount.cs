@@ -1,5 +1,4 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Account;
+﻿using OANDAV20.TradeLibrary.DataTypes.Account;
 using OANDAV20.TradeLibrary.DataTypes.Communications;
 using OANDAV20.TradeLibrary.DataTypes.Instrument;
 using System;
@@ -91,6 +90,23 @@ namespace OANDAV20
          }
 
          var response = await MakeRequestWithJSONBody<AccountConfigurationResponse, Dictionary<string, string>>("PATCH", bodyParams, requestString);
+
+         return response;
+      }
+
+      /// <summary>
+      /// Retrieves the current state of an account and changes since the give transaction ID
+      /// </summary>
+      /// <param name="accountId">summary will be retrieved for this account id</param>
+      /// <param name="transactionId">the id of the first transaction to return changes from</param>
+      /// <returns>list of tradeable instruments the account details</returns>
+      public static async Task<AccountChangesResponse> GetAccountChangesAsync(string accountId, long transactionId)
+      {
+         string requestString = Server(EServer.Account) + "accounts/" + accountId + "/changes";
+
+         requestString += "?sinceTransactionID=" + transactionId;
+
+         var response = await MakeRequestAsync<AccountChangesResponse>(requestString);
 
          return response;
       }

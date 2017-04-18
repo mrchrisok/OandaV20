@@ -123,6 +123,24 @@ namespace OANDAv20Tests
          Assert.IsTrue(aliasReverted.Success, aliasReverted.Success.ToString() + ": " + aliasReverted.Details);
          Assert.IsTrue(marginRateReverted.Success, marginRateReverted.Success.ToString() + ": " + marginRateReverted.Details);
       }
+
+      [TestMethod]
+      public void test_Account_retrieve_account_changes()
+      {
+         var changesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "17.0").Value as Restv20TestResult;
+         var ordersFilledReceived = _results.Items.FirstOrDefault(x => x.Key == "17.1").Value as Restv20TestResult;
+         var ordersCancelledReceived = _results.Items.FirstOrDefault(x => x.Key == "17.2").Value as Restv20TestResult;
+         var tradesClosedReceived = _results.Items.FirstOrDefault(x => x.Key == "17.3").Value as Restv20TestResult;
+         var positionsReceived = _results.Items.FirstOrDefault(x => x.Key == "17.4").Value as Restv20TestResult;
+         var accountHasMargin = _results.Items.FirstOrDefault(x => x.Key == "17.5").Value as Restv20TestResult;
+
+         Assert.IsTrue(changesRetrieved.Success, changesRetrieved.Success.ToString() + ": " + changesRetrieved.Details);
+         Assert.IsTrue(ordersFilledReceived.Success, ordersFilledReceived.Success.ToString() + ": " + ordersFilledReceived.Details);
+         Assert.IsTrue(ordersCancelledReceived.Success, ordersCancelledReceived.Success.ToString() + ": " + ordersCancelledReceived.Details);
+         Assert.IsTrue(tradesClosedReceived.Success, tradesClosedReceived.Success.ToString() + ": " + tradesClosedReceived.Details);
+         Assert.IsTrue(positionsReceived.Success, positionsReceived.Success.ToString() + ": " + positionsReceived.Details);
+         Assert.IsTrue(accountHasMargin.Success, accountHasMargin.Success.ToString() + ": " + accountHasMargin.Details);
+      }
       #endregion
 
       #region Instrument

@@ -78,8 +78,8 @@ namespace OANDAv20Tests
 
                await Instrument_GetInstrumentCandles();
 
-               //if (!await IsMarketHalted())
-               //{
+               if (!await IsMarketHalted())
+               {
                //   // start & stop the pricing stream
                //   if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
                //   {
@@ -98,13 +98,14 @@ namespace OANDAv20Tests
                await Trade_RunTradeOperations();
                await Position_RunPositionOperations();
 
-               // review the stream traffic
+               // stop transactions stream 
+
+               // review the test traffic
                await Transaction_GetTransactionsByDateRange();
                await Transaction_GetTransactionsByIdRange();
-               //   await Account_GetAccountChanges();
-
-               //   // stop transactions stream 
-               //}
+               await Account_GetAccountChanges();
+  
+               }
             }
          }
          catch (MarketHaltedException ex)
@@ -248,6 +249,21 @@ namespace OANDAv20Tests
 
          _results.Verify("05.3", newConfig2.alias == alias, string.Format("Account alias {0} reverted successfully.", newConfig2.alias));
          _results.Verify("05.4", newConfig2.marginRate == marginRate, string.Format("Account marginRate {0} reverted succesfully.", newConfig2.marginRate));
+      }
+
+      private static async Task Account_GetAccountChanges()
+      {
+         //17
+         AccountChangesResponse result = await Rest20.GetAccountChangesAsync(_accountId, _firstTransactionID);
+
+         var changes = result.changes;
+
+         _results.Verify("17.0", result != null, "Account changes received.");
+         _results.Verify("17.1", changes.ordersFilled.Count > 0, "Account has filled orders.");
+         _results.Verify("17.2", changes.ordersCancelled.Count > 0, "Account has cancelled orders.");
+         _results.Verify("17.3", changes.tradesClosed.Count > 0, "Account has closed trades.");
+         _results.Verify("17.4", changes.positions.Count > 0, "Account has position.");
+         _results.Verify("17.5", result.state.marginAvailable > 0, "Account has transactions.");
       }
       #endregion
 
