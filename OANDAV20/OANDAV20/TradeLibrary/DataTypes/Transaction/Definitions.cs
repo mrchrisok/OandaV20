@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using OANDAV20.Framework;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Reflection;
+using OANDAV20.Framework.JsonConverters;
+using Newtonsoft.Json;
+using OANDAV20.TradeLibrary.DataTypes.Instrument;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Transaction
 {
@@ -97,20 +104,46 @@ namespace OANDAV20.TradeLibrary.DataTypes.Transaction
       public List<OpenTradeFinancing> openTradeFinancings { get; set; }
    }
 
-   public class StopLossDetails
+   [JsonConverter(typeof(PriceObjectConverter))]
+   public class StopLossDetails : IHasPrices
    {
-      public long price { get; set; }
+      public StopLossDetails() { }
+      public StopLossDetails(Instrument.Instrument instrument)
+      {
+         priceInformation = new PriceInformation()
+         {
+            instrument = instrument,
+            priceProperties = new List<string>() { "price" }
+         };
+      }
+
+      public double price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
-      public ClientExtensions clientExtensiosn { get; set; }
+      public ClientExtensions clientExtensions { get; set; }
+      [JsonIgnore]
+      public PriceInformation priceInformation { get; set; }
    }
 
-   public class TakeProfitDetails
+   [JsonConverter(typeof(PriceObjectConverter))]
+   public class TakeProfitDetails : IHasPrices
    {
-      public long price { get; set; }
+      public TakeProfitDetails() { }
+      public TakeProfitDetails(Instrument.Instrument instrument)
+      {
+         priceInformation = new PriceInformation()
+         {
+            instrument = instrument,
+            priceProperties = new List<string>() { "price" }
+         };
+      }
+
+      public double price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
-      public ClientExtensions clientExtensiosn { get; set; }
+      public ClientExtensions clientExtensions { get; set; }
+      [JsonIgnore]
+      public PriceInformation priceInformation { get; set; }
    }
 
    public class TradeOpen
@@ -128,11 +161,25 @@ namespace OANDAV20.TradeLibrary.DataTypes.Transaction
       public double financing { get; set; }
    }
 
-   public class TrailingStopLossDetails
+   [JsonConverter(typeof(PriceObjectConverter))]
+   public class TrailingStopLossDetails : IHasPrices
    {
+      public TrailingStopLossDetails() { }
+      public TrailingStopLossDetails(Instrument.Instrument instrument)
+      {
+         priceInformation = new PriceInformation()
+         {
+            instrument = instrument,
+            priceProperties = new List<string>() { "distance" }
+         };
+      }
+
+      public double distance { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
-      public ClientExtensions clientExtensiosn { get; set; }
+      public ClientExtensions clientExtensions { get; set; }
+      [JsonIgnore]
+      public PriceInformation priceInformation { get; set; }
    }
 
    public class TransactionRejectReason
@@ -204,7 +251,7 @@ namespace OANDAV20.TradeLibrary.DataTypes.Transaction
       public const string TakeProfitOnFillClientOrderTagInvalid = "TAKE_PROFIT_ON_FILL_CLIENT_ORDER_TAG_INVALID";
       public const string TakeProfitOnFillClientOrderCommentInvalid = "TAKE_PROFIT_ON_FILL_CLIENT_ORDER_COMMENT_INVALID";
       public const string TakeProfitOnFillTriggerConditionMissing = "TAKE_PROFIT_ON_FILL_TRIGGER_CONDITION_MISSING";
-      public const string TakeProfitOnFillTriggerConditionInvalid = "TAKE_PROFIT_ON_FILL_TRIGGER_CONDITION_INVALID";               
+      public const string TakeProfitOnFillTriggerConditionInvalid = "TAKE_PROFIT_ON_FILL_TRIGGER_CONDITION_INVALID";
       public const string StopLossOrderAlreadyExists = "STOP_LOSS_ORDER_ALREADY_EXISTS";
       public const string StopLossOnFillPriceMissing = "STOP_LOSS_ON_FILL_PRICE_MISSING";
       public const string StopLossOnFillPriceInvalid = "STOP_LOSS_ON_FILL_PRICE_INVALID";
@@ -245,10 +292,10 @@ namespace OANDAV20.TradeLibrary.DataTypes.Transaction
       public const string MarkupGroupIdInvalid = "MARKUP_GROUP_ID_INVALID";
       public const string PositionAggregationModeInvalid = "POSITION_AGGREGATION_MODE_INVALID";
       public const string AdminConfigureDataMissing = "ADMIN_CONFIGURE_DATA_MISSING";
-      public const string MarginRateInvalid  = "MARGIN_RATE_INVALID";
+      public const string MarginRateInvalid = "MARGIN_RATE_INVALID";
       public const string MarginRateWouldTriggerCloseout = "MARGIN_RATE_WOULD_TRIGGER_CLOSEOUT";
       public const string AliasInvalid = "ALIAS_INVALID";
-      public const string ClientConfigureDataMissing  = "CLIENT_CONFIGURE_DATA_MISSING";
+      public const string ClientConfigureDataMissing = "CLIENT_CONFIGURE_DATA_MISSING";
       public const string MarginRateWouldTriggerMarginCall = "MARGIN_RATE_WOULD_TRIGGER_MARGIN_CALL";
       public const string AmountInvalid = "AMOUNT_INVALID";
       public const string InsufficientFunds = "INSUFFICIENT_FUNDS";

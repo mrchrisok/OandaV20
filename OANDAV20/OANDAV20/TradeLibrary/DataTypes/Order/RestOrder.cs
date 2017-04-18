@@ -137,7 +137,7 @@ namespace OANDAV20
       /// <param name="orderId">the order to update extensions for</param>
       /// <param name="extensions">the updated extensions for the order</param>
       /// <returns>PostOrderResponse with details of the results (throws if if fails)</returns>
-      public static async Task<OrderClientExtensionsModifyResponse> ModifyClientExtensionsAsync(string account, long orderId, ClientExtensions orderExtensions, ClientExtensions tradeExtensions = null)
+      public static async Task<OrderClientExtensionsModifyResponse> ModifyOrderClientExtensionsAsync(string account, long orderId, ClientExtensions orderExtensions, ClientExtensions tradeExtensions = null)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders/" + orderId + "/clientExtensions";
 

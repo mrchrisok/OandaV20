@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests

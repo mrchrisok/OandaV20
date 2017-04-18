@@ -1,24 +1,26 @@
 ﻿using Newtonsoft.Json;
-using OANDAV20.TradeLibrary.DataTypes.Communications;
+using Newtonsoft.Json.Linq;
+using OANDAV20.Framework;
 using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Collections;
 
 namespace OANDAV20
 {
    public partial class Rest20
    {
-      // Convenience helpers
+      private static DateTime _lastRequestTime = DateTime.UtcNow;
       private static string Server(EServer server) { return Credentials.GetDefaultCredentials().GetServer(server); }
       private static string AccessToken { get { return Credentials.GetDefaultCredentials().AccessToken; } }
 
@@ -84,7 +86,7 @@ namespace OANDAV20
       /// <typeparam name="T">The response type</typeparam>
       /// <param name="requestString">the request to make</param>
       /// <param name="method">method for the request (defaults to GET)</param>
-      /// <param name="requestParams">optional parameters (note that if provided, it's assumed the requestString doesn't contain any)</param>
+      /// <param name="requestParams">optional parameters (if provided, it's assumed the requestString doesn't contain any)</param>
       /// <returns>response via type T</returns>
       private static async Task<T> MakeRequestAsync<T>(string requestString, string method = "GET", Dictionary<string, string> requestParams = null)
       {
@@ -99,38 +101,7 @@ namespace OANDAV20
          request.Method = method;
          request.ContentType = "application/json";
 
-         try
-         {
-            using (WebResponse response = await request.GetResponseAsync())
-            {
-               var stream = GetResponseStream(response);
-               var reader = new StreamReader(stream);
-               var json = reader.ReadToEnd();
-               var result = JsonConvert.DeserializeObject<T>(json);
-               return result;
-            }
-         }
-         catch (WebException ex)
-         {
-            var stream = GetResponseStream(ex.Response);
-            var reader = new StreamReader(stream);
-            var result = reader.ReadToEnd();
-            throw new Exception(result);
-         }
-      }
-
-      private static Stream GetResponseStream(WebResponse response)
-      {
-         var stream = response.GetResponseStream();
-         if (response.Headers["Content-Encoding"] == "gzip")
-         {  // if we received a gzipped response, handle that
-            stream = new GZipStream(stream, CompressionMode.Decompress);
-         }
-         else if (response.Headers["Content-Encoding"] == "deflate")
-         {  // if we received a deflated response, handle that
-            stream = new DeflateStream(stream, CompressionMode.Decompress);
-         }
-         return stream;
+         return await GetWebResponse<T>(request);
       }
 
       /// <summary>
@@ -156,25 +127,7 @@ namespace OANDAV20
             await writer.WriteAsync(requestBody);
          }
 
-         // Handle the response
-         try
-         {
-            using (WebResponse response = await request.GetResponseAsync())
-            {
-               var stream = GetResponseStream(response);
-               var reader = new StreamReader(stream);
-               var json = reader.ReadToEnd();
-               var result = JsonConvert.DeserializeObject<T>(json);
-               return result;
-            }
-         }
-         catch (WebException ex)
-         {
-            var response = (HttpWebResponse)ex.Response;
-            var stream = new StreamReader(response.GetResponseStream());
-            var result = stream.ReadToEnd();
-            throw new Exception(result);
-         }
+         return await GetWebResponse<T>(request);
       }
 
       /// <summary>
@@ -190,6 +143,58 @@ namespace OANDAV20
          var requestBody = CreateJSONBody(requestParams);
 
          return await MakeRequestWithJSONBody<T>(method, requestBody, requestString);
+      }
+
+      /// <summary>
+      /// Sends an Http request to a remote server and returns the de-serialized response
+      /// </summary>
+      /// <typeparam name="T">>Type of returned by the remote server</typeparam>
+      /// <param name="request">Request sent to the remote server</param>
+      /// <returns>The object of type T returned by the remote server</returns>
+      private static async Task<T> GetWebResponse<T>(HttpWebRequest request)
+      {
+         while (DateTime.UtcNow < _lastRequestTime.AddMilliseconds(501))
+         {
+            // speed bump
+            // http://developer.oanda.com/rest-live-v20/best-practices/
+         }
+
+         try
+         {
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+               var stream = GetResponseStream(response);
+               var reader = new StreamReader(stream);
+               var json = reader.ReadToEnd();
+               var result = JsonConvert.DeserializeObject<T>(json);
+               return result;
+            }
+         }
+         catch (WebException ex)
+         {
+            var stream = GetResponseStream(ex.Response);
+            var reader = new StreamReader(stream);
+            var result = reader.ReadToEnd();
+            throw new Exception(result);
+         }
+         finally
+         {
+            _lastRequestTime = DateTime.UtcNow;
+         }
+      }
+
+      private static Stream GetResponseStream(WebResponse response)
+      {
+         var stream = response.GetResponseStream();
+         if (response.Headers["Content-Encoding"] == "gzip")
+         {  // if we received a gzipped response, handle that
+            stream = new GZipStream(stream, CompressionMode.Decompress);
+         }
+         else if (response.Headers["Content-Encoding"] == "deflate")
+         {  // if we received a deflated response, handle that
+            stream = new DeflateStream(stream, CompressionMode.Decompress);
+         }
+         return stream;
       }
 
       /// <summary>
@@ -236,14 +241,16 @@ namespace OANDAV20
       /// </summary>
       /// <param name="input">the object to serialize</param>
       /// <returns>A JSON string representing the input object</returns>
-      private static string ConvertToJSON(object input)
+      private static string ConvertToJSON(object input, bool ignoreNulls = true)
       {
+         var nullHandling = ignoreNulls ? NullValueHandling.Ignore : NullValueHandling.Include;
+
          // oco: look into the DateFormatting
          // might be able to use DateTime instead of string in objects
          var settings = new JsonSerializerSettings()
          {
             TypeNameHandling = TypeNameHandling.None,
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = nullHandling
          };
 
          string result = JsonConvert.SerializeObject(input, settings);

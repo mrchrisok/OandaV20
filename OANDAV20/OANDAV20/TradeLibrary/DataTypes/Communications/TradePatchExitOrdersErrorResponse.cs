@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
-   class TradeReplaceExitOrdersErrorResponse : Response
+   class TradePatchExitOrdersErrorResponse : Response
    {
       public OrderCancelRejectTransaction takeProfitOrderCancelRejectTransaction;
       public TakeProfitOrderRejectTransaction takeProfitOrderRejectTransaction;

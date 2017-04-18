@@ -1,8 +1,10 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
 using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using OANDAV20.TradeLibrary.DataTypes.Trade;
+using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OANDAV20
 {
@@ -74,16 +76,58 @@ namespace OANDAV20
       }
 
       /// <summary>
-      /// Modify the specified trade, updating it with the parameters provided
+      /// Modify the Client Extensions for the order in the given account.
+      /// </summary>
+      /// <param name="account">the account to post on</param>
+      /// <param name="orderId">the order to update extensions for</param>
+      /// <param name="extensions">the updated extensions for the order</param>
+      /// <returns>PostOrderResponse with details of the results (throws if if fails)</returns>
+      public static async Task<TradeClientExtensionsModifyResponse> ModifyTradeClientExtensionsAsync(string accountId, long tradeId, ClientExtensions tradeExtensions)
+      {
+         string requestString = Server(EServer.Account) + "accounts/" + accountId + "/trades/" + tradeId + "/clientExtensions";
+
+         Dictionary<string, ClientExtensions> extensions = new Dictionary<string, ClientExtensions>();
+         extensions.Add("clientExtensions", tradeExtensions);
+
+         var response = await MakeRequestWithJSONBody<TradeClientExtensionsModifyResponse, Dictionary<string, ClientExtensions>>("PUT", extensions, requestString);
+
+         return response;
+      }
+
+      /// <summary>
+      /// Create or replace a trade's exit orders (takeProfit, stopLoss and trailingStopLoss)
       /// </summary>
       /// <param name="accountId">the account that owns the trade</param>
       /// <param name="tradeId">the id of the trade to update</param>
       /// <param name="requestParams">the parameters to update (name, value pairs)</param>
-      /// <returns>TradeData for the trade post update</returns>
-      public static async Task<TradeReplaceExitOrdersResponse> ReplaceExitOrders(string accountId, long tradeId, ReplaceExitOrdersRequest request)
+      /// <returns>Transactions associated with the patched orders</returns>
+      public static async Task<TradePatchExitOrdersResponse> PatchTradeExitOrders(string accountId, long tradeId, PatchExitOrdersRequest request)
       {
          string requestString = Server(EServer.Account) + "accounts/" + accountId + "/trades/" + tradeId + "/orders";
-         return await MakeRequestWithJSONBody<TradeReplaceExitOrdersResponse, ReplaceExitOrdersRequest>("PUT", request, requestString);
+
+         var requestBody = ConvertToJSON(request);
+
+         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse>("PUT", requestBody, requestString);
+      }
+
+      /// <summary>
+      /// Create a trade's exit orders (takeProfit, stopLoss and trailingStopLoss)
+      /// </summary>
+      /// <param name="accountId">the account that owns the trade</param>
+      /// <param name="tradeId">the id of the trade to update</param>
+      /// <param name="parameters">the orders to cancel (dictionary of key-value pairs)</param>
+      /// <returns>Transactions associated with the cancelled orders</returns>
+      public static async Task<TradePatchExitOrdersResponse> CancelTradeExitOrders(string accountId, long tradeId, Dictionary<string, object> parameters)
+      {
+         string requestString = Server(EServer.Account) + "accounts/" + accountId + "/trades/" + tradeId + "/orders";
+
+         // only null parameters allowed
+         foreach (var item in parameters)
+            if (item.Value != null) parameters.Remove(item.Key);
+
+         var requestBody = ConvertToJSON(parameters, false);
+
+         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse>("PUT", requestBody, requestString);
       }
    }
 }

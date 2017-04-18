@@ -16,6 +16,7 @@ using System.Xml;
 using System.Linq;
 using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using OANDAV20.TradeLibrary.DataTypes.Order;
+using OANDAV20.TradeLibrary.DataTypes.Position;
 
 namespace OANDAv20Tests
 {
@@ -31,6 +32,7 @@ namespace OANDAv20Tests
       static string _testAccount;
       static short _tokenAccounts;
       static string _currency = "USD";
+      static string _testInstrument = InstrumentName.Currency.EURUSD;
       static List<Transaction> _transactions;
       static List<Instrument> _instruments;
       static long _lastTransactionID;
@@ -97,8 +99,8 @@ namespace OANDAv20Tests
 
                //   // create stream traffic
                await Order_RunOrderOperations();
-               //   await RunTradeOperations();
-               //   await RunPositionOperations();
+               await Trade_RunTradeOperations();
+               //   await Position_RunPositionOperations();
 
 
                //   // review the stream traffic
@@ -113,16 +115,16 @@ namespace OANDAv20Tests
          {
             throw ex;
          }
-          catch (Exception ex)
+         catch (Exception ex)
          {
-            throw new Exception("An unhandled error occured during execution of REST V20 operations.", ex);
+             throw new Exception("An unhandled error occured during execution of REST V20 operations.", ex);
          }
          finally
          {
             _apiOperationsComplete = true;
          }
       }
-
+       
       #region Account
       /// <summary>
       /// Retrieve the list of accounts associated with the account token
@@ -153,6 +155,7 @@ namespace OANDAv20Tests
          }
 
          _testAccount = result[0].id;
+         _testAccount = "001-001-432582-001";
          Credentials.SetCredentials(_testEnvironment, _testToken, _testAccount);
       }
 
@@ -267,26 +270,32 @@ namespace OANDAv20Tests
          List<CandlestickPlus> result = await Rest20.GetCandlesAsync(instrument, parameters);
          CandlestickPlus candle = result.FirstOrDefault();
 
-         _results.Verify("19.0", result != null, "Candles list received.");
-         _results.Verify("19.1", result.Count() == count, "Candles count is correct.");
-         _results.Verify("19.2", candle.instrument == instrument, "Candles instrument is correct.");
-         _results.Verify("19.3", candle.granularity == granularity, "Candles granularity is correct.");
-         _results.Verify("19.4", candle.mid != null && candle.mid.o > 0, "Candle has mid prices");
-         _results.Verify("19.5", candle.bid != null && candle.bid.o > 0, "Candle has bid prices");
-         _results.Verify("19.6", candle.ask != null && candle.ask.o > 0, "Candle has ask prices");
+         _results.Verify("12.0", result != null, "Candles list received.");
+         _results.Verify("12.1", result.Count() == count, "Candles count is correct.");
+         _results.Verify("12.2", candle.instrument == instrument, "Candles instrument is correct.");
+         _results.Verify("12.3", candle.granularity == granularity, "Candles granularity is correct.");
+         _results.Verify("12.4", candle.mid != null && candle.mid.o > 0, "Candle has mid prices");
+         _results.Verify("12.5", candle.bid != null && candle.bid.o > 0, "Candle has bid prices");
+         _results.Verify("12.6", candle.ask != null && candle.ask.o > 0, "Candle has ask prices");
       }
       #endregion
 
       #region Order
+      /// <summary>
+      /// Runs operations available at OANDA's Order endpoint
+      /// </summary>
+      /// <returns></returns>
       private static async Task Order_RunOrderOperations()
       {
-         string instrument = InstrumentName.Currency.EURUSD;
+         if (await IsMarketHalted())
+            throw new MarketHaltedException("OANDA Fx market is halted!");
+
          string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));
 
          // create new pending order
          var request = new MarketIfTouchedOrderRequest()
          {
-            instrument = instrument,
+            instrument = _testInstrument,
             units = 1, // buy
             timeInForce = TimeInForce.GoodUntilDate,
             gtdTime = expiry,
@@ -310,7 +319,7 @@ namespace OANDAv20Tests
          var openOrders = await Rest20.GetPendingOrderListAsync(_accountId);
          openOrders.ForEach(async x => await Rest20.CancelOrderAsync(_accountId, x.id));
 
-         // create order 
+         // create order
          var response = await Rest20.PostOrderAsync(_accountId, request);
          var orderTransaction = response.orderCreateTransaction;
 
@@ -339,7 +348,7 @@ namespace OANDAv20Tests
          newOrderExtensions.comment = "updated order comment";
          var newTradeExtensions = request.tradeClientExtensions;
          newTradeExtensions.comment = "updated trade comment";
-         var extensionsModifyResponse = await Rest20.ModifyClientExtensionsAsync(_accountId, order.id, newOrderExtensions, newTradeExtensions);
+         var extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(_accountId, order.id, newOrderExtensions, newTradeExtensions);
 
          _results.Verify("11.10", extensionsModifyResponse != null, "Order extensions update received successfully.");
          _results.Verify("11.11", extensionsModifyResponse.orderClientExtensionsModifyTransaction.orderID == order.id, "Correct order extensions updated.");
@@ -362,9 +371,223 @@ namespace OANDAv20Tests
          // Cancel an order
          var cancelOrderResponse = await Rest20.CancelOrderAsync(_accountId, newOrder.id);
          _results.Verify("11.17", cancelOrderResponse != null, "Cancelled order retrieved successfully.");
-
          var cancelTransaction2 = cancelOrderResponse.orderCancelTransaction;
          _results.Verify("11.18", cancelTransaction2.orderID == newOrder.id, "Order cancelled successfully.");
+      }
+
+      /// <summary>
+      /// Places a market order.
+      /// </summary>
+      /// <param name="key">The key root used to store the order success and order fill results.</param>
+      /// <returns></returns>
+      private static async Task PlaceMarketOrder(string key, double units = 0, bool closeAllTrades = true)
+      {
+         // I'm fine with a throw here
+         // To each his/her own on doing something different.
+         if (await IsMarketHalted())
+            throw new MarketHaltedException("OANDA Fx market is halted!");
+
+         if (closeAllTrades)
+         {
+            var closeList = await Rest20.GetOpenTradeListAsync(_accountId);
+            closeList.ForEach(async x => await Rest20.CloseTradeAsync(_accountId, x.id));
+         }
+
+         // this should have a value by now
+         var instrument = _instruments.FirstOrDefault(x => x.name == _testInstrument);
+         if (units == 0) units = instrument.minimumTradeSize;
+
+         var request = new MarketOrderRequest()
+         {
+            instrument = _testInstrument,
+            units = units, // buy
+            clientExtensions = new ClientExtensions()
+            {
+               id = "test_market_order_1",
+               comment = "test market order comment",
+               tag = "test_market_order"
+            },
+            tradeClientExtensions = new ClientExtensions()
+            {
+               id = "test_market_trade_1",
+               comment = "test market trade comment",
+               tag = "test_market_trade"
+            }
+         };
+
+         var response = await Rest20.PostOrderAsync(_accountId, request);
+         var createTransaction = response.orderCreateTransaction;
+         var fillTransaction = response.orderFillTransaction;
+
+         _results.Verify(key + ".0", createTransaction != null && createTransaction.id > 0, "Market order successfully placed.");
+         _results.Verify(key + ".1", fillTransaction != null && fillTransaction.id > 0, "Market order successfully filled.");
+      }
+      #endregion
+
+      #region Trade
+      /// <summary>
+      /// Runs operations available at OANDA's Trade endpoint
+      /// </summary>
+      /// <returns></returns>
+      private static async Task Trade_RunTradeOperations()
+      {
+         await PlaceMarketOrder("13");
+
+         // get list of trades
+         var trades = await Rest20.GetTradeListAsync(_accountId);
+         _results.Verify("13.2", trades.Count > 0 && trades[0].id > 0, "Trades list retrieved.");
+
+         // get list of open trades
+         var openTrades = await Rest20.GetOpenTradeListAsync(_accountId);
+         _results.Verify("13.3", openTrades.Count > 0 && openTrades[0].id > 0, "Open trades list retrieved.");
+
+         if (openTrades.Count == 0)
+            throw new InvalidOperationException("Trade test operations cannot continue without an open trade.");
+
+         // get details for a trade
+         var trade = await Rest20.GetTradeDetailsAsync(_accountId, openTrades[0].id);
+         _results.Verify("13.4", trade.id > 0 && trade.price > 0 && trade.initialUnits != 0, "Trade details retrieved");
+
+         // Udpate extensions
+         var updatedExtensions = trade.clientExtensions;
+         updatedExtensions.comment = "updated test market trade comment";
+         var extensionsModifyResponse = await Rest20.ModifyTradeClientExtensionsAsync(_accountId, trade.id, updatedExtensions);
+
+         _results.Verify("13.5", extensionsModifyResponse != null, "Order extensions update received successfully.");
+         _results.Verify("13.6", extensionsModifyResponse.tradeClientExtensionsModifyTransaction.tradeID == trade.id, "Correct trade extensions updated.");
+         _results.Verify("13.7", extensionsModifyResponse.tradeClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated test market trade comment", "Trade extensions comment updated successfully.");
+
+         // need this for rounding, etc.
+         var instrument = _instruments.FirstOrDefault(x => x.name == trade.instrument);
+
+         // Add a takeProfit to an open trade
+         double takeProfitPrice = Math.Round(1.10 * trade.price, instrument.displayPrecision);
+         var takeProfit = new TakeProfitDetails(instrument)
+         {
+            price = takeProfitPrice,
+            timeInForce = TimeInForce.GoodUntilCancelled,
+            clientExtensions = new ClientExtensions()
+            {
+               id = "take_profit_1",
+               comment = "take profit comment",
+               tag = "take_profit"
+            }
+         };
+         var patch1 = new PatchExitOrdersRequest() { takeProfit = takeProfit };
+         var takeProfitPatch = (await Rest20.PatchTradeExitOrders(_accountId, trade.id, patch1)).takeProfitOrderTransaction;
+         _results.Verify("13.8", takeProfitPatch != null && takeProfitPatch.id > 0, "Take profit patch received.");
+         _results.Verify("13.9", takeProfitPatch.price == takeProfitPrice, "Trade patched with take profit.");
+
+         // Add a stopLoss to an open trade
+         double stopLossPrice = Math.Round(trade.price - (0.10 * trade.price), instrument.displayPrecision);
+         var stopLoss = new StopLossDetails(instrument)
+         {
+            price = stopLossPrice,
+            timeInForce = TimeInForce.GoodUntilCancelled,
+            clientExtensions = new ClientExtensions()
+            {
+               id = "stop_loss_1",
+               comment = "stop loss comment",
+               tag = "stop_loss"
+            }
+         };
+         var patch2 = new PatchExitOrdersRequest() { stopLoss = stopLoss };
+         var stopLossPatch = (await Rest20.PatchTradeExitOrders(_accountId, trade.id, patch2)).stopLossOrderTransaction;
+         _results.Verify("13.10", takeProfitPatch != null && takeProfitPatch.id > 0, "Stop loss patch received.");
+         _results.Verify("13.11", stopLossPatch.price == stopLossPrice, "Trade patched with stop loss.");
+
+         // Add a trailingStopLoss to an open trade
+         double distance = Math.Round(2 * (trade.price - stopLoss.price), instrument.displayPrecision);
+         var trailingStopLoss = new TrailingStopLossDetails(instrument)
+         {
+            distance = distance,
+            timeInForce = TimeInForce.GoodUntilCancelled,
+            clientExtensions = new ClientExtensions()
+            {
+               id = "trailing_stop_loss_1",
+               comment = "trailing stop loss comment",
+               tag = "trailing_stop_loss"
+            }
+         };
+         var patch3 = new PatchExitOrdersRequest() { trailingStopLoss = trailingStopLoss };
+         var trailingStopLossPatch = (await Rest20.PatchTradeExitOrders(_accountId, trade.id, patch3)).trailingStopLossOrderTransaction;
+         _results.Verify("13.12", trailingStopLossPatch != null && trailingStopLossPatch.id > 0, "Trailing stop loss patch received.");
+         _results.Verify("13.13", trailingStopLossPatch.distance == distance, "Trade patched with trailing stop loss.");
+
+         // remove dependent orders
+         var parameters = new Dictionary<string, object>();
+         parameters.Add("takeProfit", null);
+         parameters.Add("stopLoss", null);
+         parameters.Add("trailingStopLoss", null);
+         var result = await Rest20.CancelTradeExitOrders(_accountId, trade.id, parameters);
+         _results.Verify("13.14", result.takeProfitOrderCancelTransaction != null, "Take profit cancelled.");
+         _results.Verify("13.15", result.stopLossOrderCancelTransaction != null, "Stop loss cancelled.");
+         _results.Verify("13.16", result.trailingStopLossOrderCancelTransaction != null, "Trailing stop loss cancelled.");
+
+         if (await IsMarketHalted())
+            throw new MarketHaltedException("OANDA Fx market is halted!");
+
+         // close an open trade
+         var closedDetails = (await Rest20.CloseTradeAsync(_accountId, trade.id)).orderFillTransaction;
+         _results.Verify("13.17", closedDetails.id > 0, "Trade closed");
+         _results.Verify("13.18", !string.IsNullOrEmpty(closedDetails.time), "Trade close details has time.");
+         _results.Verify("13.19", !string.IsNullOrEmpty(closedDetails.instrument), "Trade close details instrument correct.");
+         _results.Verify("13.20", closedDetails.units == -1 * trade.initialUnits, "Trade close details units correct.");
+         _results.Verify("13.21", closedDetails.price > 0, "Trade close details has price.");
+      }
+      #endregion
+
+      #region Position
+      /// <summary>
+      /// Runs operations available at OANDA's POsition endpoint
+      /// </summary>
+      /// <returns></returns>
+      private static async Task Position_RunPositionOperations()
+      {
+         if (await IsMarketHalted())
+            throw new MarketHaltedException("OANDA Fx market is halted!");
+
+         short units = 1;
+
+         // Make sure there's a position to test
+         await PlaceMarketOrder("14", units);
+
+         // get list of positions
+         var positions = await Rest20.GetPositionsAsync(_accountId);
+         _results.Verify("14.2", positions.Count > 0, "All positions retrieved");
+
+         // get list of open positions
+         var openPositions = await Rest20.GetOpenPositionsAsync(_accountId);
+         _results.Verify("14.3", openPositions.Count > 0, "Open positions retrieved");
+
+         short increment = 4;
+         foreach (var position in positions)
+         {
+            increment = VerifyPosition(position, increment);
+         }
+
+         // get position for a given instrument
+         var onePosition = await Rest20.GetPositionAsync(_accountId, _testInstrument);
+         VerifyPosition(onePosition, increment);
+
+         // closeout a position
+         var request = new ClosePositionRequest() { longUnits = "ALL" };
+         var response = await Rest20.ClosePositionAsync(_accountId, _testInstrument, request);
+         _results.Verify("14.4", response.longOrderCreateTransaction != null && response.longOrderCreateTransaction.id > 0, "Position close order created.");
+         _results.Verify("14.5", response.longOrderFillTransaction != null && response.longOrderFillTransaction.id > 0, "Position close fill order created.");
+         _results.Verify("14.6", response.longOrderFillTransaction.units == units, "Position close units correct.");
+
+      }
+      private static short VerifyPosition(Position position, short increment)
+      {
+         string key = "14.";
+
+         _results.Verify(key + increment.ToString(), position.@long != null, "Position has direction");
+         _results.Verify(key + (increment + 1).ToString(), position.@long.units > 0, "Position has units");
+         _results.Verify(key + (increment + 2).ToString(), position.@long.averagePrice > 0, "Position has avgPrice");
+         _results.Verify(key + (increment + 3).ToString(), !string.IsNullOrEmpty(position.instrument), "Position has instrument");
+
+         return increment += 4;
       }
       #endregion
 
@@ -449,6 +672,10 @@ namespace OANDAv20Tests
       #endregion
 
       #region Utilities
+      /// <summary>
+      /// Checks to see if the EUR_USD cross is actively trading.
+      /// </summary>
+      /// <returns>True if EUR_USD is actively trading. Throws an exception if not.</returns>
       private static async Task<bool> IsMarketHalted()
       {
          var eurusd = new List<string>() { "EUR_USD" };
@@ -465,14 +692,19 @@ namespace OANDAv20Tests
 
          bool marketHalted = !(isTradeable && hasBids && hasAsks);
 
-         if (marketHalted)
-            throw new MarketHaltedException("OANDA Fx market is halted!");
-
          return false;
       }
 
+      /// <summary>
+      /// Convert DateTime object to a string of the indicated format
+      /// </summary>
+      /// <param name="time">A DateTime object</param>
+      /// <param name="format">Format type (RFC3339 or UNIX only</param>
+      /// <returns>A date-time string</returns>
       private static string ConvertDateTimeToAcceptDateFormat(DateTime time, AcceptDatetimeFormat format = AcceptDatetimeFormat.RFC3339)
       {
+         // look into doing this within the JsonSerializer so that objects can use DateTime instead of string
+
          if (format == AcceptDatetimeFormat.RFC3339)
             return XmlConvert.ToString(time, "yyyy-MM-ddTHH:mm:ssZ");
          else if (format == AcceptDatetimeFormat.Unix)

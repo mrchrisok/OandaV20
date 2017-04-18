@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
 {
-   public class OrderClientExtensionsModifyResponse : Response
+   public class TradeClientExtensionsModifyResponse : Response
    {
-      public OrderClientExtensionsModifyTransaction orderClientExtensionsModifyTransaction;
+      public TradeClientExtensionsModifyTransaction tradeClientExtensionsModifyTransaction;
       public List<long> relatedTransactionIDs;
       public long lastTransactionID;
    }

@@ -129,8 +129,8 @@ namespace OANDAv20Tests
       [TestMethod]
       public void test_Instrument_retrieve_candlestick_list()
       {
-         var candlesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "19.0").Value as Restv20TestResult;
-         var candlesCountCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.1").Value as Restv20TestResult;
+         var candlesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "12.0").Value as Restv20TestResult;
+         var candlesCountCorrect = _results.Items.FirstOrDefault(x => x.Key == "12.1").Value as Restv20TestResult;
 
          Assert.IsTrue(candlesRetrieved.Success, candlesRetrieved.Success.ToString() + ": " + candlesRetrieved.Details);
          Assert.IsTrue(candlesCountCorrect.Success, candlesCountCorrect.Success.ToString() + ": " + candlesCountCorrect.Details);
@@ -139,11 +139,11 @@ namespace OANDAv20Tests
       [TestMethod]
       public void test_Instrument_retrieve_candlestick_details()
       {
-         var candlesInstrumentCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.2").Value as Restv20TestResult;
-         var candlesGranularityCorrect = _results.Items.FirstOrDefault(x => x.Key == "19.3").Value as Restv20TestResult;
-         var candlesHaveMidPrice = _results.Items.FirstOrDefault(x => x.Key == "19.4").Value as Restv20TestResult;
-         var candlesHaveBidPrice = _results.Items.FirstOrDefault(x => x.Key == "19.5").Value as Restv20TestResult;
-         var candlesHaveAskPrice = _results.Items.FirstOrDefault(x => x.Key == "19.6").Value as Restv20TestResult;
+         var candlesInstrumentCorrect = _results.Items.FirstOrDefault(x => x.Key == "12.2").Value as Restv20TestResult;
+         var candlesGranularityCorrect = _results.Items.FirstOrDefault(x => x.Key == "12.3").Value as Restv20TestResult;
+         var candlesHaveMidPrice = _results.Items.FirstOrDefault(x => x.Key == "12.4").Value as Restv20TestResult;
+         var candlesHaveBidPrice = _results.Items.FirstOrDefault(x => x.Key == "12.5").Value as Restv20TestResult;
+         var candlesHaveAskPrice = _results.Items.FirstOrDefault(x => x.Key == "12.6").Value as Restv20TestResult;
 
          Assert.IsTrue(candlesInstrumentCorrect.Success, candlesInstrumentCorrect.Success.ToString() + ": " + candlesInstrumentCorrect.Details);
          Assert.IsTrue(candlesGranularityCorrect.Success, candlesGranularityCorrect.Success.ToString() + ": " + candlesGranularityCorrect.Details);
@@ -236,6 +236,86 @@ namespace OANDAv20Tests
       #endregion
 
       #region Trade
+      [TestMethod]
+      public void test_Trade_place_market_order()
+      {
+         var marketOrderCreated = _results.Items.FirstOrDefault(x => x.Key == "13.0").Value as Restv20TestResult;
+         var marketOrderFilled = _results.Items.FirstOrDefault(x => x.Key == "13.1").Value as Restv20TestResult;
+
+         Assert.IsTrue(marketOrderCreated.Success, marketOrderCreated.Success.ToString() + ": " + marketOrderCreated.Details);
+         Assert.IsTrue(marketOrderFilled.Success, marketOrderFilled.Success.ToString() + ": " + marketOrderFilled.Details);
+      }
+
+      [TestMethod]
+      public void test_Trade_get_trades_list()
+      {
+         var allTradesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "13.2").Value as Restv20TestResult;
+         var openTradesRetrieved = _results.Items.FirstOrDefault(x => x.Key == "13.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(allTradesRetrieved.Success, allTradesRetrieved.Success.ToString() + ": " + allTradesRetrieved.Details);
+         Assert.IsTrue(openTradesRetrieved.Success, openTradesRetrieved.Success.ToString() + ": " + openTradesRetrieved.Details);
+      }
+
+      [TestMethod]
+      public void test_Trade_get_trade_details()
+      {
+         var detailsRetrieved = _results.Items.FirstOrDefault(x => x.Key == "13.4").Value as Restv20TestResult;
+
+         Assert.IsTrue(detailsRetrieved.Success, detailsRetrieved.Success.ToString() + ": " + detailsRetrieved.Details);
+      }
+
+      [TestMethod]
+      public void test_Trade_update_trade_extensions()
+      {
+         var extensionsUpdated = _results.Items.FirstOrDefault(x => x.Key == "13.5").Value as Restv20TestResult;
+         var extensionsTradeCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.6").Value as Restv20TestResult;
+         var tradeExtensionCommentCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.7").Value as Restv20TestResult;
+
+         Assert.IsTrue(extensionsUpdated.Success, extensionsUpdated.Success.ToString() + ": " + extensionsUpdated.Details);
+         Assert.IsTrue(extensionsTradeCorrect.Success, extensionsTradeCorrect.Success.ToString() + ": " + extensionsTradeCorrect.Details);
+         Assert.IsTrue(tradeExtensionCommentCorrect.Success, tradeExtensionCommentCorrect.Success.ToString() + ": " + tradeExtensionCommentCorrect.Details);
+      }
+
+      [TestMethod]
+      public void test_Trade_patch_exit_orders()
+      {
+         var takeProfitPatched = _results.Items.FirstOrDefault(x => x.Key == "13.8").Value as Restv20TestResult;
+         var takeProfitPriceCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.9").Value as Restv20TestResult;
+         var stopLossPatched = _results.Items.FirstOrDefault(x => x.Key == "13.10").Value as Restv20TestResult;
+         var stopLossPriceCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.11").Value as Restv20TestResult;
+         var trailingStopLossPatched = _results.Items.FirstOrDefault(x => x.Key == "13.12").Value as Restv20TestResult;
+         var trailingStopLossDistanceCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.13").Value as Restv20TestResult;
+
+         var takeProfitCancelled = _results.Items.FirstOrDefault(x => x.Key == "13.14").Value as Restv20TestResult;
+         var stopLossCancelled = _results.Items.FirstOrDefault(x => x.Key == "13.15").Value as Restv20TestResult;
+         var trailingStopLossCancelled = _results.Items.FirstOrDefault(x => x.Key == "13.16").Value as Restv20TestResult;
+
+         Assert.IsTrue(takeProfitPatched.Success, takeProfitPatched.Success.ToString() + ": " + takeProfitPatched.Details);
+         Assert.IsTrue(takeProfitPriceCorrect.Success, takeProfitPriceCorrect.Success.ToString() + ": " + takeProfitPriceCorrect.Details);
+         Assert.IsTrue(stopLossPatched.Success, stopLossPatched.Success.ToString() + ": " + stopLossPatched.Details);
+         Assert.IsTrue(stopLossPriceCorrect.Success, stopLossPriceCorrect.Success.ToString() + ": " + stopLossPriceCorrect.Details);
+         Assert.IsTrue(trailingStopLossPatched.Success, trailingStopLossPatched.Success.ToString() + ": " + trailingStopLossPatched.Details);
+         Assert.IsTrue(trailingStopLossDistanceCorrect.Success, trailingStopLossDistanceCorrect.Success.ToString() + ": " + trailingStopLossDistanceCorrect.Details);
+         Assert.IsTrue(takeProfitCancelled.Success, takeProfitCancelled.Success.ToString() + ": " + takeProfitCancelled.Details);
+         Assert.IsTrue(stopLossCancelled.Success, stopLossCancelled.Success.ToString() + ": " + stopLossCancelled.Details);
+         Assert.IsTrue(trailingStopLossCancelled.Success, trailingStopLossCancelled.Success.ToString() + ": " + trailingStopLossCancelled.Details);
+      }
+
+      [TestMethod]
+      public void test_Trade_close_open_trade()
+      {
+         var tradeClosed = _results.Items.FirstOrDefault(x => x.Key == "13.17").Value as Restv20TestResult;
+         var tradeCloseHasTime = _results.Items.FirstOrDefault(x => x.Key == "13.18").Value as Restv20TestResult;
+         var tradeCloseHasInstrument = _results.Items.FirstOrDefault(x => x.Key == "13.19").Value as Restv20TestResult;
+         var tradeCloseUnitsCorrect = _results.Items.FirstOrDefault(x => x.Key == "13.20").Value as Restv20TestResult;
+         var tradeCloseHasPrice = _results.Items.FirstOrDefault(x => x.Key == "13.21").Value as Restv20TestResult;
+
+         Assert.IsTrue(tradeClosed.Success, tradeClosed.Success.ToString() + ": " + tradeClosed.Details);
+         Assert.IsTrue(tradeCloseHasTime.Success, tradeCloseHasTime.Success.ToString() + ": " + tradeCloseHasTime.Details);
+         Assert.IsTrue(tradeCloseHasInstrument.Success, tradeCloseHasInstrument.Success.ToString() + ": " + tradeCloseHasInstrument.Details);
+         Assert.IsTrue(tradeCloseUnitsCorrect.Success, tradeCloseUnitsCorrect.Success.ToString() + ": " + tradeCloseUnitsCorrect.Details);
+         Assert.IsTrue(tradeCloseHasPrice.Success, tradeCloseHasPrice.Success.ToString() + ": " + tradeCloseHasPrice.Details);
+      }
       #endregion
 
       #region Position
