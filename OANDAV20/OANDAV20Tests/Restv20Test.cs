@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OANDAV20;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -475,6 +476,35 @@ namespace OANDAv20Tests
          Assert.IsTrue(dataReceived.Success, dataReceived.Success.ToString() + ": " + dataReceived.Details);
          Assert.IsTrue(dataHasId.Success, dataHasId.Success.ToString() + ": " + dataHasId.Details);
          Assert.IsTrue(dataHasAccountId.Success, dataHasAccountId.Success.ToString() + ": " + dataHasAccountId.Details);
+      }
+
+      [TestMethod]
+      public void test_Stream_pricing_stream_functional()
+      {
+         // 18
+         var streamFunctional = _results.Items.FirstOrDefault(x => x.Key == "18.0").Value as Restv20TestResult;
+         var dataReceived = _results.Items.FirstOrDefault(x => x.Key == "18.1").Value as Restv20TestResult;
+         var dataHasInstrument = _results.Items.FirstOrDefault(x => x.Key == "18.2").Value as Restv20TestResult;
+
+         Assert.IsTrue(streamFunctional.Success, streamFunctional.Success.ToString() + ": " + streamFunctional.Details);
+         Assert.IsTrue(dataReceived.Success, dataReceived.Success.ToString() + ": " + dataReceived.Details);
+         Assert.IsTrue(dataHasInstrument.Success, dataHasInstrument.Success.ToString() + ": " + dataHasInstrument.Details);
+
+         // trap these
+         // will throw if the instrument is not tradeable
+         // the keys will not be present in _results
+         try
+         {
+            var dataHasBids = _results.Items.FirstOrDefault(x => x.Key == "18.3").Value as Restv20TestResult;
+            var dataHasAsks = _results.Items.FirstOrDefault(x => x.Key == "18.4").Value as Restv20TestResult;
+
+            Assert.IsTrue(dataHasBids.Success, dataHasBids.Success.ToString() + ": " + dataHasBids.Details);
+            Assert.IsTrue(dataHasAsks.Success, dataHasAsks.Success.ToString() + ": " + dataHasAsks.Details);
+         }
+         catch
+         {
+
+         }
       }
       #endregion
    }

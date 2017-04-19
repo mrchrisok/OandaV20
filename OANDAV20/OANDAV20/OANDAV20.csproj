@@ -53,6 +53,7 @@
     <Compile Include="Framework\JsonConverters\JsonConverterBase.cs" />
     <Compile Include="Framework\JsonConverters\PriceObjectConverter.cs" />
     <Compile Include="Framework\JsonConverters\OrderConverter.cs" />
+    <Compile Include="Framework\JsonConverters\PricingStreamrResponseConverter.cs" />
     <Compile Include="Framework\JsonConverters\TransactionStreamResponseConverter.cs" />
     <Compile Include="Framework\JsonConverters\TransactionConverter.cs" />
     <Compile Include="Framework\MarketHaltedException.cs" />

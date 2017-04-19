@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OANDAV20.TradeLibrary.DataTypes.Pricing;
 using OANDAV20.TradeLibrary.DataTypes.Stream;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System;
 
 namespace OANDAV20.Framework.JsonConverters
 {
-   public class TransactionStreamResponseConverter : JsonConverterBase
+   public class PricingStreamResponseConverter : JsonConverterBase
    {
       public override bool CanConvert(Type objectType)
       {
@@ -16,7 +16,7 @@ namespace OANDAV20.Framework.JsonConverters
 
       public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
       {
-         TransactionStreamResponse response = new TransactionStreamResponse();
+         PricingStreamResponse response = new PricingStreamResponse();
 
          var jsonToken = JToken.Load(reader);
 
@@ -26,15 +26,15 @@ namespace OANDAV20.Framework.JsonConverters
 
             if (isHeartbeat)
             {
-               var heartbeat = new TransactionHeartbeat();
+               var heartbeat = new PricingHeartbeat();
                serializer.Populate(jsonToken.CreateReader(), heartbeat);
                response.heartbeat = heartbeat;
             }
             else
             {
-               ITransaction transaction = TransactionFactory.Create(jsonToken["type"].Value<string>());
-               serializer.Populate(jsonToken.CreateReader(), transaction);
-               response.transaction = transaction;
+               Price price = new Price();
+               serializer.Populate(jsonToken.CreateReader(), price);
+               response.price = price;
             }
 
             return response;

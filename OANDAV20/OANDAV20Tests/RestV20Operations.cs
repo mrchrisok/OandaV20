@@ -40,8 +40,6 @@ namespace OANDAv20Tests
       static string _lastTransactionTime;
 
       protected List<Price> _prices;
-      protected Semaphore _tickReceived;
-      static Semaphore _transactionReceived;
       #endregion
 
       static string _accountId { get { return Credentials.GetDefaultCredentials().DefaultAccountId; } }
@@ -80,11 +78,11 @@ namespace OANDAv20Tests
 
                if (!await IsMarketHalted())
                {
-                  //   // start & stop the pricing stream
-                  //   if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
-                  //   {
-                  //      await Stream_GetStreamingPrices();
-                  //   }
+                  // test the pricing stream
+                  if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
+                  {
+                     Stream_GetStreamingPrices();
+                  }
 
                   // start transactions stream
                   Task transactionsStreamCheck = null;
@@ -99,16 +97,15 @@ namespace OANDAv20Tests
                   await Position_RunPositionOperations();
 
                   // stop transactions stream 
-                  if(transactionsStreamCheck != null)
+                  if (transactionsStreamCheck != null)
                   {
                      await transactionsStreamCheck;
                   }
 
-                  // review the test traffic
+                  // review the traffic
                   await Transaction_GetTransactionsByDateRange();
                   await Transaction_GetTransactionsByIdRange();
                   await Account_GetAccountChanges();
-
                }
             }
          }
@@ -683,6 +680,7 @@ namespace OANDAv20Tests
       #endregion
 
       #region Stream
+      static Semaphore _transactionReceived;
       protected static Task Stream_GetStreamingTransactions()
       {
          // 07
@@ -696,14 +694,14 @@ namespace OANDAv20Tests
             // wait 10sec or until an event is received
             bool success = _transactionReceived.WaitOne(10000);
             session.StopSession();
-            _results.Verify("07.0", success, "Transaction events stream functioning successfully.");
+            _results.Verify("07.0", success, "Transaction events stream is functioning.");
          });
       }
 
-      static bool _gotData = false;
+      static bool _gotTransaction = false;
       protected static void OnTransactionReceived(TransactionStreamResponse data)
       {
-         if (!_gotData)
+         if (!_gotTransaction)
          {
             _results.Verify("07.1", data.transaction != null, "Transaction received");
             if (data.transaction != null)
@@ -713,10 +711,44 @@ namespace OANDAv20Tests
             }
 
             // only testing first data
-            _gotData = !data.IsHeartbeat();
+            _gotTransaction = !data.IsHeartbeat();
          }
 
          _transactionReceived.Release();
+      }
+
+      static Semaphore _tickReceived;
+      protected static void Stream_GetStreamingPrices()
+      {
+         PricingSession session = new PricingSession(_accountId, _instruments);
+         _tickReceived = new Semaphore(0, 100);
+         session.DataReceived += OnPricingReceived;
+         session.StartSession();
+         bool success = _tickReceived.WaitOne(10000);
+         session.StopSession();
+         _results.Verify("18.0", success, "Pricing stream is functioning.");
+      }
+
+      static bool _gotPrice = false;
+      protected static void OnPricingReceived(PricingStreamResponse data)
+      {
+         if (!_gotPrice)
+         {
+            if (data.price != null)
+            {
+               _results.Verify("18.1", data.price != null, "Pricing data received.");
+               _results.Verify("18.2", data.price.instrument != null, "Streaming price has instrument");
+
+               if (data.price.tradeable)
+               {
+                  _results.Verify("18.3", data.price.bids.Count > 0, "Streaming price has bids");
+                  _results.Verify("18.4", data.price.asks.Count > 0, "Streaming price has asks");
+               }
+
+               _gotPrice = true;
+            }
+         }
+         _tickReceived.Release();
       }
       #endregion
 
