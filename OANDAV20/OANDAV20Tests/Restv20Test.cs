@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OANDAV20;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -33,7 +33,6 @@ namespace OANDAv20Tests
       static short _tokenAccounts;
       static string _currency = "USD";
       static string _testInstrument = InstrumentName.Currency.EURUSD;
-      static List<Transaction> _transactions;
       static List<Instrument> _instruments;
       static long _firstTransactionID;
       static long _lastTransactionID;
@@ -49,8 +48,12 @@ namespace OANDAv20Tests
       {
          try
          {
-            _testEnvironment = EEnvironment.Trade;
+            // example token
+            // an OANDA trade or practice account is required to generate a valid token
+            // for info, go to: https://www.oanda.com/account/tpa/personal_token
             _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
+
+            _testEnvironment = EEnvironment.Trade;       
             _tokenAccounts = 5;
 
             Credentials.SetCredentials(_testEnvironment, _testToken, null);
