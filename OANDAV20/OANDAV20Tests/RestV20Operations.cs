@@ -53,7 +53,10 @@ namespace OANDAv20Tests
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
             _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
 
-            _testEnvironment = EEnvironment.Trade;       
+            // should only test the Trade endpoint
+            _testEnvironment = EEnvironment.Trade;  
+            
+            // set this to the correct number of v20 accounts associated with the token     
             _tokenAccounts = 5;
 
             Credentials.SetCredentials(_testEnvironment, _testToken, null);
@@ -156,9 +159,6 @@ namespace OANDAv20Tests
          }
 
          _testAccount = result[0].id;
-
-         // using this as it has funds
-         _testAccount = "001-001-432582-001";
 
          Credentials.SetCredentials(_testEnvironment, _testToken, _testAccount);
       }
