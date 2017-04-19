@@ -460,5 +460,22 @@ namespace OANDAv20Tests
          Assert.IsTrue(priceCountMatches.Success, priceCountMatches.Success.ToString() + ": " + priceCountMatches.Details);
       }
       #endregion
+
+      #region Stream
+      [TestMethod]
+      public void test_Stream_transaction_stream_functional()
+      {
+         // 7
+         var streamFunctional = _results.Items.FirstOrDefault(x => x.Key == "07.0").Value as Restv20TestResult;
+         var dataReceived = _results.Items.FirstOrDefault(x => x.Key == "07.1").Value as Restv20TestResult;
+         var dataHasId = _results.Items.FirstOrDefault(x => x.Key == "07.2").Value as Restv20TestResult;
+         var dataHasAccountId = _results.Items.FirstOrDefault(x => x.Key == "07.3").Value as Restv20TestResult;
+
+         Assert.IsTrue(streamFunctional.Success, streamFunctional.Success.ToString() + ": " + streamFunctional.Details);
+         Assert.IsTrue(dataReceived.Success, dataReceived.Success.ToString() + ": " + dataReceived.Details);
+         Assert.IsTrue(dataHasId.Success, dataHasId.Success.ToString() + ": " + dataHasId.Details);
+         Assert.IsTrue(dataHasAccountId.Success, dataHasAccountId.Success.ToString() + ": " + dataHasAccountId.Details);
+      }
+      #endregion
    }
 }

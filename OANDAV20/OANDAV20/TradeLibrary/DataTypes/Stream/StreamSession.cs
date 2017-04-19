@@ -1,9 +1,8 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Stream;
+﻿using Newtonsoft.Json;
+using OANDAV20.TradeLibrary.DataTypes.Stream;
 using System;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OANDAV20.TradeLibrary.DataTypes.Communications
@@ -43,19 +42,13 @@ namespace OANDAV20.TradeLibrary.DataTypes.Communications
 
          Task.Run(() =>
             {
-               DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                StreamReader reader = new StreamReader(_response.GetResponseStream());
                while (!_shutdown)
                {
                   try
                   {
-                     MemoryStream memStream = new MemoryStream();
-
                      string line = reader.ReadLine();
-                     memStream.Write(Encoding.UTF8.GetBytes(line), 0, Encoding.UTF8.GetByteCount(line));
-                     memStream.Position = 0;
-
-                     var data = (T)serializer.ReadObject(memStream);
+                     var data = JsonConvert.DeserializeObject<T>(line);
 
                      OnSessionStatusChanged(true, null);
 

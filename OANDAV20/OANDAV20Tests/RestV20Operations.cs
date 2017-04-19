@@ -80,31 +80,35 @@ namespace OANDAv20Tests
 
                if (!await IsMarketHalted())
                {
-               //   // start & stop the pricing stream
-               //   if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
-               //   {
-               //      await Stream_GetStreamingPrices();
-               //   }
+                  //   // start & stop the pricing stream
+                  //   if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
+                  //   {
+                  //      await Stream_GetStreamingPrices();
+                  //   }
 
-               //   // start transactions stream
-               //   Task transactionsStreamCheck = null;
-               //   if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingTransactions))
-               //   {
-               //      transactionsStreamCheck = Stream_GetStreamingTransactions();
-               //   }
+                  // start transactions stream
+                  Task transactionsStreamCheck = null;
+                  if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingTransactions))
+                  {
+                     transactionsStreamCheck = Stream_GetStreamingTransactions();
+                  }
 
-               // create stream traffic
-               await Order_RunOrderOperations();
-               await Trade_RunTradeOperations();
-               await Position_RunPositionOperations();
+                  // create stream traffic
+                  await Order_RunOrderOperations();
+                  await Trade_RunTradeOperations();
+                  await Position_RunPositionOperations();
 
-               // stop transactions stream 
+                  // stop transactions stream 
+                  if(transactionsStreamCheck != null)
+                  {
+                     await transactionsStreamCheck;
+                  }
 
-               // review the test traffic
-               await Transaction_GetTransactionsByDateRange();
-               await Transaction_GetTransactionsByIdRange();
-               await Account_GetAccountChanges();
-  
+                  // review the test traffic
+                  await Transaction_GetTransactionsByDateRange();
+                  await Transaction_GetTransactionsByIdRange();
+                  await Account_GetAccountChanges();
+
                }
             }
          }
@@ -689,28 +693,27 @@ namespace OANDAv20Tests
 
          return Task.Run(() =>
          {
-            // block and wait 10sec or until an event is received
+            // wait 10sec or until an event is received
             bool success = _transactionReceived.WaitOne(10000);
             session.StopSession();
             _results.Verify("07.0", success, "Transaction events stream functioning successfully.");
          });
       }
 
+      static bool _gotData = false;
       protected static void OnTransactionReceived(TransactionStreamResponse data)
       {
-         // only testing the first transaction received
-         bool gotData = false;
-
-         if (!gotData)
+         if (!_gotData)
          {
-            _results.Verify("07.1", data.transaction != null, "Event transaction received");
+            _results.Verify("07.1", data.transaction != null, "Transaction received");
             if (data.transaction != null)
             {
-               _results.Verify("07.2", data.transaction.id != 0, "Transaction data received.");
-               _results.Verify("07.3", data.transaction.accountID == _accountId, string.Format("Transaction has correct accountID: {()}.", _accountId));
+               _results.Verify("07.2", data.transaction.id != 0, "Transaction has id.");
+               _results.Verify("07.3", data.transaction.accountID == _accountId, string.Format("Transaction has correct accountID: ({0}).", _accountId));
             }
 
-            gotData = true;
+            // only testing first data
+            _gotData = !data.IsHeartbeat();
          }
 
          _transactionReceived.Release();
