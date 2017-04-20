@@ -1,17 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OANDAV20.Framework;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,62 +18,7 @@ namespace OANDAV20
       private static string Server(EServer server) { return Credentials.GetDefaultCredentials().GetServer(server); }
       private static string AccessToken { get { return Credentials.GetDefaultCredentials().AccessToken; } }
 
-      private static string GetCommaSeparatedList(List<string> items)
-      {
-         StringBuilder result = new StringBuilder();
-         foreach (var item in items)
-         {
-            result.Append(item + ",");
-         }
-         return result.ToString().Trim(',');
-      }
-
-      /// <summary>
-      /// Used primarily for test purposes, this sends a request with the expectation of getting an error
-      /// </summary>
-      /// <param name="request">The request to send</param>
-      /// <returns>null if the request succeeds.  response body as string if the request fails</returns>
-      public static async Task<string> MakeErrorRequest(Request request)
-      {
-         string requestString = Server(EServer.Account) + request.GetRequestString();
-         return await MakeErrorRequest(requestString);
-      }
-
-      /// <summary>
-      /// Used for tests, this request avoids exceptions for normal errors, ignores successful responses and just returns error strings
-      /// </summary>
-      /// <param name="requestString">the request to make</param>
-      /// <returns>null if request is successful, the error response if it fails</returns>
-      private static async Task<string> MakeErrorRequest(string requestString)
-      {
-         HttpClient Account = new HttpClient();
-         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestString);
-         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-
-         try
-         {
-            using (var response = await Account.SendAsync(request))
-            {
-               if (response.IsSuccessStatusCode)
-               {
-                  // request succeeded -- return null
-                  return null;
-               }
-               else
-               {
-                  return await response.Content.ReadAsStringAsync();
-               }
-            }
-         }
-         catch (WebException ex)
-         {
-            var response = (HttpWebResponse)ex.Response;
-            var stream = new StreamReader(response.GetResponseStream());
-            var result = stream.ReadToEnd();
-            return result;
-         }
-      }
-
+      #region request
       /// <summary>
       /// Primary (internal) request handler
       /// </summary>
@@ -144,7 +83,9 @@ namespace OANDAV20
 
          return await MakeRequestWithJSONBody<T>(method, requestBody, requestString);
       }
+      #endregion
 
+      #region response
       /// <summary>
       /// Sends an Http request to a remote server and returns the de-serialized response
       /// </summary>
@@ -196,23 +137,9 @@ namespace OANDAV20
          }
          return stream;
       }
+      #endregion
 
-      /// <summary>
-      /// Helper function to create the parameter string out of a dictionary of parameters
-      /// </summary>
-      /// <param name="requestParams">the parameters to convert</param>
-      /// <returns>string containing all the parameters for use in requests</returns>
-      private static string CreateParamString(Dictionary<string, string> requestParams)
-      {
-         string requestBody = "";
-         foreach (var pair in requestParams)
-         {
-            requestBody += WebUtility.UrlEncode(pair.Key) + "=" + WebUtility.UrlEncode(pair.Value) + "&";
-         }
-         requestBody = requestBody.Trim('&');
-         return requestBody;
-      }
-
+      #region json
       /// <summary>
       /// Helper function to create the parameter string out of a dictionary of parameters
       /// </summary>
@@ -257,5 +184,34 @@ namespace OANDAV20
 
          return result;
       }
+      #endregion
+
+      #region utilities
+      private static string GetCommaSeparatedList(List<string> items)
+      {
+         StringBuilder result = new StringBuilder();
+         foreach (var item in items)
+         {
+            result.Append(item + ",");
+         }
+         return result.ToString().Trim(',');
+      }
+
+      /// <summary>
+      /// Helper function to create the parameter string out of a dictionary of parameters
+      /// </summary>
+      /// <param name="requestParams">the parameters to convert</param>
+      /// <returns>string containing all the parameters for use in requests</returns>
+      protected static string CreateParamString(Dictionary<string, string> requestParams)
+      {
+         string requestBody = "";
+         foreach (var pair in requestParams)
+         {
+            requestBody += WebUtility.UrlEncode(pair.Key) + "=" + WebUtility.UrlEncode(pair.Value) + "&";
+         }
+         requestBody = requestBody.Trim('&');
+         return requestBody;
+      }
+      #endregion
    }
 }
