@@ -20,8 +20,10 @@ namespace OANDAV20
          CandlesResponse response = await MakeRequestAsync<CandlesResponse>(requestString, "GET", requestParams);
 
          var candles = new List<CandlestickPlus>();
-         response.candles.ForEach(x => candles.Add(new CandlestickPlus(x) { instrument = instrument, granularity = response.granularity }));
-
+         foreach (var candle in response.candles)
+         {
+            candles.Add(new CandlestickPlus(candle) { instrument = instrument, granularity = response.granularity });
+         }
          return candles;
       }
    }

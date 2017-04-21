@@ -3,6 +3,8 @@ using Newtonsoft.Json.Linq;
 using OANDAV20.TradeLibrary.DataTypes.Stream;
 using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace OANDAV20.Framework.JsonConverters
 {
@@ -10,7 +12,7 @@ namespace OANDAV20.Framework.JsonConverters
    {
       public override bool CanConvert(Type objectType)
       {
-         bool canConvert = objectType.GetInterface("IHeartbeat") != null;
+         bool canConvert = objectType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IHeartbeat));
          return canConvert;
       }
 

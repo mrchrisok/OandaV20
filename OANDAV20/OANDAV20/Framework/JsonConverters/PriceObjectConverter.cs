@@ -11,7 +11,7 @@ namespace OANDAV20.Framework.JsonConverters
    {
       public override bool CanConvert(Type objectType)
       {
-         bool canConvert = objectType.GetInterface("IHasPrices") != null;
+         bool canConvert = objectType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IHasPrices));
          return canConvert;
       }
 
@@ -26,7 +26,7 @@ namespace OANDAV20.Framework.JsonConverters
             var priceProperties = priceObject.priceInformation.priceProperties;
             var pricePrecision = priceObject.priceInformation.instrument.displayPrecision;
 
-            foreach (PropertyInfo property in type.GetProperties())
+            foreach (PropertyInfo property in type.GetRuntimeProperties())
             {
                if (property.CanRead)
                {

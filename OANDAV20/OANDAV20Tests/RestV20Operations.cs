@@ -51,7 +51,7 @@ namespace OANDAv20Tests
             // example token
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            _testToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66";
+            _testToken = "9c79cf1cbb9517613ebcbc12fd28a2cf-184e6fca41f7c5384101ebcfdfa42899";
 
             // should only test the Trade endpoint
             _testEnvironment = EEnvironment.Trade;  
@@ -159,7 +159,7 @@ namespace OANDAv20Tests
          }
 
          _testAccount = result[0].id;
-
+         _testAccount = "001-001-432582-001";
          Credentials.SetCredentials(_testEnvironment, _testToken, _testAccount);
       }
 
