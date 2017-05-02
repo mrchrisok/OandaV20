@@ -1,8 +1,8 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Order;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
-   public class MarketOrderRequest : OrderRequest
+   public class MarketOrderRequest : EntryOrderRequest
    {
       public MarketOrderRequest()
       {

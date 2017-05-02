@@ -1,11 +1,11 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Order;
 using OANDAV20.TradeLibrary.DataTypes.Transaction;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
-   public abstract class OrderRequest : Request
+   public abstract class EntryOrderRequest : Request, IOrderRequest
    {
-      public OrderRequest()
+      public EntryOrderRequest()
       {
          timeInForce = TimeInForce.FillOrKill;
          positionFill = OrderPositionFill.Default;

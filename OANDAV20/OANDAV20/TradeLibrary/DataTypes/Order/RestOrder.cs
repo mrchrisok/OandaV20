@@ -1,5 +1,5 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order;
 using OANDAV20.TradeLibrary.DataTypes.Order;
 using OANDAV20.TradeLibrary.DataTypes.Transaction;
 using System;
@@ -19,11 +19,11 @@ namespace OANDAV20
       /// <param name="account">the account to post on</param>
       /// <param name="request">the order request to post</param>
       /// <returns>PostOrderResponse with details of the results (throws if if fails)</returns>
-      public static async Task<OrderPostResponse> PostOrderAsync(string account, OrderRequest request)
+      public static async Task<OrderPostResponse> PostOrderAsync(string account, IOrderRequest request)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders";
 
-         Dictionary<string, OrderRequest> order = new Dictionary<string, OrderRequest>();
+         Dictionary<string, IOrderRequest> order = new Dictionary<string, IOrderRequest>();
          order.Add("order", request);
 
          string body = ConvertToJSON(order);
@@ -102,11 +102,11 @@ namespace OANDAV20
       /// <param name="orderId">the order to cancel</param>
       /// <param name="request">the replacement order request to post</param>
       /// <returns>PostOrderResponse with details of the results (throws if if fails)</returns>
-      public static async Task<OrderCancelReplaceResponse> CancelReplaceOrderAsync(string account, long orderId, OrderRequest request)
+      public static async Task<OrderCancelReplaceResponse> CancelReplaceOrderAsync(string account, long orderId, IOrderRequest request)
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders/" + orderId;
 
-         Dictionary<string, OrderRequest> order = new Dictionary<string, OrderRequest>();
+         Dictionary<string, IOrderRequest> order = new Dictionary<string, IOrderRequest>();
          order.Add("order", request);
 
          string body = ConvertToJSON(order);

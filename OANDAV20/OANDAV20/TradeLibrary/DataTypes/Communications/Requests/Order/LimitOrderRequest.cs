@@ -1,12 +1,12 @@
 ﻿using OANDAV20.TradeLibrary.DataTypes.Order;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
+namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
-   public class MarketIfTouchedOrderRequest : OrderRequest
+   public class LimitOrderRequest : EntryOrderRequest
    {
-      public MarketIfTouchedOrderRequest()
+      public LimitOrderRequest()
       {
-         type = OrderType.MarketIfTouched;
+         type = OrderType.Limit;
          timeInForce = TimeInForce.GoodUntilCancelled;
          triggerCondition = OrderTriggerCondition.Default;
       }

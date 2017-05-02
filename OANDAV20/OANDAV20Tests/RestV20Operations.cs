@@ -17,6 +17,7 @@ using System.Linq;
 using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
 using OANDAV20.TradeLibrary.DataTypes.Order;
 using OANDAV20.TradeLibrary.DataTypes.Position;
+using OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order;
 
 namespace OANDAv20Tests
 {
@@ -51,7 +52,7 @@ namespace OANDAv20Tests
             // example token
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            _testToken = "9c79cf1cbb9517613ebcbc12fd28a2cf-184e6fca41f7c5384101ebcfdfa42899";
+            _testToken = "zc79cf1cbb9517613ebcbc12fd28a2cf-p84e6fca41f7c5384101ebcfdfa42899";
 
             // should only test the Trade endpoint
             _testEnvironment = EEnvironment.Trade;  
@@ -158,8 +159,9 @@ namespace OANDAv20Tests
             _results.Verify("01." + count.ToString(), account.id.Split('-').Length == 4, description);
          }
 
+         // ensure the account has sufficient funds
          _testAccount = result[0].id;
-         _testAccount = "001-001-432582-001";
+
          Credentials.SetCredentials(_testEnvironment, _testToken, _testAccount);
       }
 
