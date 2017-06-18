@@ -58,7 +58,7 @@
     <Compile Include="Restv20TestResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OANDAV20\OkonkwoOandaV20.csproj">
+    <ProjectReference Include="..\OkonkwoOandaV20\OkonkwoOandaV20.csproj">
       <Project>{f99777ec-5a25-421c-bb14-f451511cbc48}</Project>
       <Name>OkonkwoOandaV20</Name>
     </ProjectReference>
