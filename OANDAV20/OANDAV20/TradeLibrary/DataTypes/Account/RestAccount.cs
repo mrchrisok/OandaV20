@@ -1,11 +1,11 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Account;
-using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Instrument;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Account;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/account-ep/

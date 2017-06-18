@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Transaction;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Order
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
 {
    public class MarketIfTouchedOrder : Order
    {

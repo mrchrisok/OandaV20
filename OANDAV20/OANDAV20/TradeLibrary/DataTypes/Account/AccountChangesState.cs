@@ -1,9 +1,9 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Position;
-using OANDAV20.TradeLibrary.DataTypes.Order;
-using OANDAV20.TradeLibrary.DataTypes.Trade;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Position;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Trade;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Account
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Account
 {
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/account-df/#AccountChangesState

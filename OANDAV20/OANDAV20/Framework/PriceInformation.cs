@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Instrument;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
 using System.Collections.Generic;
 
-namespace OANDAV20.Framework
+namespace OkonkwoOandaV20.Framework
 {
    public interface IHasPrices
    {

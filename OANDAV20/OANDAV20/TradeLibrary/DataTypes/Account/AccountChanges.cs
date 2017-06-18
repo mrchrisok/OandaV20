@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using OANDAV20.Framework.JsonConverters;
-using OANDAV20.TradeLibrary.DataTypes.Order;
-using OANDAV20.TradeLibrary.DataTypes.Trade;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
+using OkonkwoOandaV20.Framework.JsonConverters;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Trade;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Account
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Account
 {
    public class AccountChanges
    {

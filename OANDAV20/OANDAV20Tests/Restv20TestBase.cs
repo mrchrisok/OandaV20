@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAv20Tests
+namespace OkonkwoOandaV20Tests
 {
    public class Restv20TestBase
    {
-      static protected readonly Restv20TestResults _results;
-      protected short _failedTests = 0;
+      static protected readonly Restv20TestResults m_Results;
+      protected short m_FailedTests = 0;
 
-      public Restv20TestResults Results { get { return _results; } }
-      public short Failures { get { return _failedTests; } }
+      public Restv20TestResults Results { get { return m_Results; } }
+      public short Failures { get { return m_FailedTests; } }
 
       static Restv20TestBase()
       {
-         _results = new Restv20TestResults();
+         m_Results = new Restv20TestResults();
       }
    }
 }

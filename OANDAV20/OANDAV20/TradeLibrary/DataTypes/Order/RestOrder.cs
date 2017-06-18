@@ -1,12 +1,12 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order;
-using OANDAV20.TradeLibrary.DataTypes.Order;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/order-ep/

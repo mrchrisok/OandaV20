@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using OANDAV20.Framework.JsonConverters;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
+using OkonkwoOandaV20.Framework.JsonConverters;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Stream
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Stream
 {
    /// <summary>
    /// Events are authorized transactions posted to the subject account.

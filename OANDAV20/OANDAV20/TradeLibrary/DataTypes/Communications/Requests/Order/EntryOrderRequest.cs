@@ -1,7 +1,7 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Order;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
    public abstract class EntryOrderRequest : Request, IOrderRequest
    {

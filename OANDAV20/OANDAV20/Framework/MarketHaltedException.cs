@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OANDAV20.Framework
+namespace OkonkwoOandaV20.Framework
 {
    public class MarketHaltedException : Exception
    {

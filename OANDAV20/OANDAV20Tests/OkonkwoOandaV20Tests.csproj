@@ -6,8 +6,8 @@
     <ProjectGuid>{14A55170-5F71-49A4-BEA5-4B635EC5AF6F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OANDAV20Tests</RootNamespace>
-    <AssemblyName>OANDAV20Tests</AssemblyName>
+    <RootNamespace>OkonkwoOandaV20Tests</RootNamespace>
+    <AssemblyName>OkonkwoOandaV20Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -58,9 +58,9 @@
     <Compile Include="Restv20TestResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OANDAV20\OANDAV20.csproj">
+    <ProjectReference Include="..\OANDAV20\OkonkwoOandaV20.csproj">
       <Project>{f99777ec-5a25-421c-bb14-f451511cbc48}</Project>
-      <Name>OANDAV20</Name>
+      <Name>OkonkwoOandaV20</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

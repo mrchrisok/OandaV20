@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OANDAV20", "OANDAV20\OANDAV20.csproj", "{F99777EC-5A25-421C-BB14-F451511CBC48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OkonkwoOandaV20", "OANDAV20\OkonkwoOandaV20.csproj", "{F99777EC-5A25-421C-BB14-F451511CBC48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OANDAV20Tests", "OANDAV20Tests\OANDAV20Tests.csproj", "{14A55170-5F71-49A4-BEA5-4B635EC5AF6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OkonkwoOandaV20Tests", "OANDAV20Tests\OkonkwoOandaV20Tests.csproj", "{14A55170-5F71-49A4-BEA5-4B635EC5AF6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

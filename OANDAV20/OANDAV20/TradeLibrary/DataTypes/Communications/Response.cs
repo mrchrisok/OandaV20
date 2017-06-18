@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Text;
-using OANDACommon = OANDAV20.Framework.Common;
+using OANDACommon = OkonkwoOandaV20.Framework.Common;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
    public class Response
    {

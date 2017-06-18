@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.Primitives
+﻿namespace OkonkwoOandaV20.TradeLibrary.Primitives
 {
    public enum AcceptDatetimeFormat
    {

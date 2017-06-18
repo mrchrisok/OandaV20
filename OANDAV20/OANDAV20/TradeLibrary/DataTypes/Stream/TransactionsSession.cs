@@ -1,8 +1,8 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Stream;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Stream;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
    public class TransactionsSession : StreamSession<TransactionStreamResponse>
    {

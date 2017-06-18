@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    public enum EServer
    {
@@ -52,22 +52,22 @@ namespace OANDAV20
             }
          };
 
-      public string AccessToken;
 
-      private static Credentials _instance;
-      public string DefaultAccountId;
-      public EEnvironment Environment;
+      private static Credentials m_Instance;
 
-      public string Username;
+      public string AccessToken { get; set; }
+      public string DefaultAccountId { get; set; }
+      public EEnvironment Environment { get; set; }
+      public string Username { get; set; }
 
       public static Credentials GetDefaultCredentials()
       {
-         if (_instance == null)
+         if (m_Instance == null)
          {
             //_instance = GetPracticeCredentials();
             //_instance = GetSandboxCredentials();
          }
-         return _instance;
+         return m_Instance;
       }
 
       private static Credentials GetPracticeCredentials()
@@ -78,7 +78,6 @@ namespace OANDAV20
             Environment = EEnvironment.Practice,
             AccessToken = "73eba38ad5b44778f9a0c0fec1a66ed1-44f47f052c897b3e1e7f24196bbc071f"
          };
-
       }
 
       private static Credentials GetLiveCredentials()
@@ -94,7 +93,7 @@ namespace OANDAV20
 
       public static void SetCredentials(EEnvironment environment, string accessToken, string defaultAccount = "0")
       {
-         _instance = new Credentials
+         m_Instance = new Credentials
          {
             Environment = environment,
             AccessToken = accessToken,

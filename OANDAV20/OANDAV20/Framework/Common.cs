@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace OANDAV20.Framework
+namespace OkonkwoOandaV20.Framework
 {
    public class Common
    {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace OANDAv20Tests
+namespace OkonkwoOandaV20Tests
 {
    public class Restv20TestResult
    {
@@ -13,25 +13,25 @@ namespace OANDAv20Tests
    public class Restv20TestResults
    {
       #region Declarations
-      string _lastMessage;
-      Dictionary<string, Restv20TestResult> _results = new Dictionary<string, Restv20TestResult>();
-      Dictionary<string, string> _mutableMessages = new Dictionary<string, string>();
+      string m_LastMessage;
+      Dictionary<string, Restv20TestResult> m_Results = new Dictionary<string, Restv20TestResult>();
+      Dictionary<string, string> m_MutableMessages = new Dictionary<string, string>();
       #endregion
 
       #region Public properties and methods
       public ReadOnlyDictionary<string, Restv20TestResult> Items
       {
-         get { return new ReadOnlyDictionary<string, Restv20TestResult>(_results); }
+         get { return new ReadOnlyDictionary<string, Restv20TestResult>(m_Results); }
       }
 
       public ReadOnlyDictionary<string, string> Messages
       {
-         get { return new ReadOnlyDictionary<string, string>(_mutableMessages); }
+         get { return new ReadOnlyDictionary<string, string>(m_MutableMessages); }
       }
 
       public string LastMessage
       {
-         get { return _lastMessage; }
+         get { return m_LastMessage; }
       }
 
       //------
@@ -52,7 +52,7 @@ namespace OANDAv20Tests
 
       public bool Verify(string key, bool success, string testDescription)
       {
-         _results.Add(key, new Restv20TestResult { Success = success, Details = testDescription });
+         m_Results.Add(key, new Restv20TestResult { Success = success, Details = testDescription });
          if (!success)
          {
             Add(key + ": " + success + ": " + testDescription); // add message
@@ -63,13 +63,13 @@ namespace OANDAv20Tests
       //------
       public void Add(string key, Restv20TestResult testResult)
       {
-         _results.Add(key, testResult);
+         m_Results.Add(key, testResult);
       }
 
       public void Add(string message)
       {
-         _lastMessage = message;
-         _mutableMessages.Add(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + ':' + _mutableMessages.Count, message);
+         m_LastMessage = message;
+         m_MutableMessages.Add(DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss") + ':' + m_MutableMessages.Count, message);
       }
       #endregion
    }

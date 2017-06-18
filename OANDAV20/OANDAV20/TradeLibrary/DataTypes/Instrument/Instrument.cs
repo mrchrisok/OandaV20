@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Instrument
+﻿namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument
 {
    public class Instrument
    {

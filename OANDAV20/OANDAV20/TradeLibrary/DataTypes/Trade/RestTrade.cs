@@ -1,12 +1,12 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Communications;
-using OANDAV20.TradeLibrary.DataTypes.Communications.Requests;
-using OANDAV20.TradeLibrary.DataTypes.Trade;
-using OANDAV20.TradeLibrary.DataTypes.Transaction;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Trade;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    public partial class Rest20
    {

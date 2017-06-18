@@ -1,6 +1,6 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Order;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests.Order
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
    public class LimitOrderRequest : EntryOrderRequest
    {

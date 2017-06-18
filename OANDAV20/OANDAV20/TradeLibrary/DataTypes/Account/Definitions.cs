@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// http://developer.oanda.com/rest-live-v20/account-df/
 /// </summary>
-namespace OANDAV20.TradeLibrary.DataTypes.Account
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Account
 {
    public class AccountFinancingMode
    {

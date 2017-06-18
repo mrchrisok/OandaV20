@@ -1,4 +1,4 @@
-﻿namespace OANDAV20.TradeLibrary.DataTypes.Order
+﻿namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
 {
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/order-df/#DynamicOrderState

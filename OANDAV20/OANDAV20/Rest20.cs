@@ -10,7 +10,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    public partial class Rest20
    {

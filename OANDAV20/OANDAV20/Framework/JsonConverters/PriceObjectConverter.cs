@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Linq;
 
-namespace OANDAV20.Framework.JsonConverters
+namespace OkonkwoOandaV20.Framework.JsonConverters
 {
    public class PriceObjectConverter : JsonConverterBase
    {

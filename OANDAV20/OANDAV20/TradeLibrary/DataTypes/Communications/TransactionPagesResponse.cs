@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/transaction-ep/

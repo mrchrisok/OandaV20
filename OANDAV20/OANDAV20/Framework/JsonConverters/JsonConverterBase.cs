@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace OANDAV20.Framework.JsonConverters
+namespace OkonkwoOandaV20.Framework.JsonConverters
 {
    public abstract class JsonConverterBase : JsonConverter
    {

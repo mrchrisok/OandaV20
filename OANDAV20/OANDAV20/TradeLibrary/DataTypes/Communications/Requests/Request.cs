@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Communications.Requests
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests
 {
    public abstract class Request
    {

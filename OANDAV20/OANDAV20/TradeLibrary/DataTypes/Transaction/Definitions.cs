@@ -1,13 +1,13 @@
-﻿using OANDAV20.Framework;
+﻿using OkonkwoOandaV20.Framework;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Reflection;
-using OANDAV20.Framework.JsonConverters;
+using OkonkwoOandaV20.Framework.JsonConverters;
 using Newtonsoft.Json;
-using OANDAV20.TradeLibrary.DataTypes.Instrument;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
 
-namespace OANDAV20.TradeLibrary.DataTypes.Transaction
+namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
 {
    public class FundingReason
    {

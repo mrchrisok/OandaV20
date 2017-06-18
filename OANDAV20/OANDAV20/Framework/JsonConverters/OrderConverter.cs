@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OANDAV20.TradeLibrary.DataTypes.Order;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
 using System;
 using System.Collections.Generic;
 
-namespace OANDAV20.Framework.JsonConverters
+namespace OkonkwoOandaV20.Framework.JsonConverters
 {
    public class OrderConverter : JsonConverterBase
    {

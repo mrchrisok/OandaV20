@@ -1,11 +1,11 @@
-﻿using OANDAV20.TradeLibrary.DataTypes.Instrument;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace OANDAV20
+namespace OkonkwoOandaV20
 {
    public partial class Rest20
    {
