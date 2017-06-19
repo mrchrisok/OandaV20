@@ -14,7 +14,8 @@ namespace OkonkwoOandaV20
 {
    public partial class Rest20
    {
-      private static DateTime _lastRequestTime = DateTime.UtcNow;
+      private static DateTime m_LastRequestTime = DateTime.UtcNow;
+
       private static string Server(EServer server) { return Credentials.GetDefaultCredentials().GetServer(server); }
       private static string AccessToken { get { return Credentials.GetDefaultCredentials().AccessToken; } }
 
@@ -94,7 +95,7 @@ namespace OkonkwoOandaV20
       /// <returns>The object of type T returned by the remote server</returns>
       private static async Task<T> GetWebResponse<T>(HttpWebRequest request)
       {
-         while (DateTime.UtcNow < _lastRequestTime.AddMilliseconds(501))
+         while (DateTime.UtcNow < m_LastRequestTime.AddMilliseconds(501))
          {
             // speed bump
             // http://developer.oanda.com/rest-live-v20/best-practices/
@@ -120,7 +121,7 @@ namespace OkonkwoOandaV20
          }
          finally
          {
-            _lastRequestTime = DateTime.UtcNow;
+            m_LastRequestTime = DateTime.UtcNow;
          }
       }
 
