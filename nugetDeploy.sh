@@ -1,8 +1,6 @@
 ApiKey=$1
 Source=$2
 
-nuget pack ./TreasureGen/TreasureGen.nuspec -Verbosity detailed
-nuget pack ./TreasureGen.Domain/TreasureGen.Domain.nuspec -Verbosity detailed
+nuget pack ./OkonkwoOandaV20/OkonkwoOandaV20/OkonkwoOandaV20.csproj -Verbosity detailed -OutputDirectory ./OkonkwoOandaV20/pkg
 
-nuget push ./DnDGen.TreasureGen.*.nupkg -Verbosity detailed -ApiKey $ApiKey -Source $Source
-nuget push ./DnDGen.TreasureGen.Domain.*.nupkg -Verbosity detailed -ApiKey $ApiKey -Source $Source
+nuget push ./OkonkwoOandaV20/pkg/*.nupkg -Verbosity detailed -ApiKey $ApiKey -Source $Source
