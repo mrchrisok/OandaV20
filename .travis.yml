@@ -8,7 +8,7 @@ install:
   - nuget restore OkonkwoOanda20.sln
   - nuget install NUnit.Runners -OutputDirectory testrunner
 script:
-  - xbuild OkonkwoOanda20.sln /p:TargetFrameworkVersion="v4.5.2" /p:Configuration=Release
+  - xbuild OkonkwoOandaV20.sln /p:TargetFrameworkVersion="v4.5.2" /p:Configuration=Release
   - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./OkonkwoOandaV20Tests/bin/Release/OkonkwoOandaV20Tests.dll
 deploy:
   skip_cleanup: true
