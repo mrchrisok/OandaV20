@@ -3,9 +3,9 @@
 #
 
 language: csharp
-solution: OkonkwoOanda20.sln
+solution: OkonkwoOandaV20.sln
 install:
-  - nuget restore OkonkwoOanda20.sln
+  - nuget restore OkonkwoOandaV20.sln
   - nuget install NUnit.Runners -OutputDirectory testrunner
 script:
   - xbuild OkonkwoOandaV20.sln /p:TargetFrameworkVersion="v4.5.2" /p:Configuration=Release
