@@ -5,11 +5,11 @@
 language: csharp
 solution: OkonkwoOandaV20.sln
 install:
-  - nuget restore OkonkwoOandaV20.sln
+  - nuget restore ./OkonkwoOandaV20/OkonkwoOandaV20.sln
   - nuget install NUnit.Runners -OutputDirectory testrunner
 script:
-  - xbuild OkonkwoOandaV20.sln /p:TargetFrameworkVersion="v4.5.2" /p:Configuration=Release
-  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./OkonkwoOandaV20Tests/bin/Release/OkonkwoOandaV20Tests.dll
+  - xbuild ./OkonkwoOandaV20/OkonkwoOandaV20.sln /p:TargetFrameworkVersion="v4.5.2" /p:Configuration=Release
+  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./OkonkwoOandaV20/OkonkwoOandaV20Tests/bin/Release/OkonkwoOandaV20Tests.dll
 deploy:
   skip_cleanup: true
   provider: script
