@@ -49,7 +49,6 @@ namespace OkonkwoOandaV20Tests
       {
          try
          {
-            // example token
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
             m_TestToken = "d1e0eb9c7b69d1ec3b1bf234fbd90a04-08a155c9bee7ca654132b7d63e3c5bb0";
@@ -69,12 +68,15 @@ namespace OkonkwoOandaV20Tests
 
             if (Credentials.GetDefaultCredentials().HasServer(EServer.Account))
             {
-               // first, check market status
+               // first, get accounts
+               // this operation adds the test AccountId to Credentials
+               await Account_GetAccountsList(m_TokenAccounts);
+
+               // second, check market status
                if (await IsMarketHalted())
                   throw new MarketHaltedException("Unable to run tests. OANDA Fx market is halted!");
 
-               // second, run test operations
-               await Account_GetAccountsList(m_TokenAccounts);
+               // third, proceed with all others
                await Account_GetAccountDetails();
                await Account_GetAccountSummary();
                await Account_GetAccountsInstruments();
@@ -779,7 +781,7 @@ namespace OkonkwoOandaV20Tests
 
          bool marketHalted = !(isTradeable && hasBids && hasAsks);
 
-         return false;
+         return marketHalted;
       }
 
       /// <summary>
