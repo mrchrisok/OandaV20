@@ -52,11 +52,11 @@ namespace OkonkwoOandaV20Tests
             // example token
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            m_TestToken = "45ee15e74858dd0ca381d5a4f035685b-d480f89b03e16d410ce65fb193ba541f";
+            m_TestToken = "d1e0eb9c7b69d1ec3b1bf234fbd90a04-08a155c9bee7ca654132b7d63e3c5bb0";
 
             // should only test the Trade endpoint
-            m_TestEnvironment = EEnvironment.Trade;  
-            
+            m_TestEnvironment = EEnvironment.Practice;
+
             // set this to the correct number of v20 accounts associated with the token     
             m_TokenAccounts = 5;
 
@@ -69,6 +69,11 @@ namespace OkonkwoOandaV20Tests
 
             if (Credentials.GetDefaultCredentials().HasServer(EServer.Account))
             {
+               // first, check market status
+               if (await IsMarketHalted())
+                  throw new MarketHaltedException("Unable to run tests. OANDA Fx market is halted!");
+
+               // second, run test operations
                await Account_GetAccountsList(m_TokenAccounts);
                await Account_GetAccountDetails();
                await Account_GetAccountSummary();
@@ -83,37 +88,34 @@ namespace OkonkwoOandaV20Tests
 
                await Instrument_GetInstrumentCandles();
 
-               if (!await IsMarketHalted())
+               // test the pricing stream
+               if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
                {
-                  // test the pricing stream
-                  if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingPrices))
-                  {
-                     Stream_GetStreamingPrices();
-                  }
-
-                  // start transactions stream
-                  Task transactionsStreamCheck = null;
-                  if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingTransactions))
-                  {
-                     transactionsStreamCheck = Stream_GetStreamingTransactions();
-                  }
-
-                  // create stream traffic
-                  await Order_RunOrderOperations();
-                  await Trade_RunTradeOperations();
-                  await Position_RunPositionOperations();
-
-                  // stop transactions stream 
-                  if (transactionsStreamCheck != null)
-                  {
-                     await transactionsStreamCheck;
-                  }
-
-                  // review the traffic
-                  await Transaction_GetTransactionsByDateRange();
-                  await Transaction_GetTransactionsByIdRange();
-                  await Account_GetAccountChanges();
+                  Stream_GetStreamingPrices();
                }
+
+               // start transactions stream
+               Task transactionsStreamCheck = null;
+               if (Credentials.GetDefaultCredentials().HasServer(EServer.StreamingTransactions))
+               {
+                  transactionsStreamCheck = Stream_GetStreamingTransactions();
+               }
+
+               // create stream traffic
+               await Order_RunOrderOperations();
+               await Trade_RunTradeOperations();
+               await Position_RunPositionOperations();
+
+               // stop transactions stream 
+               if (transactionsStreamCheck != null)
+               {
+                  await transactionsStreamCheck;
+               }
+
+               // review the traffic
+               await Transaction_GetTransactionsByDateRange();
+               await Transaction_GetTransactionsByIdRange();
+               await Account_GetAccountChanges();
             }
          }
          catch (MarketHaltedException ex)
