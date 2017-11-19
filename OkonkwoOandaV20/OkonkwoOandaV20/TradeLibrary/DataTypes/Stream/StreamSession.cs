@@ -20,12 +20,12 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
          DataHandler handler = DataReceived;
          if (handler != null) handler(data);
       }
-      public delegate void SessionStatusHandler(bool started, Exception e);
+      public delegate void SessionStatusHandler(string accountId, bool started, Exception e);
       public event SessionStatusHandler SessionStatusChanged;
       public void OnSessionStatusChanged(bool started, Exception e)
       {
          SessionStatusHandler handler = SessionStatusChanged;
-         if (handler != null) handler(started, e);
+         if (handler != null) handler(_accountId, started, e);
       }
 
       protected StreamSession(string accountId)
