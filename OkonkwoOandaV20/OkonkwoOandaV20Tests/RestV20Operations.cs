@@ -51,10 +51,10 @@ namespace OkonkwoOandaV20Tests
          {
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            m_TestToken = "d1e0eb9c7b69d1ec3b1bf234fbd90a04-08a155c9bee7ca654132b7d63e3c5bb0";
+            m_TestToken = "aba81046b3c9df01ee17248c1c41f9c2-62b2a4b95f1aa9720aa7b98f311b49cc";
 
             // should only test the Trade endpoint
-            m_TestEnvironment = EEnvironment.Practice;
+            m_TestEnvironment = EEnvironment.Trade;
 
             // set this to the correct number of v20 accounts associated with the token     
             m_TokenAccounts = 5;
