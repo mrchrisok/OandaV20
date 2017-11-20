@@ -50,7 +50,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
                      string line = reader.ReadLine();
                      var data = JsonConvert.DeserializeObject<T>(line);
 
-                     OnSessionStatusChanged(true, null);
+                     OnSessionStatusChanged(!_shutdown, null);
 
                      // Don't send heartbeats
                      if (!data.IsHeartbeat())
