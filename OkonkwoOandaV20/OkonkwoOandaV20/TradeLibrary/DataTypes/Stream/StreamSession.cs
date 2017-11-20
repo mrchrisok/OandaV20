@@ -64,9 +64,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
                      throw e;
                   }
                }
-            }
-            );
-
+            });
       }
 
       public void StopSession()
