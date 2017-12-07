@@ -145,6 +145,7 @@
     <Compile Include="TradeLibrary\DataTypes\Trade\CalculatedTradeState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\RestTrade.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\Trade.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Trade\TradeBase.cs" />
     <Compile Include="TradeLibrary\DataTypes\Trade\TradeSummary.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\ClientConfigureRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\ClientConfigureTransaction.cs" />

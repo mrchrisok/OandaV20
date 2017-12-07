@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OkonkwoOandaV20.TradeLibrary.Primitives;
 using System;
 using System.Collections;
 using System.Collections.Generic;

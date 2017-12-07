@@ -1,11 +1,7 @@
-﻿using OkonkwoOandaV20.Framework;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-using System.Reflection;
+﻿using Newtonsoft.Json;
+using OkonkwoOandaV20.Framework;
 using OkonkwoOandaV20.Framework.JsonConverters;
-using Newtonsoft.Json;
-using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
+using System.Collections.Generic;
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
 {
@@ -28,12 +24,6 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
       public string timestamp { get; set; }
       public double bidLiquidityUsed { get; set; }
       public double askLiquidityUsed { get; set; }
-   }
-
-   public class MarketIfTouchedOrderReason
-   {
-      public const string ClientOrder = "CLIENT_ORDER";
-      public const string Replacement = "REPLACEMENT";
    }
 
    public class MarketOrderDelayedTradeClose
@@ -67,19 +57,46 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
       public const string RegulatoryMarginCallViolation = "REGULATORY_MARGIN_CALL_VIOLATION";
    }
 
-   public class MarketOrderReason
-   {
-      public const string ClientOrder = "CLIENT_ORDER";
-      public const string TradeClose = "TRADE_CLOSE";
-      public const string PositionCloseout = "POSITION_CLOSEOUT";
-      public const string MarginCloseout = "MARGIN_CLOSEOUT";
-      public const string DelayedTradeClose = "DELAYED_TRADE_CLOSE";
-   }
-
    public class OpenTradeFinancing
    {
       public long tradeID { get; set; }
       public double financing { get; set; }
+   }
+
+   /// <summary>
+   /// For additional details, visit http://developer.oanda.com/rest-live-v20/transaction-df/#OrderCancelReason
+   /// </summary>
+   public class OrderCancelReason
+   {
+      public const string InternalServerError = "INTERNAL_SERVER_ERROR";
+      public const string AccountLocked = "ACCOUNT_LOCKED";
+      public const string AccountNewPositionsLocked = "ACCOUNT_NEW_POSITIONS_LOCKED";
+      public const string AccountNewOrderCreationLocked = "ACCOUNT_ORDER_CREATION_LOCKED";
+      public const string AccountOrderFillLocked = "ACCOUNT_ORDER_FILL_LOCKED";
+      public const string ClientRequest = "CLIENT_REQUEST";
+      public const string Migration = "MIGRATION";
+      public const string MarketHalted = "MARKET_HALTED";
+      public const string LinkedTradeClosed = "LINKED_TRADE_CLOSED";
+      public const string TimeInForceExpired = "TIME_IN_FORCE_EXPIRED";
+      public const string InsufficientMargin = "INSUFFICIENT_MARGIN";
+      public const string FifoViolation = "FIFO_VIOLATION";
+      public const string BoundsViolation = "BOUNDS_VIOLATION";
+      public const string ClientRequestReplaced = "CLIENT_REQUEST_REPLACED";
+      public const string InsufficientLiquidity = "INSUFFICIENT_LIQUIDITY";
+      public const string TakeProfitOnFillGtdTimestampInPast = "TAKE_PROFIT_ON_FILL_GTD_TIMESTAMP_IN_PAST";
+      public const string TakeProfitOnFillLoss = "TAKE_PROFIT_ON_FILL_LOSS";
+      public const string LosingTakeProfit = "LOSING_TAKE_PROFIT";
+      public const string StopLossOnFillGtdTimestampInPast = "STOP_LOSS_ON_FILL_GTD_TIMESTAMP_IN_PAST";
+      public const string StopLossOnFillLoss = "STOP_LOSS_ON_FILL_LOSS";
+      public const string TrailingStopLossOnFillGtdTimestampInPast = "TRAILING_STOP_LOSS_ON_FILL_GTD_TIMESTAMP_IN_PAST";
+      public const string ClientTradeIdAlreadyExists = "CLIENT_TRADE_ID_ALREADY_EXISTS";
+      public const string PositionCloseoutFailed = "POSITION_CLOSEOUT_FAILED";
+      public const string OpenTradesAllowedExceeded = "OPEN_TRADES_ALLOWED_EXCEEDED";
+      public const string PendingOrdersAllowedExceeded = "PENDING_ORDERS_ALLOWED_EXCEEDED";
+      public const string TakeProfitOnFillClientOrderIdAlreadyExists = "TAKE_PROFIT_ON_FILL_CLIENT_ORDER_ID_ALREADY_EXISTS";
+      public const string StopLossOnFillClientOrderIdAlreadyExists = "STOP_LOSS_ON_FILL_CLIENT_ORDER_ID_ALREADY_EXISTS";
+      public const string TrailingStopLossOnFillClientOrderIdAlreadyExists = "TRAILING_STOP_LOSS_ON_FILL_CLIENT_ORDER_ID_ALREADY_EXISTS";
+      public const string PositionSizeExceeded = "POSITION_SIZE_EXCEEDED";
    }
 
    public class OrderFillReason
@@ -181,6 +198,54 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
       [JsonIgnore]
       public PriceInformation priceInformation { get; set; }
    }
+
+   #region order reasons
+   public abstract class OrderReason
+   {
+      public const string ClientOrder = "CLIENT_ORDER";
+   }
+
+   public class LimitOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+   }
+
+   public class MarketIfTouchedOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+   }
+
+   public class MarketOrderReason : OrderReason
+   {
+      public const string TradeClose = "TRADE_CLOSE";
+      public const string PositionCloseout = "POSITION_CLOSEOUT";
+      public const string MarginCloseout = "MARGIN_CLOSEOUT";
+      public const string DelayedTradeClose = "DELAYED_TRADE_CLOSE";
+   }
+
+   public class StopLossOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+      public const string OnFill = "ON_FILL";
+   }
+
+   public class StopOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+   }
+
+   public class TakeProfitOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+      public const string OnFill = "ON_FILL";
+   }
+
+   public class TrailingStopLossOrderReason : OrderReason
+   {
+      public const string Replacement = "REPLACEMENT";
+      public const string OnFill = "ON_FILL";
+   }
+   #endregion
 
    public class TransactionRejectReason
    {
