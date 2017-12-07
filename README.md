@@ -6,3 +6,5 @@ Provides programmatic access to OANDA's v20 trading endpoints.
 To get the repo, run: git clone https://github.com/mrchrisok/OANDAV20.git
 
 For documentation, usage and examples, see: http://developer.oanda.com/rest-live-v20/introduction
+
+To install the Nuget package, run: Install-Package OkonkwoOandaV20
