@@ -5,7 +5,6 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
 {
    public class LimitOrder : Order
    {
-      public string type { get; set; }
       public string instrument { get; set; }
       public long units { get; set; }
       public double price { get; set; }

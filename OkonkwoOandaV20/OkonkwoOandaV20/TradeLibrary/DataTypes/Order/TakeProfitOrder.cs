@@ -4,7 +4,6 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
 {
    public class TakeProfitOrder : Order
    {
-      public string type { get; set; }
       public long tradeId { get; set; }
       public string clientTradeID { get; set; }
       public double price { get; set; }

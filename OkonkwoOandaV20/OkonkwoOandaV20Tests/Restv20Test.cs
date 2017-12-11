@@ -24,6 +24,14 @@ namespace OkonkwoOandaV20Tests
       }
       #endregion
 
+      [TestMethod]
+      public void test_Initialize_market_is_halted()
+      {
+         var marketIsHalted = m_Results.Items.FirstOrDefault(x => x.Key == "00.0").Value as Restv20TestResult;
+
+         Assert.IsFalse(marketIsHalted.Success, marketIsHalted.Success.ToString() + ": " + marketIsHalted.Details);
+      }
+
       #region Account
       [TestMethod]
       public void test_Account_retrieve_accounts_list()

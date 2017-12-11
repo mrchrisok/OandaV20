@@ -49,17 +49,21 @@ namespace OkonkwoOandaV20Tests
       {
          try
          {
+            // set this to the correct environment based on the account
+            m_TestEnvironment = EEnvironment.Practice;
+
             // an OANDA trade or practice account is required to generate a valid token
             // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            m_TestToken = "aba81046b3c9df01ee17248c1c41f9c2-62b2a4b95f1aa9720aa7b98f311b49cc";
+            m_TestToken = "fb9f1a62443da011005ae7523f102d40-f06700832f0572d1dc10b58ca3e7b3b2";
 
-            // should only test the Trade endpoint
-            m_TestEnvironment = EEnvironment.Trade;
+            // this should be a v20 account, not a standard/legacy account
+            // if null, this will be set to the first v20 account found using the token above
+            m_TestAccount = "101-001-1913854-001";
 
             // set this to the correct number of v20 accounts associated with the token     
-            m_TokenAccounts = 5;
+            m_TokenAccounts = 1;
 
-            Credentials.SetCredentials(m_TestEnvironment, m_TestToken, null);
+            Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
 
             if (Credentials.GetDefaultCredentials() == null)
             {
@@ -69,12 +73,11 @@ namespace OkonkwoOandaV20Tests
             if (Credentials.GetDefaultCredentials().HasServer(EServer.Account))
             {
                // first, get accounts
-               // this operation adds the test AccountId to Credentials
+               // this operation adds the test AccountId to Credentials (if it is null)
                await Account_GetAccountsList(m_TokenAccounts);
 
                // second, check market status
-               if (await IsMarketHalted())
-                  throw new MarketHaltedException("Unable to run tests. OANDA Fx market is halted!");
+               await Initialize_GetMarketStatus();
 
                // third, proceed with all others
                await Account_GetAccountDetails();
@@ -134,6 +137,13 @@ namespace OkonkwoOandaV20Tests
          }
       }
 
+      private static async Task Initialize_GetMarketStatus()
+      {
+         bool marketIsHalted = await IsMarketHalted();
+         m_Results.Verify("00.0", marketIsHalted, "Market is halted.");
+         if (marketIsHalted) throw new MarketHaltedException("Unable to continue tests. OANDA Fx market is halted!");
+      }
+
       #region Account
       /// <summary>
       /// Retrieve the list of accounts associated with the account token
@@ -164,7 +174,7 @@ namespace OkonkwoOandaV20Tests
          }
 
          // ensure the first account has sufficient funds
-         m_TestAccount = result.OrderBy(r => r.id).First().id;
+         m_TestAccount = m_TestAccount ?? result.OrderBy(r => r.id).First().id;
          Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
       }
 
