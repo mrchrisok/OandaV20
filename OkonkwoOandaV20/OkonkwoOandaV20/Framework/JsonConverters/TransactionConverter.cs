@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OkonkwoOandaV20.Framework.Factories;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System;
 using System.Collections.Generic;

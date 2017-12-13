@@ -1,7 +1,7 @@
-﻿using System;
+﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 using System.Collections.Generic;
 
-namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
+namespace OkonkwoOandaV20.Framework.Factories
 {
    public class TransactionFactory
    {

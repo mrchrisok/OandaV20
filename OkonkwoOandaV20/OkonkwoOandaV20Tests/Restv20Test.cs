@@ -259,6 +259,32 @@ namespace OkonkwoOandaV20Tests
          Assert.IsTrue(cancelledOrderReturned.Success, cancelledOrderReturned.Success.ToString() + ": " + cancelledOrderReturned.Details);
          Assert.IsTrue(orderWasCancelled.Success, orderWasCancelled.Success.ToString() + ": " + orderWasCancelled.Details);
       }
+
+      [TestMethod]
+      public void test_Order_cancel_replace_order_with_exit_orders()
+      {
+         var orderWasCreated = m_Results.Items.FirstOrDefault(x => x.Key == "11.19").Value as Restv20TestResult;
+         var orderTypeIsCorrect = m_Results.Items.FirstOrDefault(x => x.Key == "11.20").Value as Restv20TestResult;
+         var orderHasStopLoss = m_Results.Items.FirstOrDefault(x => x.Key == "11.21").Value as Restv20TestResult;
+         var orderHasTakeProfit = m_Results.Items.FirstOrDefault(x => x.Key == "11.22").Value as Restv20TestResult;
+         var orderWasCancelled = m_Results.Items.FirstOrDefault(x => x.Key == "11.23").Value as Restv20TestResult;
+         var cancelledOrderHasCorrectReason = m_Results.Items.FirstOrDefault(x => x.Key == "11.24").Value as Restv20TestResult;
+         var newOrderWasCreated = m_Results.Items.FirstOrDefault(x => x.Key == "11.25").Value as Restv20TestResult;
+         var newOrderReasonIsCorrect = m_Results.Items.FirstOrDefault(x => x.Key == "11.26").Value as Restv20TestResult;
+         var newOrderStopLossIsCorrect = m_Results.Items.FirstOrDefault(x => x.Key == "11.27").Value as Restv20TestResult;
+         var newOrderTakeProfitIsCorrect = m_Results.Items.FirstOrDefault(x => x.Key == "11.28").Value as Restv20TestResult;
+
+         Assert.IsTrue(orderWasCreated.Success, orderWasCreated.Success.ToString() + ": " + orderWasCreated.Details);
+         Assert.IsTrue(orderTypeIsCorrect.Success, orderTypeIsCorrect.Success.ToString() + ": " + orderTypeIsCorrect.Details);
+         Assert.IsTrue(orderHasStopLoss.Success, orderHasStopLoss.Success.ToString() + ": " + orderHasStopLoss.Details);
+         Assert.IsTrue(orderHasTakeProfit.Success, orderHasTakeProfit.Success.ToString() + ": " + orderHasTakeProfit.Details);
+         Assert.IsTrue(orderWasCancelled.Success, orderWasCancelled.Success.ToString() + ": " + orderWasCancelled.Details);
+         Assert.IsTrue(cancelledOrderHasCorrectReason.Success, cancelledOrderHasCorrectReason.Success.ToString() + ": " + cancelledOrderHasCorrectReason.Details);
+         Assert.IsTrue(newOrderWasCreated.Success, newOrderWasCreated.Success.ToString() + ": " + newOrderWasCreated.Details);
+         Assert.IsTrue(newOrderReasonIsCorrect.Success, newOrderReasonIsCorrect.Success.ToString() + ": " + newOrderReasonIsCorrect.Details);
+         Assert.IsTrue(newOrderStopLossIsCorrect.Success, newOrderStopLossIsCorrect.Success.ToString() + ": " + newOrderStopLossIsCorrect.Details);
+         Assert.IsTrue(newOrderTakeProfitIsCorrect.Success, newOrderTakeProfitIsCorrect.Success.ToString() + ": " + newOrderTakeProfitIsCorrect.Details);
+      }
       #endregion
 
       #region Trade

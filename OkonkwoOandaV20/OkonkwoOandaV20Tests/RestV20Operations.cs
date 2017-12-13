@@ -327,8 +327,8 @@ namespace OkonkwoOandaV20Tests
 
          string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));
 
-         // create new pending order
-         var request = new MarketIfTouchedOrderRequest()
+         #region create new pending order
+         var request1 = new MarketIfTouchedOrderRequest()
          {
             instrument = m_TestInstrument,
             units = 1, // buy
@@ -339,14 +339,14 @@ namespace OkonkwoOandaV20Tests
             clientExtensions = new ClientExtensions()
             {
                id = "test_order_1",
-               comment = "test order comment",
-               tag = "test_order"
+               comment = "test order 1 comment",
+               tag = "test_order_1"
             },
             tradeClientExtensions = new ClientExtensions()
             {
                id = "test_trade_1",
-               comment = "test trade comment",
-               tag = "test_trade"
+               comment = "test trade 1 comment",
+               tag = "test_trade_1"
             }
          };
 
@@ -355,7 +355,7 @@ namespace OkonkwoOandaV20Tests
          openOrders.ForEach(async x => await Rest20.CancelOrderAsync(AccountId, x.id));
 
          // create order
-         var response = await Rest20.PostOrderAsync(AccountId, request);
+         var response = await Rest20.PostOrderAsync(AccountId, request1);
          var orderTransaction = response.orderCreateTransaction;
 
          m_Results.Verify("11.0", orderTransaction != null && orderTransaction.id > 0, "Order successfully opened");
@@ -375,24 +375,24 @@ namespace OkonkwoOandaV20Tests
          // Get order details
          var order = await Rest20.GetOrderDetailsAsync(AccountId, pendingOrders[0].id) as MarketIfTouchedOrder;
          m_Results.Verify("11.7", order != null && order.id == orderTransaction.id, "Order details successfully retrieved.");
-         m_Results.Verify("11.8", (order.clientExtensions == null) == (request.clientExtensions == null), "order client extensions successfully retrieved.");
-         m_Results.Verify("11.9", (order.tradeClientExtensions == null) == (request.tradeClientExtensions == null), "order trade client extensions successfully retrieved.");
+         m_Results.Verify("11.8", (order.clientExtensions == null) == (request1.clientExtensions == null), "order client extensions successfully retrieved.");
+         m_Results.Verify("11.9", (order.tradeClientExtensions == null) == (request1.tradeClientExtensions == null), "order trade client extensions successfully retrieved.");
 
          // Udpate extensions
-         var newOrderExtensions = request.clientExtensions;
-         newOrderExtensions.comment = "updated order comment";
-         var newTradeExtensions = request.tradeClientExtensions;
-         newTradeExtensions.comment = "updated trade comment";
+         var newOrderExtensions = request1.clientExtensions;
+         newOrderExtensions.comment = "updated order 1 comment";
+         var newTradeExtensions = request1.tradeClientExtensions;
+         newTradeExtensions.comment = "updated trade 1 comment";
          var extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, order.id, newOrderExtensions, newTradeExtensions);
 
          m_Results.Verify("11.10", extensionsModifyResponse != null, "Order extensions update received successfully.");
          m_Results.Verify("11.11", extensionsModifyResponse.orderClientExtensionsModifyTransaction.orderID == order.id, "Correct order extensions updated.");
-         m_Results.Verify("11.12", extensionsModifyResponse.orderClientExtensionsModifyTransaction.clientExtensionsModify.comment == "updated order comment", "Order extensions comment updated successfully.");
-         m_Results.Verify("11.13", extensionsModifyResponse.orderClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated trade comment", "Order trade extensions comment updated successfully.");
+         m_Results.Verify("11.12", extensionsModifyResponse.orderClientExtensionsModifyTransaction.clientExtensionsModify.comment == "updated order 1 comment", "Order extensions comment updated successfully.");
+         m_Results.Verify("11.13", extensionsModifyResponse.orderClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated trade 1 comment", "Order trade extensions comment updated successfully.");
 
          // Cancel & Replace an existing order
-         request.units += 10;
-         var cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request);
+         request1.units += 10;
+         var cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1);
          var cancelTransaction = cancelReplaceResponse.orderCancelTransaction;
          var newOrderTransaction = cancelReplaceResponse.orderCreateTransaction;
 
@@ -401,13 +401,77 @@ namespace OkonkwoOandaV20Tests
 
          // Get new order details
          var newOrder = await Rest20.GetOrderDetailsAsync(AccountId, newOrderTransaction.id) as MarketIfTouchedOrder;
-         m_Results.Verify("11.16", newOrder != null && newOrder.units == request.units, "New order details are correct.");
+         m_Results.Verify("11.16", newOrder != null && newOrder.units == request1.units, "New order details are correct.");
 
          // Cancel an order
          var cancelOrderResponse = await Rest20.CancelOrderAsync(AccountId, newOrder.id);
          m_Results.Verify("11.17", cancelOrderResponse != null, "Cancelled order retrieved successfully.");
          var cancelTransaction2 = cancelOrderResponse.orderCancelTransaction;
          m_Results.Verify("11.18", cancelTransaction2.orderID == newOrder.id, "Order cancelled successfully.");
+         #endregion
+
+         #region Create new pending order with exit orders
+
+         // need this for rounding, etc.
+         var owxInstrument = m_Instruments.FirstOrDefault(x => x.name == m_TestInstrument);
+
+         double owxOrderPrice = Math.Round(1.0, owxInstrument.displayPrecision);
+         double owxStopLossPrice = Math.Round(owxOrderPrice - (0.10 * owxOrderPrice), owxInstrument.displayPrecision);
+         double owxTakeProfitPrice = Math.Round(owxOrderPrice + (0.10 * owxOrderPrice), owxInstrument.displayPrecision);
+
+         var owxRequest = new LimitOrderRequest()
+         {
+            instrument = m_TestInstrument,
+            units = 1, // buy
+            timeInForce = TimeInForce.GoodUntilDate,
+            gtdTime = expiry,
+            price = owxOrderPrice,
+            priceBound = Math.Round(owxOrderPrice + (0.01 * owxOrderPrice), owxInstrument.displayPrecision),
+            stopLossOnFill = new StopLossDetails(owxInstrument)
+            {
+               timeInForce = TimeInForce.GoodUntilCancelled,
+               price = owxStopLossPrice
+            },
+            takeProfitOnFill = new TakeProfitDetails(owxInstrument)
+            {
+               timeInForce = TimeInForce.GoodUntilCancelled,
+               price = owxTakeProfitPrice
+            }
+         };
+
+         // create order with exit orders
+         var owxResponse = await Rest20.PostOrderAsync(AccountId, owxRequest);
+         var owxOrderTransaction = owxResponse.orderCreateTransaction;
+         m_Results.Verify("11.19", owxOrderTransaction != null && owxOrderTransaction.id > 0, "Order with exit orders successfully opened");
+         m_Results.Verify("11.20", owxOrderTransaction.type == TransactionType.LimitOrder, "Order with exit orders type is correct.");
+
+         // get order with exit orders details
+         var pendingOrders2 = await Rest20.GetPendingOrderListAsync(AccountId);
+         var order2 = await Rest20.GetOrderDetailsAsync(AccountId, pendingOrders2[0].id) as LimitOrder;
+         m_Results.Verify("11.21", order2 != null && order2.stopLossOnFill.price == owxStopLossPrice, "Order with exit orders stoploss details are correct.");
+         m_Results.Verify("11.22", order2 != null && order2.takeProfitOnFill.price == owxTakeProfitPrice, "Order with exit orders takeprofit details are correct.");
+
+         // cancel & replace order with exit orders - update stoploss and takeprofit
+         owxStopLossPrice = Math.Round(owxOrderPrice - (0.15 * owxOrderPrice), owxInstrument.displayPrecision);
+         owxRequest.stopLossOnFill = new StopLossDetails(owxInstrument) { price = owxStopLossPrice };
+
+         owxTakeProfitPrice = Math.Round(owxOrderPrice + (0.15 * owxOrderPrice), owxInstrument.displayPrecision);
+         owxRequest.takeProfitOnFill = new TakeProfitDetails(owxInstrument) { price = owxTakeProfitPrice };
+
+         var owxCancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order2.id, owxRequest);
+         var owxCancelTransaction = owxCancelReplaceResponse.orderCancelTransaction;
+         var owxNewOrderTransaction = owxCancelReplaceResponse.orderCreateTransaction;
+
+         m_Results.Verify("11.23", owxCancelTransaction != null && owxCancelTransaction.orderID == order2.id, "Order with exit orders cancel+replace cancelled successfully.");
+         m_Results.Verify("11.24", owxCancelTransaction != null && owxCancelTransaction.reason == OrderCancelReason.ClientRequestReplaced, "Order with exit orders cancel+replace has correct reason.");
+         m_Results.Verify("11.25", owxNewOrderTransaction != null && owxNewOrderTransaction.id > 0 && owxNewOrderTransaction.id == owxCancelTransaction.replacedByOrderID, "Order with exit orders cancel+replace replaced successfully.");
+
+         // Get order with exit orders replacement order details
+         var owxOrderTransaction2 = owxNewOrderTransaction as LimitOrderTransaction;
+         m_Results.Verify("11.26", owxOrderTransaction2 != null && owxOrderTransaction2.reason == LimitOrderReason.Replacement, "Order with exit orders replacement order reason is correct.");
+         m_Results.Verify("11.27", owxOrderTransaction2 != null && owxOrderTransaction2.stopLossOnFill.price == owxStopLossPrice, "Order with exit orders replacement order stoploss is correct.");
+         m_Results.Verify("11.28", owxOrderTransaction2 != null && owxOrderTransaction2.takeProfitOnFill.price == owxTakeProfitPrice, "Order with exit orders replacement order takeprofit is correct.");
+         #endregion
       }
 
       /// <summary>

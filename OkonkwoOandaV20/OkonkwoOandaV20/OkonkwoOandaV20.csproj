@@ -49,6 +49,9 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Framework\Attributes.cs" />
     <Compile Include="Framework\Common.cs" />
+    <Compile Include="Framework\Factories\OrderFactory.cs" />
+    <Compile Include="Framework\Factories\PriceObjectFactory.cs" />
+    <Compile Include="Framework\Factories\TransactionFactory.cs" />
     <Compile Include="Framework\JsonConverters\JsonConverterBase.cs" />
     <Compile Include="Framework\JsonConverters\PriceObjectConverter.cs" />
     <Compile Include="Framework\JsonConverters\OrderConverter.cs" />
@@ -122,7 +125,6 @@
     <Compile Include="TradeLibrary\DataTypes\Order\StopOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\TakeProfitOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\TrailingStopLossOrder.cs" />
-    <Compile Include="TradeLibrary\DataTypes\Order\OrderFactory.cs" />
     <Compile Include="TradeLibrary\DataTypes\Position\CalculatedPositionState.cs" />
     <Compile Include="TradeLibrary\DataTypes\Position\Position.cs" />
     <Compile Include="TradeLibrary\DataTypes\Position\PositionSide.cs" />
@@ -183,7 +185,6 @@
     <Compile Include="TradeLibrary\DataTypes\Transaction\TrailingStopLossOrderRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\TrailingStopLossOrderTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\Transaction.cs" />
-    <Compile Include="TradeLibrary\DataTypes\Transaction\TransactionFactory.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\TransactionHeartbeat.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\TransferFundsRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\TransferFundsTransaction.cs" />

@@ -4,6 +4,8 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
+using OkonkwoOandaV20.Framework.Factories;
 
 namespace OkonkwoOandaV20.Framework.JsonConverters
 {
@@ -53,7 +55,36 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
 
          }
 
-         jo.WriteTo(writer);
+         jo.WriteTo(writer); 
+      }
+
+      public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+      {
+         var jsonToken = JToken.Load(reader);
+
+         if (jsonToken.Type == JTokenType.Array)
+         {
+            var priceObjects = new List<IHasPrices>();
+
+            var jsonArray = (JArray)jsonToken;
+
+            foreach (var item in jsonArray)
+            {
+               var priceObject = PriceObjectFactory.Create(objectType.FullName);
+               serializer.Populate(item.CreateReader(), priceObject);
+               priceObjects.Add(priceObject);
+            }
+             
+            return priceObjects;
+         }
+         else if (jsonToken.Type == JTokenType.Object)
+         {
+            IHasPrices priceObject = PriceObjectFactory.Create(objectType.FullName);
+            serializer.Populate(jsonToken.CreateReader(), priceObject);
+            return priceObject;
+         }
+         else
+            throw new ArgumentException(string.Format("Unexpected JTokenType ({0}) in reader.", jsonToken.Type.ToString()));
       }
    }
 }
