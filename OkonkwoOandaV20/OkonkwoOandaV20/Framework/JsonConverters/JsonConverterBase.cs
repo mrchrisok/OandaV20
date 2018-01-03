@@ -13,14 +13,14 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
          throw new NotImplementedException("Inheriting class must implement.");
       }
 
-      public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-      {
-         throw new InvalidOperationException("Use default serialization.");
-      }
-
       public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
       {
          throw new NotImplementedException("Inheriting class must implement.");
+      }
+
+      public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+      {
+         throw new InvalidOperationException("Use default serialization.");
       }
    }
 }

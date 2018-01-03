@@ -60,6 +60,7 @@
     <Compile Include="Framework\JsonConverters\TransactionConverter.cs" />
     <Compile Include="Framework\MarketHaltedException.cs" />
     <Compile Include="Framework\PriceInformation.cs" />
+    <Compile Include="Framework\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest20.cs" />
     <Compile Include="TradeLibrary\DataTypes\Account\Account.cs" />

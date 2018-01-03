@@ -139,7 +139,7 @@ namespace OkonkwoOandaV20Tests
 
       private static async Task Initialize_GetMarketStatus()
       {
-         bool marketIsHalted = await IsMarketHalted();
+         bool marketIsHalted = await Utilities.IsMarketHalted();
          m_Results.Verify("00.0", marketIsHalted, "Market is halted.");
          if (marketIsHalted) throw new MarketHaltedException("Unable to continue tests. OANDA Fx market is halted!");
       }
@@ -322,7 +322,7 @@ namespace OkonkwoOandaV20Tests
       /// <returns></returns>
       private static async Task Order_RunOrderOperations()
       {
-         if (await IsMarketHalted())
+         if (await Utilities.IsMarketHalted())
             throw new MarketHaltedException("OANDA Fx market is halted!");
 
          string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));
@@ -483,7 +483,7 @@ namespace OkonkwoOandaV20Tests
       {
          // I'm fine with a throw here
          // To each his/her own on doing something different.
-         if (await IsMarketHalted())
+         if (await Utilities.IsMarketHalted())
             throw new MarketHaltedException("OANDA Fx market is halted!");
 
          if (closeAllTrades)
@@ -623,7 +623,7 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("13.15", result.stopLossOrderCancelTransaction != null, "Stop loss cancelled.");
          m_Results.Verify("13.16", result.trailingStopLossOrderCancelTransaction != null, "Trailing stop loss cancelled.");
 
-         if (await IsMarketHalted())
+         if (await Utilities.IsMarketHalted())
             throw new MarketHaltedException("OANDA Fx market is halted!");
 
          // close an open trade
@@ -643,7 +643,7 @@ namespace OkonkwoOandaV20Tests
       /// <returns></returns>
       private static async Task Position_RunPositionOperations()
       {
-         if (await IsMarketHalted())
+         if (await Utilities.IsMarketHalted())
             throw new MarketHaltedException("OANDA Fx market is halted!");
 
          short units = 1;
@@ -835,29 +835,6 @@ namespace OkonkwoOandaV20Tests
       #endregion
 
       #region Utilities
-      /// <summary>
-      /// Checks to see if the EUR_USD cross is actively trading.
-      /// </summary>
-      /// <returns>True if EUR_USD is actively trading. Throws an exception if not.</returns>
-      private static async Task<bool> IsMarketHalted()
-      {
-         var eurusd = new List<string>() { "EUR_USD" };
-         var price = await Rest20.GetPriceListAsync(AccountId, eurusd);
-
-         bool isTradeable = false, hasBids = false, hasAsks = false;
-
-         if (price[0] != null)
-         {
-            isTradeable = price[0].tradeable;
-            hasBids = price[0].bids.Count > 0;
-            hasAsks = price[0].asks.Count > 0;
-         }
-
-         bool marketHalted = !(isTradeable && hasBids && hasAsks);
-
-         return marketHalted;
-      }
-
       /// <summary>
       /// Convert DateTime object to a string of the indicated format
       /// </summary>
