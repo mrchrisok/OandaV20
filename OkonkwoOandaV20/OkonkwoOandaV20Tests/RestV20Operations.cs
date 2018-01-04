@@ -293,7 +293,10 @@ namespace OkonkwoOandaV20Tests
       private static async Task Instrument_GetInstrumentCandles()
       {
          short count = 500;
-         string price = "MBA";
+
+         // get all price types .. MBA
+         string price = string.Concat(CandleStickPriceType.Midpoint, CandleStickPriceType.Bid, CandleStickPriceType.Ask);
+
          string instrument = InstrumentName.Currency.EURUSD;
          string granularity = CandleStickGranularity.Hours01;
 
