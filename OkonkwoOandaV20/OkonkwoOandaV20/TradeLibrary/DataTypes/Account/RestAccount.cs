@@ -4,6 +4,7 @@ using OkonkwoOandaV20.TradeLibrary.DataTypes.Instrument;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OkonkwoOandaV20
 {
@@ -57,18 +58,34 @@ namespace OkonkwoOandaV20
       /// <param name="accountId">summary will be retrieved for this account id</param>
       /// <param name="instruments">a comma-separated list of instrument names to return</param>
       /// <returns>list of tradeable instruments the account details</returns>
-      public static async Task<List<Instrument>> GetAccountInstrumentsAsync(string accountId, List<string> instruments = null)
+      public static async Task<List<Instrument>> GetAccountInstrumentsAsync(string accountId, string instruments)
       {
          string requestString = Server(EServer.Account) + "accounts/" + accountId + "/instruments";
 
          if (instruments != null)
          {
-            string instrumentsParam = GetCommaSeparatedList(instruments);
-            requestString += "?instruments=" + Uri.EscapeDataString(instrumentsParam);
+            instruments = string.Join(",", instruments.Split(',').Distinct().ToArray());
+            requestString += "?instruments=" + Uri.EscapeDataString(instruments.Trim(','));
          }
 
          var response = await MakeRequestAsync<AccountInstrumentsResponse>(requestString);
          return response.instruments;
+      }
+
+      /// <summary>
+      /// Retrieves the tradeable instruments for a given account
+      /// </summary>
+      /// <param name="accountId">summary will be retrieved for this account id</param>
+      /// <param name="instruments">a list of instrument names to return</param>
+      /// <returns>list of tradeable instruments the account details</returns>
+      public static async Task<List<Instrument>> GetAccountInstrumentsAsync(string accountId, List<string> instruments = null)
+      {
+         string commaSeparatedInstruments = null;
+
+         if (instruments != null)
+            commaSeparatedInstruments = GetCommaSeparatedList(instruments);
+
+         return await GetAccountInstrumentsAsync(accountId, commaSeparatedInstruments);
       }
 
       /// <summary>

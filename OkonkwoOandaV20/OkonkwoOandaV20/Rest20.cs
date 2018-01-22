@@ -150,7 +150,7 @@ namespace OkonkwoOandaV20
       private static string CreateJSONBody<P>(P obj, bool simpleDictionary = false)
       {
          // trap this in case of forgetting
-         if(typeof(P).GetInterfaces().Contains(typeof(IDictionary)))
+         if (typeof(P).GetInterfaces().Contains(typeof(IDictionary)))
             simpleDictionary = true;
 
          var settings = new DataContractJsonSerializerSettings();
@@ -194,7 +194,8 @@ namespace OkonkwoOandaV20
          StringBuilder result = new StringBuilder();
          foreach (var item in items)
          {
-            result.Append(item + ",");
+            if (!result.ToString().Contains(item))
+               result.Append(item + ",");
          }
          return result.ToString().Trim(',');
       }

@@ -111,7 +111,7 @@ namespace OkonkwoOandaV20
       }
 
       /// <summary>
-      /// Create a trade's exit orders (takeProfit, stopLoss and trailingStopLoss)
+      /// Cancel a trade's exit orders (takeProfit, stopLoss and trailingStopLoss)
       /// </summary>
       /// <param name="accountId">the account that owns the trade</param>
       /// <param name="tradeId">the id of the trade to update</param>
