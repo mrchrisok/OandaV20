@@ -18,6 +18,7 @@ using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Position;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order;
+using System.IO;
 
 namespace OkonkwoOandaV20Tests
 {
@@ -49,21 +50,7 @@ namespace OkonkwoOandaV20Tests
       {
          try
          {
-            // set this to the correct environment based on the account
-            m_TestEnvironment = EEnvironment.Practice;
-
-            // an OANDA trade or practice account is required to generate a valid token
-            // for info, go to: https://www.oanda.com/account/tpa/personal_token
-            m_TestToken = "fb9f1a62443da011005ae7523f102d40-f06700832f0572d1dc10b58ca3e7b3b2";
-
-            // this should be a v20 account, not a standard/legacy account
-            // if null, this will be set to the first v20 account found using the token above
-            m_TestAccount = "101-001-1913854-001";
-
-            // set this to the correct number of v20 accounts associated with the token     
-            m_TokenAccounts = 1;
-
-            Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
+            await SetPracticeApiCredentials();
 
             if (Credentials.GetDefaultCredentials() == null)
             {
@@ -854,6 +841,43 @@ namespace OkonkwoOandaV20Tests
             return ((int)(time.Subtract(new DateTime(1970, 1, 1))).TotalSeconds).ToString();
          else
             throw new ArgumentException(string.Format("The value ({0}) of the format parameter is invalid.", (short)format));
+      }
+
+      /// <summary>
+      /// Reads the api key from a supplied file name
+      /// </summary>
+      /// <returns></returns>
+      private static async Task SetPracticeApiCredentials(string fileName = null)
+      {
+         fileName = fileName ?? @"C:\Users\Osita\SourceCode\GitHub\OandaV20\oandaPracticeApiCredentials.txt";
+
+         try
+         {
+            using (StreamReader sr = new StreamReader(fileName))
+            {
+               string apiCredentials = await sr.ReadToEndAsync();
+
+               // an OANDA trade or practice account is required to generate a valid token
+               // for info, go to: https://www.oanda.com/account/tpa/personal_token
+               m_TestToken = apiCredentials.Split('|')[0];
+
+               // this should be a v20 account, not a standard/legacy account
+               // if null, this will be set to the first v20 account found using the token above
+               m_TestAccount = apiCredentials.Split('|')[1];
+            }
+         }
+         catch (Exception ex)
+         {
+            throw new Exception("Could not read api credentials file.", ex);
+         }
+
+         // set this to the correct environment based on the account
+         m_TestEnvironment = EEnvironment.Practice;
+
+         // set this to the correct number of v20 accounts associated with the token     
+         m_TokenAccounts = 1;
+
+         Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
       }
       #endregion
    }
