@@ -4,11 +4,12 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
    public class TrailingStopLossOrderRequest : ExitOrderRequest
    {
-      public TrailingStopLossOrderRequest()
+      public TrailingStopLossOrderRequest(Instrument.Instrument oandaInstrument)
+         : base(oandaInstrument)
       {
          type = OrderType.TrailingStopLoss;
       }
 
-      public double distance { get; set; }
+      public decimal distance { get; set; }
    }
 }

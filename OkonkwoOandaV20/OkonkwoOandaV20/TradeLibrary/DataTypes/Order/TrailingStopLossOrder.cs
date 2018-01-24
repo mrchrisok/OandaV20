@@ -6,10 +6,10 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
    {
       public long tradeID { get; set; }
       public string clientTradeID { get; set; }
-      public double distance { get; set; }
+      public decimal distance { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
-      public double trailingStopValue { get; set; }
+      public decimal trailingStopValue { get; set; }
       public string triggerCondition { get; set; }
       public long? fillingTransactionID { get; set; }
       public string filledTime { get; set; }

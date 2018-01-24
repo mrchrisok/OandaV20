@@ -2,7 +2,7 @@
 {
    public class QuoteHomeConversionFactors
    {
-      public double positiveUnits { get; set; }
-      public double negativeUnits { get; set; }
+      public decimal positiveUnits { get; set; }
+      public decimal negativeUnits { get; set; }
    }
 }

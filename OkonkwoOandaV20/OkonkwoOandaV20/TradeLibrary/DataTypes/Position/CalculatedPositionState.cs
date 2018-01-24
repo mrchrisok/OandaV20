@@ -6,8 +6,8 @@
    public class CalculatedPositionState
    {
       public string instrument { get; set; }
-      public double netUnrealizedPL { get; set; }
-      public double longUnrealizedPL { get; set; }
-      public double shortUnrealizedPL { get; set; }
+      public decimal netUnrealizedPL { get; set; }
+      public decimal longUnrealizedPL { get; set; }
+      public decimal shortUnrealizedPL { get; set; }
    }
 }

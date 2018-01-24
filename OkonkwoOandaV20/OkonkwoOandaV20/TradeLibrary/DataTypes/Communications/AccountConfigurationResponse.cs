@@ -5,6 +5,6 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
    public class AccountConfigurationResponse
    {
       public ClientConfigureTransaction clientConfigureTransaction;
-      public double lastTransactionID;
+      public decimal lastTransactionID;
    }
 }

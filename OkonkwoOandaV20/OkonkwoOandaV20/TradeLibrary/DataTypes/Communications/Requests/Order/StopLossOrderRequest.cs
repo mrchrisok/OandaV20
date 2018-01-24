@@ -4,11 +4,10 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
    public class StopLossOrderRequest : ExitOrderRequest
    {
-      public StopLossOrderRequest()
+      public StopLossOrderRequest(Instrument.Instrument oandaInstrument)
+         : base(oandaInstrument)
       {
          type = OrderType.StopLoss;
       }
-
-      public double price { get; set; }
    }
 }

@@ -3,9 +3,9 @@
    public class Position
    {
       public string instrument { get; set; }
-      public double pl { get; set; }
-      public double unrealizedPL { get; set; }
-      public double resettablePL { get; set; }
+      public decimal pl { get; set; }
+      public decimal unrealizedPL { get; set; }
+      public decimal resettablePL { get; set; }
       public PositionSide @long { get; set; }
       public PositionSide @short { get; set; }
    }

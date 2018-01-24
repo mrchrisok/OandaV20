@@ -72,11 +72,11 @@ namespace OkonkwoOandaV20Tests
          var correctOpenTradeCount = m_Results.Items.FirstOrDefault(x => x.Key == "08.3").Value as Restv20TestResult;
          var tradesMatchTradeCount = m_Results.Items.FirstOrDefault(x => x.Key == "08.4").Value as Restv20TestResult;
 
-         Assert.IsTrue(accountRetrieved.Success, accountRetrieved.Success.ToString() + ": " + accountRetrieved.Details);
-         Assert.IsTrue(idIsCorrect.Success, idIsCorrect.Success.ToString() + ": " + idIsCorrect.Details);
-         Assert.IsTrue(correctCurrency.Success, correctCurrency.Success.ToString() + ": " + correctCurrency.Details);
-         Assert.IsTrue(correctOpenTradeCount.Success, correctOpenTradeCount.Success.ToString() + ": " + correctOpenTradeCount.Details);
-         Assert.IsTrue(tradesMatchTradeCount.Success, tradesMatchTradeCount.Success.ToString() + ": " + tradesMatchTradeCount.Details);
+         Assert.IsTrue(accountRetrieved.Success, $"08.0,{accountRetrieved.Success}: {accountRetrieved.Details}");
+         Assert.IsTrue(idIsCorrect.Success, $"08.1,{idIsCorrect.Success}: {idIsCorrect.Details}");
+         Assert.IsTrue(correctCurrency.Success, $"08.2,{correctCurrency.Success}: {correctCurrency.Details}");
+         Assert.IsTrue(correctOpenTradeCount.Success, $"08.3,{correctOpenTradeCount.Success}: {correctOpenTradeCount.Details}");
+         Assert.IsTrue(tradesMatchTradeCount.Success, $"08.4,{tradesMatchTradeCount.Success}: {tradesMatchTradeCount.Details}");
       }
 
       [TestMethod]
@@ -276,7 +276,7 @@ namespace OkonkwoOandaV20Tests
 
          Assert.IsTrue(orderWasCreated.Success, orderWasCreated.Success.ToString() + ": " + orderWasCreated.Details);
          Assert.IsTrue(orderTypeIsCorrect.Success, orderTypeIsCorrect.Success.ToString() + ": " + orderTypeIsCorrect.Details);
-         Assert.IsTrue(orderHasStopLoss.Success, orderHasStopLoss.Success.ToString() + ": " + orderHasStopLoss.Details);
+         Assert.IsTrue(orderHasStopLoss.Success, $"11.21,{orderHasStopLoss.Success}: {orderHasStopLoss.Details}");
          Assert.IsTrue(orderHasTakeProfit.Success, orderHasTakeProfit.Success.ToString() + ": " + orderHasTakeProfit.Details);
          Assert.IsTrue(orderWasCancelled.Success, orderWasCancelled.Success.ToString() + ": " + orderWasCancelled.Details);
          Assert.IsTrue(cancelledOrderHasCorrectReason.Success, cancelledOrderHasCorrectReason.Success.ToString() + ": " + cancelledOrderHasCorrectReason.Details);
@@ -343,7 +343,7 @@ namespace OkonkwoOandaV20Tests
          var trailingStopLossCancelled = m_Results.Items.FirstOrDefault(x => x.Key == "13.16").Value as Restv20TestResult;
 
          Assert.IsTrue(takeProfitPatched.Success, takeProfitPatched.Success.ToString() + ": " + takeProfitPatched.Details);
-         Assert.IsTrue(takeProfitPriceCorrect.Success, takeProfitPriceCorrect.Success.ToString() + ": " + takeProfitPriceCorrect.Details);
+         Assert.IsTrue(takeProfitPriceCorrect.Success, $"13.9,{takeProfitPriceCorrect.Success}: {takeProfitPriceCorrect.Details}");
          Assert.IsTrue(stopLossPatched.Success, stopLossPatched.Success.ToString() + ": " + stopLossPatched.Details);
          Assert.IsTrue(stopLossPriceCorrect.Success, stopLossPriceCorrect.Success.ToString() + ": " + stopLossPriceCorrect.Details);
          Assert.IsTrue(trailingStopLossPatched.Success, trailingStopLossPatched.Success.ToString() + ": " + trailingStopLossPatched.Details);
@@ -406,7 +406,7 @@ namespace OkonkwoOandaV20Tests
          var positionHasInstrument = m_Results.Items.FirstOrDefault(x => x.Key == "14.11").Value as Restv20TestResult;
 
          Assert.IsTrue(postionHasDirection.Success, postionHasDirection.Success.ToString() + ": " + postionHasDirection.Details);
-         Assert.IsTrue(positionHasUnits.Success, positionHasUnits.Success.ToString() + ": " + positionHasUnits.Details);
+         Assert.IsTrue(positionHasUnits.Success, $"14.9,{positionHasUnits.Success}: {positionHasUnits.Details}");
          Assert.IsTrue(positionHasAvgPrice.Success, positionHasAvgPrice.Success.ToString() + ": " + positionHasAvgPrice.Details);
          Assert.IsTrue(positionHasInstrument.Success, positionHasInstrument.Success.ToString() + ": " + positionHasInstrument.Details);
       }

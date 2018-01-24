@@ -13,8 +13,8 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Pricing
       public bool tradeable { get; set; }
       public List<PriceBucket> bids { get; set; }
       public List<PriceBucket> asks { get; set; }
-      public double closeoutBid { get; set; }
-      public double closeoutAsk { get; set; }
+      public decimal closeoutBid { get; set; }
+      public decimal closeoutAsk { get; set; }
       [Obsolete("Deprecated: Will be removed in a future API update.", true)]
       public QuoteHomeConversionFactors quoteHomeConversionFactors { get; set; }
       [Obsolete("Deprecated: Will be removed in a future API update.", true)]

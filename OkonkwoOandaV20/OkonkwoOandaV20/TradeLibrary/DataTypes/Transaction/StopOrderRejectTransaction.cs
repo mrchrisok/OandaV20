@@ -3,9 +3,9 @@
    public class StopOrderRejectTransaction : Transaction
    {
       public string instrument { get; set; }
-      public double units { get; set; }
-      public double price { get; set; }
-      public double? priceBound { get; set; }
+      public decimal units { get; set; }
+      public decimal price { get; set; }
+      public decimal? priceBound { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public string positionFill { get; set; }

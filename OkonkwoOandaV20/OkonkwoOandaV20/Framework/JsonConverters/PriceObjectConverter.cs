@@ -23,10 +23,10 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
          Type type = value.GetType();
 
          if ((value as IHasPrices) != null)
-         { 
+         {
             var priceObject = value as IHasPrices;
             var priceProperties = priceObject.priceInformation.priceProperties;
-            var pricePrecision = priceObject.priceInformation.instrument.displayPrecision;
+            var pricePrecision = Math.Abs(priceObject.priceInformation.instrument.displayPrecision);
 
             foreach (PropertyInfo property in type.GetRuntimeProperties())
             {
@@ -34,28 +34,26 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
                {
                   object propertyValue = property.GetValue(value, null);
 
+                  if (propertyValue == null && serializer.NullValueHandling == NullValueHandling.Ignore)
+                     continue;
+                  if (property.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(JsonIgnoreAttribute)) != null)
+                     continue;
+
                   if (priceProperties.Contains(property.Name))
                   {
-                     double price = Convert.ToDouble(propertyValue);
+                     decimal price = Convert.ToDecimal(propertyValue ?? 0);
                      string formattedPrice = price.ToString("F" + pricePrecision, CultureInfo.InvariantCulture);
 
                      jo.Add(property.Name, JToken.FromObject(formattedPrice));
                   }
                   else
-                  {
-                     if (propertyValue == null && serializer.NullValueHandling == NullValueHandling.Ignore)
-                        continue;
-                     else if (property.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(JsonIgnoreAttribute)) != null)
-                        continue;
-                     else
-                        jo.Add(property.Name, JToken.FromObject(propertyValue, serializer));
-                  }
+                     jo.Add(property.Name, JToken.FromObject(propertyValue, serializer));
                }
             }
 
          }
 
-         jo.WriteTo(writer); 
+         jo.WriteTo(writer);
       }
 
       public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -74,7 +72,7 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
                serializer.Populate(item.CreateReader(), priceObject);
                priceObjects.Add(priceObject);
             }
-             
+
             return priceObjects;
          }
          else if (jsonToken.Type == JTokenType.Object)

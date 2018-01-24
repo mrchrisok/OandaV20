@@ -6,8 +6,8 @@
    public class DynamicOrderState
    {
       public long id { get; set; }
-      public double trailingStopValue { get; set; }
-      public double? triggerDistance { get; set; }
+      public decimal trailingStopValue { get; set; }
+      public decimal? triggerDistance { get; set; }
       public bool? isTriggerDistanceExact { get; set; }
    }
 }

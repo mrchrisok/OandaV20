@@ -34,8 +34,9 @@ namespace OkonkwoOandaV20Tests
       static string m_TestAccount;
       static short m_TokenAccounts;
       static string m_Currency = "USD";
-      static string m_TestInstrument = InstrumentName.Currency.EURUSD;
-      static List<Instrument> m_Instruments;
+      static string m_TestInstrument = InstrumentName.Currency.USDJPY;
+      static List<Instrument> m_OandaInstruments;
+      static List<Price> m_OandaPrices;
       static long m_FirstTransactionID;
       static long m_LastTransactionID;
       static string m_LastTransactionTime;
@@ -76,6 +77,7 @@ namespace OkonkwoOandaV20Tests
                await Transaction_GetTransactionDetails();
                await Transaction_GetTransactionsSinceId();
 
+               // important: do this before Orders and Trades tests
                await Pricing_GetPricing();
 
                await Instrument_GetInstrumentCandles();
@@ -170,6 +172,10 @@ namespace OkonkwoOandaV20Tests
       // </summary>
       private static async Task Account_GetAccountDetails()
       {
+         // first, kill all open trades
+         var closeList = await Rest20.GetOpenTradeListAsync(AccountId);
+         closeList.ForEach(trade => Rest20.CloseTradeAsync(AccountId, trade.id).Wait());
+
          Account result = await Rest20.GetAccountDetailsAsync(AccountId);
 
          m_Results.Verify("08.0", result != null, string.Format("Account {0} info received.", AccountId));
@@ -189,7 +195,7 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("02.0", result.Count > 0, "Instrument list received");
 
          // Store the instruments for other tests
-         m_Instruments = result;
+         m_OandaInstruments = result;
       }
 
       /// <summary>
@@ -198,10 +204,9 @@ namespace OkonkwoOandaV20Tests
       private static async Task Account_GetSingleAccountInstrument()
       {
          // Get an instrument list (basic)
-         string instrument = "EUR_USD";
+         string instrument = m_TestInstrument;
          string type = InstrumentType.Currency;
-         List<string> eurusd = new List<string>() { instrument };
-         List<Instrument> result = await Rest20.GetAccountInstrumentsAsync(AccountId, eurusd);
+         List<Instrument> result = await Rest20.GetAccountInstrumentsAsync(AccountId, instrument);
          m_Results.Verify("03.0", result.Count == 1, string.Format("{0} info received.", instrument));
          m_Results.Verify("03.1", result[0].type == type, string.Format("{0} type ({1}) is correct.", instrument, result[0].type));
          m_Results.Verify("03.2", result[0].name == instrument, string.Format("{0} name ({1}) is correct.", instrument, result[0].name));
@@ -231,10 +236,10 @@ namespace OkonkwoOandaV20Tests
          m_LastTransactionID = summary.lastTransactionID;
 
          string alias = summary.alias;
-         double? marginRate = summary.marginRate;
+         decimal? marginRate = summary.marginRate;
 
          string testAlias = "testAlias";
-         double? testMarginRate = marginRate == null ? 0.5 : ((marginRate == 0.5) ? 0.4 : 0.5);
+         decimal? testMarginRate = (decimal)(marginRate == null ? 0.5 : (((double)marginRate.Value == 0.5) ? 0.4 : 0.5));
          Dictionary<string, string> accountConfig = new Dictionary<string, string>();
          accountConfig.Add("alias", testAlias);
          accountConfig.Add("marginRate", testMarginRate.ToString());
@@ -249,7 +254,7 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("05.2", newConfig.marginRate != marginRate, string.Format("Account marginRate {0} updated succesfully.", newConfig.marginRate));
 
          accountConfig["alias"] = alias;
-         accountConfig["marginRate"] = (marginRate ?? 1.0).ToString();
+         accountConfig["marginRate"] = (marginRate ?? (decimal)1.0).ToString();
          AccountConfigurationResponse response2 = await Rest20.PatchAccountConfigurationAsync(AccountId, accountConfig);
          ClientConfigureTransaction newConfig2 = response2.clientConfigureTransaction;
 
@@ -284,7 +289,7 @@ namespace OkonkwoOandaV20Tests
          // get all price types .. MBA
          string price = string.Concat(CandleStickPriceType.Midpoint, CandleStickPriceType.Bid, CandleStickPriceType.Ask);
 
-         string instrument = InstrumentName.Currency.EURUSD;
+         string instrument = m_TestInstrument;
          string granularity = CandleStickGranularity.Hours01;
 
          var parameters = new Dictionary<string, string>();
@@ -316,16 +321,15 @@ namespace OkonkwoOandaV20Tests
             throw new MarketHaltedException("OANDA Fx market is halted!");
 
          string expiry = ConvertDateTimeToAcceptDateFormat(DateTime.Now.AddMonths(1));
-
+         decimal price = GetOandaPrice(m_TestInstrument) * (decimal)0.9;
          #region create new pending order
-         var request1 = new MarketIfTouchedOrderRequest()
+         var request1 = new MarketIfTouchedOrderRequest(GetOandaInstrument())
          {
-            instrument = m_TestInstrument,
             units = 1, // buy
             timeInForce = TimeInForce.GoodUntilDate,
             gtdTime = expiry,
-            price = 1.0,
-            priceBound = 1.01,
+            price = price,
+            priceBound = price * (decimal)1.01,
             clientExtensions = new ClientExtensions()
             {
                id = "test_order_1",
@@ -403,20 +407,19 @@ namespace OkonkwoOandaV20Tests
          #region Create new pending order with exit orders
 
          // need this for rounding, etc.
-         var owxInstrument = m_Instruments.FirstOrDefault(x => x.name == m_TestInstrument);
+         var owxInstrument = GetOandaInstrument(m_TestInstrument);
 
-         double owxOrderPrice = Math.Round(1.0, owxInstrument.displayPrecision);
-         double owxStopLossPrice = Math.Round(owxOrderPrice - (0.10 * owxOrderPrice), owxInstrument.displayPrecision);
-         double owxTakeProfitPrice = Math.Round(owxOrderPrice + (0.10 * owxOrderPrice), owxInstrument.displayPrecision);
+         decimal owxOrderPrice = Math.Round(GetOandaPrice(m_TestInstrument), owxInstrument.displayPrecision);
+         decimal owxStopLossPrice = Math.Round(owxOrderPrice - ((decimal)0.10 * owxOrderPrice), owxInstrument.displayPrecision);
+         decimal owxTakeProfitPrice = Math.Round(owxOrderPrice + ((decimal)0.10 * owxOrderPrice), owxInstrument.displayPrecision);
 
-         var owxRequest = new LimitOrderRequest()
+         var owxRequest = new LimitOrderRequest(owxInstrument)
          {
-            instrument = m_TestInstrument,
             units = 1, // buy
             timeInForce = TimeInForce.GoodUntilDate,
             gtdTime = expiry,
             price = owxOrderPrice,
-            priceBound = Math.Round(owxOrderPrice + (0.01 * owxOrderPrice), owxInstrument.displayPrecision),
+            priceBound = owxOrderPrice + ((decimal)0.01 * owxOrderPrice),
             stopLossOnFill = new StopLossDetails(owxInstrument)
             {
                timeInForce = TimeInForce.GoodUntilCancelled,
@@ -442,10 +445,10 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("11.22", order2 != null && order2.takeProfitOnFill.price == owxTakeProfitPrice, "Order with exit orders takeprofit details are correct.");
 
          // cancel & replace order with exit orders - update stoploss and takeprofit
-         owxStopLossPrice = Math.Round(owxOrderPrice - (0.15 * owxOrderPrice), owxInstrument.displayPrecision);
+         owxStopLossPrice = Math.Round(owxOrderPrice - ((decimal)0.15 * owxOrderPrice), owxInstrument.displayPrecision);
          owxRequest.stopLossOnFill = new StopLossDetails(owxInstrument) { price = owxStopLossPrice };
 
-         owxTakeProfitPrice = Math.Round(owxOrderPrice + (0.15 * owxOrderPrice), owxInstrument.displayPrecision);
+         owxTakeProfitPrice = Math.Round(owxOrderPrice + ((decimal)0.15 * owxOrderPrice), owxInstrument.displayPrecision);
          owxRequest.takeProfitOnFill = new TakeProfitDetails(owxInstrument) { price = owxTakeProfitPrice };
 
          var owxCancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order2.id, owxRequest);
@@ -469,7 +472,7 @@ namespace OkonkwoOandaV20Tests
       /// </summary>
       /// <param name="key">The key root used to store the order success and order fill results.</param>
       /// <returns></returns>
-      private static async Task PlaceMarketOrder(string key, double units = 0, bool closeAllTrades = true)
+      private static async Task PlaceMarketOrder(string key, decimal units = 0, bool closeAllTrades = true)
       {
          // I'm fine with a throw here
          // To each his/her own on doing something different.
@@ -483,12 +486,11 @@ namespace OkonkwoOandaV20Tests
          }
 
          // this should have a value by now
-         var instrument = m_Instruments.FirstOrDefault(x => x.name == m_TestInstrument);
+         var instrument = GetOandaInstrument(m_TestInstrument);
          if (units == 0) units = instrument.minimumTradeSize;
 
-         var request = new MarketOrderRequest()
+         var request = new MarketOrderRequest(GetOandaInstrument())
          {
-            instrument = m_TestInstrument,
             units = units, // buy
             clientExtensions = new ClientExtensions()
             {
@@ -547,10 +549,10 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("13.7", extensionsModifyResponse.tradeClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated test market trade comment", "Trade extensions comment updated successfully.");
 
          // need this for rounding, etc.
-         var instrument = m_Instruments.FirstOrDefault(x => x.name == trade.instrument);
+         var instrument = GetOandaInstrument(trade.instrument);
 
          // Add a takeProfit to an open trade
-         double takeProfitPrice = Math.Round(1.10 * trade.price, instrument.displayPrecision);
+         decimal takeProfitPrice = Math.Round((decimal)1.10 * trade.price, instrument.displayPrecision);
          var takeProfit = new TakeProfitDetails(instrument)
          {
             price = takeProfitPrice,
@@ -568,7 +570,7 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("13.9", takeProfitPatch.price == takeProfitPrice, "Trade patched with take profit.");
 
          // Add a stopLoss to an open trade
-         double stopLossPrice = Math.Round(trade.price - (0.10 * trade.price), instrument.displayPrecision);
+         decimal stopLossPrice = Math.Round(trade.price - ((decimal)0.10 * trade.price), instrument.displayPrecision);
          var stopLoss = new StopLossDetails(instrument)
          {
             price = stopLossPrice,
@@ -586,7 +588,7 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("13.11", stopLossPatch.price == stopLossPrice, "Trade patched with stop loss.");
 
          // Add a trailingStopLoss to an open trade
-         double distance = Math.Round(2 * (trade.price - stopLoss.price), instrument.displayPrecision);
+         decimal distance = 2 * (trade.price - stopLoss.price);
          var trailingStopLoss = new TrailingStopLossDetails(instrument)
          {
             distance = distance,
@@ -638,26 +640,40 @@ namespace OkonkwoOandaV20Tests
 
          short units = 1;
 
-         // Make sure there's a position to test
+         // make sure there's a position to test
          await PlaceMarketOrder("14", units);
 
-         // get list of positions
+         // verification function
+         Func<Position, short, short> verifyPosition = (position, i) =>
+         {
+            string key = "14.";
+
+            m_Results.Verify(key + i.ToString(), position.@long != null, "Position has direction");
+            m_Results.Verify(key + (i + 1).ToString(), position.@long.units > 0, "Position has units");
+            m_Results.Verify(key + (i + 2).ToString(), position.@long.averagePrice > 0, "Position has avgPrice");
+            m_Results.Verify(key + (i + 3).ToString(), !string.IsNullOrEmpty(position.instrument), "Position has instrument");
+
+            return i += 4;
+         };
+
+         // get list of historical positions
+         // only open positions will have units > 0
          var positions = await Rest20.GetPositionsAsync(AccountId);
-         m_Results.Verify("14.2", positions.Count > 0, "All positions retrieved");
+         m_Results.Verify("14.2", positions.Count > 0, "All historical positions retrieved");
 
          // get list of open positions
          var openPositions = await Rest20.GetOpenPositionsAsync(AccountId);
          m_Results.Verify("14.3", openPositions.Count > 0, "Open positions retrieved");
-
+          
          short increment = 4;
-         foreach (var position in positions)
+         foreach (var position in openPositions)
          {
-            increment = VerifyPosition(position, increment);
+            increment = verifyPosition(position, increment);
          }
 
          // get position for a given instrument
          var onePosition = await Rest20.GetPositionAsync(AccountId, m_TestInstrument);
-         increment = VerifyPosition(onePosition, increment);
+         increment = verifyPosition(onePosition, increment);
 
          // closeout a position
          var request = new ClosePositionRequest() { longUnits = "ALL" };
@@ -667,18 +683,6 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("14." + (increment + 1).ToString(), response.longOrderFillTransaction != null && response.longOrderFillTransaction.id > 0, "Position close fill order created.");
          m_Results.Verify("14." + (increment + 2).ToString(), response.longOrderFillTransaction.units == -1 * units, "Position close units correct.");
 
-      }
-
-      private static short VerifyPosition(Position position, short increment)
-      {
-         string key = "14.";
-
-         m_Results.Verify(key + increment.ToString(), position.@long != null, "Position has direction");
-         m_Results.Verify(key + (increment + 1).ToString(), position.@long.units > 0, "Position has units");
-         m_Results.Verify(key + (increment + 2).ToString(), position.@long.averagePrice > 0, "Position has avgPrice");
-         m_Results.Verify(key + (increment + 3).ToString(), !string.IsNullOrEmpty(position.instrument), "Position has instrument");
-
-         return increment += 4;
       }
       #endregion
 
@@ -742,12 +746,14 @@ namespace OkonkwoOandaV20Tests
       private static async Task Pricing_GetPricing()
       {
          List<string> instruments = new List<string>();
-         m_Instruments.ForEach(x => instruments.Add(x.name));
+         m_OandaInstruments.ForEach(x => instruments.Add(x.name));
 
          List<Price> prices = await Rest20.GetPriceListAsync(AccountId, instruments);
 
          m_Results.Verify("06.0", prices != null, string.Format("Prices retrieved successfully."));
-         m_Results.Verify("06.1", prices.Count == m_Instruments.Count, string.Format("Correct count ({0}) of prices retrieved.", prices.Count));
+         m_Results.Verify("06.1", prices.Count == m_OandaInstruments.Count, string.Format("Correct count ({0}) of prices retrieved.", prices.Count));
+
+         m_OandaPrices = prices;
       }
       #endregion
 
@@ -792,7 +798,7 @@ namespace OkonkwoOandaV20Tests
       static Semaphore _tickReceived;
       protected static void Stream_GetStreamingPrices()
       {
-         PricingSession session = new PricingSession(AccountId, m_Instruments);
+         PricingSession session = new PricingSession(AccountId, m_OandaInstruments);
          _tickReceived = new Semaphore(0, 100);
          session.DataReceived += OnPricingReceived;
          session.StartSession();
@@ -878,6 +884,18 @@ namespace OkonkwoOandaV20Tests
          m_TokenAccounts = 1;
 
          Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
+      }
+
+      private static Instrument GetOandaInstrument(string instrument = null)
+      {
+         instrument = instrument ?? m_TestInstrument;
+         return m_OandaInstruments.FirstOrDefault(x => x.name == instrument);
+      }
+
+      private static decimal GetOandaPrice(string instrument = null)
+      {
+         instrument = instrument ?? m_TestInstrument;
+         return m_OandaPrices.FirstOrDefault(x => x.instrument == instrument).closeoutBid;
       }
       #endregion
    }

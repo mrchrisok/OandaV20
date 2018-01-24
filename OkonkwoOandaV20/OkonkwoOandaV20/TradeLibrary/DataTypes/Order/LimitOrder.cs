@@ -7,7 +7,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Order
    {
       public string instrument { get; set; }
       public long units { get; set; }
-      public double price { get; set; }
+      public decimal price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public string positionFill { get; set; }

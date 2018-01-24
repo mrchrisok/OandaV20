@@ -3,9 +3,9 @@
    public class MarketOrderTransaction : Transaction
    {
       public string instrument { get; set; }
-      public double units { get; set; }
+      public decimal units { get; set; }
       public string timeInForce { get; set; }
-      public double? priceBound { get; set; }
+      public decimal? priceBound { get; set; }
       public string positionFill { get; set; }
       public MarketOrderTradeClose tradeClose { get; set; }
       public MarketOrderPositionCloseout longPositionCloseout { get; set; }

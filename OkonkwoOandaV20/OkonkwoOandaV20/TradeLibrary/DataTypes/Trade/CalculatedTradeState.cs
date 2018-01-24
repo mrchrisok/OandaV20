@@ -6,6 +6,6 @@
    public class CalculatedTradeState
    {
       public long id { get; set; }
-      public double unrealizedPL { get; set; }
+      public decimal unrealizedPL { get; set; }
    }
 }

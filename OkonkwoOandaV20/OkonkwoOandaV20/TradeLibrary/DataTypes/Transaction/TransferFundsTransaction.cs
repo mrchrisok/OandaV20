@@ -2,8 +2,8 @@
 {
    public class TransferFundsTransaction : Transaction
    {
-      public double amount { get; set; }
+      public decimal amount { get; set; }
       public string fundingReason { get; set; }
-      public double accountBalance { get; set; }
+      public decimal accountBalance { get; set; }
    }
 }

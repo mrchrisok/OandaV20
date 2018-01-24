@@ -2,7 +2,7 @@
 {
    public class TransferFundsRejectTransaction : Transaction
    {
-      public double amount { get; set; }
+      public decimal amount { get; set; }
       public string fundingReason { get; set; }
       public string rejectReason { get; set; }
    }

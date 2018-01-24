@@ -22,8 +22,8 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
    public class LiquidityRegenerationScheduleStep
    {
       public string timestamp { get; set; }
-      public double bidLiquidityUsed { get; set; }
-      public double askLiquidityUsed { get; set; }
+      public decimal bidLiquidityUsed { get; set; }
+      public decimal askLiquidityUsed { get; set; }
    }
 
    public class MarketOrderDelayedTradeClose
@@ -60,7 +60,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
    public class OpenTradeFinancing
    {
       public long tradeID { get; set; }
-      public double financing { get; set; }
+      public decimal financing { get; set; }
    }
 
    /// <summary>
@@ -117,7 +117,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
    public class PositionFinancing
    {
       public string instrumentID { get; set; }
-      public double financing { get; set; }
+      public decimal financing { get; set; }
       public List<OpenTradeFinancing> openTradeFinancings { get; set; }
    }
 
@@ -134,7 +134,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
          };
       }
 
-      public double price { get; set; }
+      public decimal price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public ClientExtensions clientExtensions { get; set; }
@@ -155,7 +155,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
          };
       }
 
-      public double price { get; set; }
+      public decimal price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public ClientExtensions clientExtensions { get; set; }
@@ -166,16 +166,16 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
    public class TradeOpen
    {
       public long tradeID { get; set; }
-      public double units { get; set; }
+      public decimal units { get; set; }
       public ClientExtensions clientExtensions { get; set; }
    }
 
    public class TradeReduce
    {
       public long tradeID { get; set; }
-      public double units { get; set; }
-      public double realizedPL { get; set; }
-      public double financing { get; set; }
+      public decimal units { get; set; }
+      public decimal realizedPL { get; set; }
+      public decimal financing { get; set; }
    }
 
    [JsonConverter(typeof(PriceObjectConverter))]
@@ -191,7 +191,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
          };
       }
 
-      public double distance { get; set; }
+      public decimal distance { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public ClientExtensions clientExtensions { get; set; }
@@ -411,7 +411,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
 
    public class VWAPReceipt
    {
-      public double units { get; set; }
-      public double price { get; set; }
+      public decimal units { get; set; }
+      public decimal price { get; set; }
    }
 }

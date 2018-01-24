@@ -2,7 +2,7 @@
 {
    public class UnitsAvailableDetails
    {
-      public double @long { get; set; }
-      public double @short { get; set; }
+      public decimal @long { get; set; }
+      public decimal @short { get; set; }
    }
 }

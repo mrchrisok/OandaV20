@@ -4,7 +4,7 @@
    {
       public long tradeID { get; set; }
       public string clientTradeID { get; set; }
-      public double price { get; set; }
+      public decimal price { get; set; }
       public string timeInForce { get; set; }
       public string gtdTime { get; set; }
       public string triggerCondition { get; set; }

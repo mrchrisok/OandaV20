@@ -4,14 +4,14 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 {
    public class StopOrderRequest : EntryOrderRequest
    {
-      public StopOrderRequest()
+      public StopOrderRequest(Instrument.Instrument oandaInstrument)
+         : base(oandaInstrument)
       {
          type = OrderType.Stop;
          timeInForce = TimeInForce.GoodUntilCancelled;
          triggerCondition = OrderTriggerCondition.Default;
       }
 
-      public double price { get; set; }
       public string gtdTime { get; set; }
       public string triggerCondition { get; set; }
    }
