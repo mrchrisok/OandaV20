@@ -862,7 +862,7 @@ namespace OkonkwoOandaV20Tests
             using (StreamReader sr = new StreamReader(fileName))
             {
                string apiCredentials = await sr.ReadToEndAsync();
-
+                
                // an OANDA trade or practice account is required to generate a valid token
                // for info, go to: https://www.oanda.com/account/tpa/personal_token
                m_TestToken = apiCredentials.Split('|')[0];

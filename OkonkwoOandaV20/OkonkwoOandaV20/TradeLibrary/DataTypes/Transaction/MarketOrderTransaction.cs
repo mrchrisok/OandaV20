@@ -1,22 +1,12 @@
 ﻿namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
 {
-   public class MarketOrderTransaction : Transaction
+   public class MarketOrderTransaction : EntryOrderTransaction
    {
-      public string instrument { get; set; }
-      public decimal units { get; set; }
-      public string timeInForce { get; set; }
       public decimal? priceBound { get; set; }
-      public string positionFill { get; set; }
       public MarketOrderTradeClose tradeClose { get; set; }
       public MarketOrderPositionCloseout longPositionCloseout { get; set; }
       public MarketOrderPositionCloseout shortPositionCloseout { get; set; }
       public MarketOrderMarginCloseout marginCloseout { get; set; }
       public MarketOrderDelayedTradeClose delayedTradeClose { get; set; }
-      public string reason { get; set; }
-      public ClientExtensions clientExtensions { get; set; }
-      public TakeProfitDetails takeProfitOnFill { get; set; }
-      public StopLossDetails stopLossOnFill { get; set; }
-      public TrailingStopLossDetails trailingStopLossOnFill { get; set; }
-      public ClientExtensions tradeClientExtensions { get; set; }
    }
 }

@@ -158,6 +158,8 @@
     <Compile Include="TradeLibrary\DataTypes\Transaction\DailyFinancingTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\Definitions.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\DelayedTradeClosureTransaction.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Transaction\EntryOrderRejectTransaction.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Transaction\EntryOrderTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\LimitOrderRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\LimitOrderTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\MarginCallEnterTransaction.cs" />
