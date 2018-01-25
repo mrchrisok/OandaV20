@@ -13,8 +13,7 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
    {
       public override bool CanConvert(Type objectType)
       {
-         bool canConvert = objectType.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IHasPrices));
-         return canConvert;
+         return objectType == typeof(IHasPrices);
       }
 
       public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -22,35 +21,31 @@ namespace OkonkwoOandaV20.Framework.JsonConverters
          JObject jo = new JObject();
          Type type = value.GetType();
 
-         if ((value as IHasPrices) != null)
+         var priceObject = value as IHasPrices;
+         var priceProperties = priceObject.priceInformation.priceProperties;
+         var pricePrecision = Math.Abs(priceObject.priceInformation.instrument.displayPrecision);
+
+         foreach (PropertyInfo property in type.GetRuntimeProperties())
          {
-            var priceObject = value as IHasPrices;
-            var priceProperties = priceObject.priceInformation.priceProperties;
-            var pricePrecision = Math.Abs(priceObject.priceInformation.instrument.displayPrecision);
-
-            foreach (PropertyInfo property in type.GetRuntimeProperties())
+            if (property.CanRead)
             {
-               if (property.CanRead)
+               object propertyValue = property.GetValue(value, null);
+
+               if (propertyValue == null && serializer.NullValueHandling == NullValueHandling.Ignore)
+                  continue;
+               if (property.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(JsonIgnoreAttribute)) != null)
+                  continue;
+
+               if (priceProperties.Contains(property.Name))
                {
-                  object propertyValue = property.GetValue(value, null);
+                  decimal price = Convert.ToDecimal(propertyValue ?? 0);
+                  string formattedPrice = price.ToString("F" + pricePrecision, CultureInfo.InvariantCulture);
 
-                  if (propertyValue == null && serializer.NullValueHandling == NullValueHandling.Ignore)
-                     continue;
-                  if (property.GetCustomAttributes().FirstOrDefault(a => a.GetType() == typeof(JsonIgnoreAttribute)) != null)
-                     continue;
-
-                  if (priceProperties.Contains(property.Name))
-                  {
-                     decimal price = Convert.ToDecimal(propertyValue ?? 0);
-                     string formattedPrice = price.ToString("F" + pricePrecision, CultureInfo.InvariantCulture);
-
-                     jo.Add(property.Name, JToken.FromObject(formattedPrice));
-                  }
-                  else
-                     jo.Add(property.Name, JToken.FromObject(propertyValue, serializer));
+                  jo.Add(property.Name, JToken.FromObject(formattedPrice));
                }
+               else
+                  jo.Add(property.Name, JToken.FromObject(propertyValue, serializer));
             }
-
          }
 
          jo.WriteTo(writer);

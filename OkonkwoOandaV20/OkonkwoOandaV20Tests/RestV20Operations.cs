@@ -872,9 +872,15 @@ namespace OkonkwoOandaV20Tests
                m_TestAccount = apiCredentials.Split('|')[1];
             }
          }
+         catch (DirectoryNotFoundException)
+         {
+            // warning: do not rely on these
+            m_TestToken = "c9e9494d79013cac1d34f0e4dcb590cd-977a37b80762fb48cdb3b0b2e832628a";
+            m_TestAccount = "101-001-1913854-001";
+         }
          catch (Exception ex)
          {
-            throw new Exception("Could not read api credentials file.", ex);
+            throw new Exception("Could not read api credentials.", ex);
          }
 
          // set this to the correct environment based on the account
