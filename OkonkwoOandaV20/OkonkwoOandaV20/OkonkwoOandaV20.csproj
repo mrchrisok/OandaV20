@@ -117,6 +117,8 @@
     <Compile Include="TradeLibrary\DataTypes\Instrument\RestInstrument.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\Definitions.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\DynamicOrderState.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Order\EntryOrder.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Order\ExitOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\LimitOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\MarketIfTouchedOrder.cs" />
     <Compile Include="TradeLibrary\DataTypes\Order\MarketOrder.cs" />
@@ -160,6 +162,8 @@
     <Compile Include="TradeLibrary\DataTypes\Transaction\DelayedTradeClosureTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\EntryOrderRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\EntryOrderTransaction.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Transaction\ExitOrderRejectTransaction.cs" />
+    <Compile Include="TradeLibrary\DataTypes\Transaction\ExitOrderTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\LimitOrderRejectTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\LimitOrderTransaction.cs" />
     <Compile Include="TradeLibrary\DataTypes\Transaction\MarginCallEnterTransaction.cs" />

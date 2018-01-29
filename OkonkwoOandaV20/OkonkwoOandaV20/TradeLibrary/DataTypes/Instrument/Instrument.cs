@@ -8,7 +8,7 @@
       public int pipLocation { get; set; }
       public int displayPrecision { get; set; }
       public int tradeUnitsPrecision { get; set; }
-      public decimal minimumTradeSize { get; set; }
+      public long minimumTradeSize { get; set; }
       public decimal maximumTrailingStopDistance { get; set; }
       public decimal minimumTrailingStopDistance { get; set; }
       public decimal maximumPositionSize { get; set; }

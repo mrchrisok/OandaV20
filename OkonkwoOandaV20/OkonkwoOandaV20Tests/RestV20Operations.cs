@@ -472,7 +472,7 @@ namespace OkonkwoOandaV20Tests
       /// </summary>
       /// <param name="key">The key root used to store the order success and order fill results.</param>
       /// <returns></returns>
-      private static async Task PlaceMarketOrder(string key, decimal units = 0, bool closeAllTrades = true)
+      private static async Task PlaceMarketOrder(string key, long units = 0, bool closeAllTrades = true)
       {
          // I'm fine with a throw here
          // To each his/her own on doing something different.

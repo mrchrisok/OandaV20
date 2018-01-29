@@ -4,7 +4,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Position
 {
    public class PositionSide
    {
-      public decimal units { get; set; }
+      public long units { get; set; }
       public decimal averagePrice { get; set; }
       public List<long> tradeIDs { get; set; }
       public decimal pl { get; set; }

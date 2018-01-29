@@ -166,14 +166,14 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
    public class TradeOpen
    {
       public long tradeID { get; set; }
-      public decimal units { get; set; }
+      public long units { get; set; }
       public ClientExtensions clientExtensions { get; set; }
    }
 
    public class TradeReduce
    {
       public long tradeID { get; set; }
-      public decimal units { get; set; }
+      public long units { get; set; }
       public decimal realizedPL { get; set; }
       public decimal financing { get; set; }
    }
@@ -411,7 +411,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
 
    public class VWAPReceipt
    {
-      public decimal units { get; set; }
+      public long units { get; set; }
       public decimal price { get; set; }
    }
 }

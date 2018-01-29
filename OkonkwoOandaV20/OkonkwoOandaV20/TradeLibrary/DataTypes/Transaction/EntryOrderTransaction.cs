@@ -3,7 +3,7 @@
    public abstract class EntryOrderTransaction : Transaction
    {
       public string instrument { get; set; }
-      public decimal units { get; set; }
+      public long units { get; set; }
       public string timeInForce { get; set; }
       public string positionFill { get; set; }
       public string reason { get; set; }

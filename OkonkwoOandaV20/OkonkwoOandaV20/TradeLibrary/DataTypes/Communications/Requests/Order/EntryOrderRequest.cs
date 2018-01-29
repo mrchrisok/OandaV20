@@ -24,7 +24,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order
 
       public string type { get; set; }
       public string instrument { get; set; }   
-      public decimal units { get; set; }
+      public long units { get; set; }
       public string timeInForce { get; set; }
       public decimal? price { get; set; }
       public decimal? priceBound { get; set; }
