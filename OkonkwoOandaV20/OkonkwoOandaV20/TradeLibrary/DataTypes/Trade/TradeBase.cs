@@ -10,8 +10,8 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Trade
         public decimal price { get; set; }
         public string openTime { get; set; }
         public string state { get; set; }
-        public int initialUnits { get; set; }
-        public int currentUnits { get; set; }
+        public long initialUnits { get; set; }
+        public long currentUnits { get; set; }
         public decimal realizedPL { get; set; }
         public decimal unrealizedPL { get; set; }
         public decimal averageClosePrice { get; set; }

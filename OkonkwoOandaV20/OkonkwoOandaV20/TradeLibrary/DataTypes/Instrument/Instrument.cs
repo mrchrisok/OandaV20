@@ -12,7 +12,7 @@
       public decimal maximumTrailingStopDistance { get; set; }
       public decimal minimumTrailingStopDistance { get; set; }
       public decimal maximumPositionSize { get; set; }
-      public decimal maximumOrderUnits { get; set; }
+      public long maximumOrderUnits { get; set; }
       public decimal marginRate { get; set; }
    }
 }
