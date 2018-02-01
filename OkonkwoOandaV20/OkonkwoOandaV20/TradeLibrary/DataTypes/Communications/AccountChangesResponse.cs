@@ -2,10 +2,9 @@
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class AccountChangesResponse
+   public class AccountChangesResponse : Response
    {
-      public AccountChanges changes;
-      public AccountChangesState state;
-      public long lastTransactionID;
+      public AccountChanges changes { get; set; }
+      public AccountChangesState state { get; set; }
    }
 }

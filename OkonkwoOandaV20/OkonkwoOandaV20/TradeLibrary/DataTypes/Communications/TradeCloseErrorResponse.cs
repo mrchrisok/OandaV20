@@ -2,8 +2,8 @@
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class AccountConfigurationResponse : Response
+   public class TradeCloseErrorResponse : ErrorResponse
    {
-      public ClientConfigureTransaction clientConfigureTransaction;
+      public MarketOrderRejectTransaction orderRejectTransaction { get; set; }
    }
 }

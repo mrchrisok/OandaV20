@@ -5,8 +5,8 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
    /// <summary>
    /// http://developer.oanda.com/rest-live-v20/order-ep
    /// </summary>
-   public class OrderCancelResponse : Response
+   public class OrderCancelErrorResponse : ErrorResponse
    {
-      public OrderCancelTransaction orderCancelTransaction { get; set; }
+      public OrderCancelRejectTransaction orderCancelRejectTransaction { get; set; }
    }
 }

@@ -5,10 +5,9 @@ using System.Collections.Generic;
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class OrdersResponse
+   public class OrdersResponse : Response
    {
       [JsonConverter(typeof(OrderConverter))]
-      public List<IOrder> orders;
-      public long lastTransactionID;
+      public List<IOrder> orders { get; set; }
    }
 }

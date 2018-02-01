@@ -1,8 +1,7 @@
 ﻿namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class TradeResponse
+   public class TradeResponse : Response
    {
-      public Trade.Trade trade;
-      public string lastTransactionID;
+      public Trade.Trade trade { get; set; }
    }
 }

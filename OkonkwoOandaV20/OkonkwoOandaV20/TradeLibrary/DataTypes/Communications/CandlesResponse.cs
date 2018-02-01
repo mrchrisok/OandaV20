@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class CandlesResponse
+   public class CandlesResponse : Response
    {
       public string instrument;
       public string granularity;

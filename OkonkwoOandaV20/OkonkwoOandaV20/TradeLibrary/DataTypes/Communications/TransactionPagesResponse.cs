@@ -7,12 +7,11 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
    /// </summary>
    public class TransactionPagesResponse : Response
    {
-      public string from;
-      public string to;
-      public int pageSize;
-      public List<string> type;
-      public int count;
-      public List<string> pages;
-      public long lastTransactionID;
+      public string from { get; set; }
+      public string to { get; set; }
+      public int pageSize { get; set; }
+      public List<string> type { get; set; }
+      public int count { get; set; }
+      public List<string> pages { get; set; }
    }
 }

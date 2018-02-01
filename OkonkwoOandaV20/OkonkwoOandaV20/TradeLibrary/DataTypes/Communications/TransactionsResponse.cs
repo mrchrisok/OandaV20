@@ -12,6 +12,5 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
    {
       [JsonConverter(typeof(TransactionConverter))]
       public List<ITransaction> transactions;
-      public long lastTransactionID;
    }
 }

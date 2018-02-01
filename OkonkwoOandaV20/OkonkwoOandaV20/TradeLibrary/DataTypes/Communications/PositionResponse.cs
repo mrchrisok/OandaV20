@@ -2,7 +2,6 @@
 {
    public class PositionResponse : Response
    {
-      public Position.Position position;
-      public long lastTransactionID;
+      public Position.Position position { get; set; }
    }
 }

@@ -1,8 +1,7 @@
 ﻿namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class AccountResponse
+   public class AccountResponse : Response
    {
-      public Account.Account account;
-      public string lastTransactionID;
+      public Account.Account account { get; set; }
    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using OANDACommon = OkonkwoOandaV20.Framework.Common;
 
@@ -6,6 +7,9 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
    public class Response
    {
+      public long lastTransactionID { get; set; }
+      public List<long> relatedTransactionIDs { get; set; }
+
       public override string ToString()
       {
          // use reflection to display all the properties that have non default values

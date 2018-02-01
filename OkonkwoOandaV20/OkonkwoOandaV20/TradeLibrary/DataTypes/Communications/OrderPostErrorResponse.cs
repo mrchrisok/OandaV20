@@ -4,12 +4,10 @@ using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   /// <summary>
-   /// http://developer.oanda.com/rest-live-v20/transaction-ep/
-   /// </summary>
-   public class TransactionResponse : Response
+   public class OrderPostErrorResponse : ErrorResponse
    {
       [JsonConverter(typeof(TransactionConverter))]
-      public ITransaction transaction { get; set; }
+      public ITransaction orderRejectTransaction { get; set; }
    }
 }
+ 

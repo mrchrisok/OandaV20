@@ -1,20 +1,15 @@
 ﻿using OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction;
-using System.Collections.Generic;
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   class TradePatchExitOrdersErrorResponse : Response
+   public class TradePatchExitOrdersErrorResponse : ErrorResponse
    {
-      public OrderCancelRejectTransaction takeProfitOrderCancelRejectTransaction;
-      public TakeProfitOrderRejectTransaction takeProfitOrderRejectTransaction;
-      public OrderCancelRejectTransaction takeProfitOrderCreatedCancelRejectTransaction;
-      public OrderCancelRejectTransaction stopLossOrderCancelRejectTransaction;
-      public StopLossOrderRejectTransaction stopLossOrderRejectTransaction;
-      public OrderCancelRejectTransaction trailingStopLossOrderCancelRejectTransaction;
-      public TrailingStopLossOrderRejectTransaction trailingStopLossOrderRejectTransaction;
-      public List<long> relatedTransactionIDs;
-      public long lastTransactionID;
-      public string errorCode { get; set; }
-      public string errorMessage { get; set; }
+      public OrderCancelRejectTransaction takeProfitOrderCancelRejectTransaction { get; set; }
+      public TakeProfitOrderRejectTransaction takeProfitOrderRejectTransaction { get; set; }
+      public OrderCancelRejectTransaction takeProfitOrderCreatedCancelRejectTransaction { get; set; }
+      public OrderCancelRejectTransaction stopLossOrderCancelRejectTransaction { get; set; }
+      public StopLossOrderRejectTransaction stopLossOrderRejectTransaction { get; set; }
+      public OrderCancelRejectTransaction trailingStopLossOrderCancelRejectTransaction { get; set; }
+      public TrailingStopLossOrderRejectTransaction trailingStopLossOrderRejectTransaction { get; set; }
    }
 }

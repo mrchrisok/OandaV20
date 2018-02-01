@@ -2,9 +2,8 @@
 
 namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 {
-   public class AccountInstrumentsResponse
+   public class AccountInstrumentsResponse : Response
    {
-      public List<Instrument.Instrument> instruments;
-      public long lastTransactionID;
+      public List<Instrument.Instrument> instruments { get; set; }
    }
 }
