@@ -72,7 +72,7 @@ namespace OkonkwoOandaV20
          Dictionary<string, string> requestParams = new Dictionary<string, string>();
          requestParams.Add("units", units);
 
-         return await MakeRequestWithJSONBody<TradeCloseResponse, Dictionary<string, string>>("PUT", requestParams, requestString);
+         return await MakeRequestWithJSONBody<TradeCloseResponse, TradeCloseErrorResponse, Dictionary<string, string>>("PUT", requestParams, requestString);
       }
 
       /// <summary>
@@ -89,7 +89,7 @@ namespace OkonkwoOandaV20
          Dictionary<string, ClientExtensions> extensions = new Dictionary<string, ClientExtensions>();
          extensions.Add("clientExtensions", tradeExtensions);
 
-         var response = await MakeRequestWithJSONBody<TradeClientExtensionsModifyResponse, Dictionary<string, ClientExtensions>>("PUT", extensions, requestString);
+         var response = await MakeRequestWithJSONBody<TradeClientExtensionsModifyResponse, TradeClientExtensionsModifyErrorResponse, Dictionary<string, ClientExtensions>>("PUT", extensions, requestString);
 
          return response;
       }
@@ -107,7 +107,7 @@ namespace OkonkwoOandaV20
 
          var requestBody = ConvertToJSON(request);
 
-         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse>("PUT", requestBody, requestString);
+         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse, TradePatchExitOrdersErrorResponse>("PUT", requestBody, requestString);
       }
 
       /// <summary>
@@ -127,7 +127,7 @@ namespace OkonkwoOandaV20
 
          var requestBody = ConvertToJSON(parameters, false);
 
-         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse>("PUT", requestBody, requestString);
+         return await MakeRequestWithJSONBody<TradePatchExitOrdersResponse, TradePatchExitOrdersErrorResponse>("PUT", requestBody, requestString);
       }
    }
 }

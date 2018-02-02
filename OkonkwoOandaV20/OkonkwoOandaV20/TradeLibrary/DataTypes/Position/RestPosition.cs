@@ -69,7 +69,7 @@ namespace OkonkwoOandaV20
 
          var requestBody = ConvertToJSON(request);
 
-         var response = await MakeRequestWithJSONBody<PositionCloseResponse>("PUT", requestBody, requestString);
+         var response = await MakeRequestWithJSONBody<PositionCloseResponse, PositionCloseErrorResponse>("PUT", requestBody, requestString);
 
          return response;
       }

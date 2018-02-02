@@ -106,7 +106,7 @@ namespace OkonkwoOandaV20
             bodyParams.Remove(key);
          }
 
-         var response = await MakeRequestWithJSONBody<AccountConfigurationResponse, Dictionary<string, string>>("PATCH", bodyParams, requestString);
+         var response = await MakeRequestWithJSONBody<AccountConfigurationResponse, AccountConfigurationErrorResponse, Dictionary<string, string>>("PATCH", bodyParams, requestString);
 
          return response;
       }

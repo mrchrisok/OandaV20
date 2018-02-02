@@ -19,6 +19,7 @@ using OkonkwoOandaV20.TradeLibrary.DataTypes.Order;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Position;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order;
 using System.IO;
+using OkonkwoOandaV20.Framework.Factories;
 
 namespace OkonkwoOandaV20Tests
 {
@@ -246,10 +247,20 @@ namespace OkonkwoOandaV20Tests
 
          m_LastTransactionTime = ConvertDateTimeToAcceptDateFormat(DateTime.UtcNow, AcceptDatetimeFormat.RFC3339);
 
-         AccountConfigurationResponse response = await Rest20.PatchAccountConfigurationAsync(AccountId, accountConfig);
+         AccountConfigurationResponse response = null;
+
+         // error test
+         try { response = await Rest20.PatchAccountConfigurationAsync("fakeId", accountConfig); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as AccountConfigurationErrorResponse;
+            m_Results.Verify("05.E0", errorResponse != null, "Error response has correct type: AccountConfigurationErrorResponse");
+         }
+
+         // response test
+         response = await Rest20.PatchAccountConfigurationAsync(AccountId, accountConfig);
          ClientConfigureTransaction newConfig = response.clientConfigureTransaction;
 
-         m_Results.Verify("05.0", newConfig != null, string.Format("Account configuration retrieved successfully.", newConfig.alias));
+         m_Results.Verify("05.0", newConfig != null, "Account configuration retrieved successfully.");
          m_Results.Verify("05.1", newConfig.alias != alias, string.Format("Account alias {0} updated successfully.", newConfig.alias));
          m_Results.Verify("05.2", newConfig.marginRate != marginRate, string.Format("Account marginRate {0} updated succesfully.", newConfig.marginRate));
 
@@ -328,7 +339,7 @@ namespace OkonkwoOandaV20Tests
             units = 1, // buy
             timeInForce = TimeInForce.GoodUntilDate,
             gtdTime = expiry,
-            price = price,
+            //price = price,
             priceBound = price * (decimal)1.01,
             clientExtensions = new ClientExtensions()
             {
@@ -348,8 +359,19 @@ namespace OkonkwoOandaV20Tests
          var openOrders = await Rest20.GetPendingOrderListAsync(AccountId);
          openOrders.ForEach(async x => await Rest20.CancelOrderAsync(AccountId, x.id));
 
+         // error test - create order
+         OrderPostResponse response = null;
+         request1.price = -1;
+         try { response = await Rest20.PostOrderAsync(AccountId, request1); }
+         catch (Exception ex)
+         {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderPostErrorResponse;
+            m_Results.Verify("11.E0", errorResponse != null, "Error response has correct type: OrderPostErrorResponse");
+         }
+
          // create order
-         var response = await Rest20.PostOrderAsync(AccountId, request1);
+         request1.price = price;
+         response = await Rest20.PostOrderAsync(AccountId, request1);
          var orderTransaction = response.orderCreateTransaction;
 
          m_Results.Verify("11.0", orderTransaction != null && orderTransaction.id > 0, "Order successfully opened");
@@ -372,21 +394,41 @@ namespace OkonkwoOandaV20Tests
          m_Results.Verify("11.8", (order.clientExtensions == null) == (request1.clientExtensions == null), "order client extensions successfully retrieved.");
          m_Results.Verify("11.9", (order.tradeClientExtensions == null) == (request1.tradeClientExtensions == null), "order trade client extensions successfully retrieved.");
 
-         // Udpate extensions
+         // create extensions
          var newOrderExtensions = request1.clientExtensions;
          newOrderExtensions.comment = "updated order 1 comment";
          var newTradeExtensions = request1.tradeClientExtensions;
          newTradeExtensions.comment = "updated trade 1 comment";
-         var extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, order.id, newOrderExtensions, newTradeExtensions);
+
+         // error test - update extensions
+         OrderClientExtensionsModifyResponse extensionsModifyResponse = null;
+         try { extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, -1, newOrderExtensions, newTradeExtensions); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderClientExtensionsModifyErrorResponse;
+            m_Results.Verify("11.E1", errorResponse != null, "Error response has correct type: OrderClientExtensionsModifyErrorResponse");
+         }
+
+         // Udpate extensions
+         extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, order.id, newOrderExtensions, newTradeExtensions);
 
          m_Results.Verify("11.10", extensionsModifyResponse != null, "Order extensions update received successfully.");
          m_Results.Verify("11.11", extensionsModifyResponse.orderClientExtensionsModifyTransaction.orderID == order.id, "Correct order extensions updated.");
          m_Results.Verify("11.12", extensionsModifyResponse.orderClientExtensionsModifyTransaction.clientExtensionsModify.comment == "updated order 1 comment", "Order extensions comment updated successfully.");
          m_Results.Verify("11.13", extensionsModifyResponse.orderClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated trade 1 comment", "Order trade extensions comment updated successfully.");
 
+         // error test - cancel+replace an existing order
+         OrderCancelReplaceResponse cancelReplaceResponse = null;
+         request1.price = -1;
+         try { cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderCancelReplaceErrorResponse;
+            m_Results.Verify("11.E2", errorResponse != null, "Error response has correct type: OrderCancelReplaceErrorResponse");
+         }
+
          // Cancel & Replace an existing order
+         request1.price = price;
          request1.units += 10;
-         var cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1);
+         cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1);
          var cancelTransaction = cancelReplaceResponse.orderCancelTransaction;
          var newOrderTransaction = cancelReplaceResponse.orderCreateTransaction;
 
@@ -397,8 +439,16 @@ namespace OkonkwoOandaV20Tests
          var newOrder = await Rest20.GetOrderDetailsAsync(AccountId, newOrderTransaction.id) as MarketIfTouchedOrder;
          m_Results.Verify("11.16", newOrder != null && newOrder.units == request1.units, "New order details are correct.");
 
+         // error test - cancel an order
+         OrderCancelResponse cancelOrderResponse = null;
+         try { cancelOrderResponse = await Rest20.CancelOrderAsync(AccountId, -1); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderCancelErrorResponse;
+            m_Results.Verify("11.E3", errorResponse != null, "Error response has correct type: OrderCancelErrorResponse");
+         }
+
          // Cancel an order
-         var cancelOrderResponse = await Rest20.CancelOrderAsync(AccountId, newOrder.id);
+         cancelOrderResponse = await Rest20.CancelOrderAsync(AccountId, newOrder.id);
          m_Results.Verify("11.17", cancelOrderResponse != null, "Cancelled order retrieved successfully.");
          var cancelTransaction2 = cancelOrderResponse.orderCancelTransaction;
          m_Results.Verify("11.18", cancelTransaction2.orderID == newOrder.id, "Order cancelled successfully.");
@@ -539,10 +589,20 @@ namespace OkonkwoOandaV20Tests
          var trade = await Rest20.GetTradeDetailsAsync(AccountId, openTrades[0].id);
          m_Results.Verify("13.4", trade.id > 0 && trade.price > 0 && trade.initialUnits != 0, "Trade details retrieved");
 
-         // Udpate extensions
+         // create extensions
          var updatedExtensions = trade.clientExtensions;
          updatedExtensions.comment = "updated test market trade comment";
-         var extensionsModifyResponse = await Rest20.ModifyTradeClientExtensionsAsync(AccountId, trade.id, updatedExtensions);
+
+         // error test - update extensions
+         TradeClientExtensionsModifyResponse extensionsModifyResponse = null;
+         try { extensionsModifyResponse = await Rest20.ModifyTradeClientExtensionsAsync(AccountId, -1, updatedExtensions); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as TradeClientExtensionsModifyErrorResponse;
+            m_Results.Verify("13.E0", errorResponse != null, "Error response has correct type: TradeClientExtensionsModifyErrorResponse");
+         }
+
+         // Udpate extensions
+         extensionsModifyResponse = await Rest20.ModifyTradeClientExtensionsAsync(AccountId, trade.id, updatedExtensions);
 
          m_Results.Verify("13.5", extensionsModifyResponse != null, "Order extensions update received successfully.");
          m_Results.Verify("13.6", extensionsModifyResponse.tradeClientExtensionsModifyTransaction.tradeID == trade.id, "Correct trade extensions updated.");
@@ -551,7 +611,7 @@ namespace OkonkwoOandaV20Tests
          // need this for rounding, etc.
          var instrument = GetOandaInstrument(trade.instrument);
 
-         // Add a takeProfit to an open trade
+         // create takeProfit 
          decimal takeProfitPrice = Math.Round((decimal)1.10 * trade.price, instrument.displayPrecision);
          var takeProfit = new TakeProfitDetails(instrument)
          {
@@ -565,6 +625,18 @@ namespace OkonkwoOandaV20Tests
             }
          };
          var patch1 = new PatchExitOrdersRequest() { takeProfit = takeProfit };
+
+         // error test - patch open trade
+         TradePatchExitOrdersResponse response = null;
+         patch1.takeProfit.price = -1;
+         try { response = await Rest20.PatchTradeExitOrders(AccountId, trade.id, patch1); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as TradePatchExitOrdersErrorResponse;
+            m_Results.Verify("13.E1", errorResponse != null, "Error response has correct type: TradePatchExitOrdersErrorResponse");
+         }
+          
+         // add a takeProft to an open trade
+         patch1.takeProfit.price = takeProfitPrice;
          var takeProfitPatch = (await Rest20.PatchTradeExitOrders(AccountId, trade.id, patch1)).takeProfitOrderTransaction;
          m_Results.Verify("13.8", takeProfitPatch != null && takeProfitPatch.id > 0, "Take profit patch received.");
          m_Results.Verify("13.9", takeProfitPatch.price == takeProfitPrice, "Trade patched with take profit.");
@@ -617,6 +689,14 @@ namespace OkonkwoOandaV20Tests
 
          if (await Utilities.IsMarketHalted())
             throw new MarketHaltedException("OANDA Fx market is halted!");
+
+         // error test - close open trade
+         TradeCloseResponse tradeCloseResponse = null;
+         try { tradeCloseResponse = await Rest20.CloseTradeAsync(AccountId, -1); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as TradeCloseErrorResponse;
+            m_Results.Verify("13.E2", errorResponse != null, "Error response has correct type: TradeCloseResponse");
+         }
 
          // close an open trade
          var closedDetails = (await Rest20.CloseTradeAsync(AccountId, trade.id)).orderFillTransaction;
@@ -675,9 +755,18 @@ namespace OkonkwoOandaV20Tests
          var onePosition = await Rest20.GetPositionAsync(AccountId, m_TestInstrument);
          increment = verifyPosition(onePosition, increment);
 
-         // closeout a position
-         var request = new ClosePositionRequest() { longUnits = "ALL" };
-         var response = await Rest20.ClosePositionAsync(AccountId, m_TestInstrument, request);
+         // error test - close open position
+         var request = new ClosePositionRequest() { longUnits = "FAKE" };
+         PositionCloseResponse response = null;
+         try { response = await Rest20.ClosePositionAsync(AccountId, m_TestInstrument, request); }
+         catch (Exception ex) {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message) as PositionCloseErrorResponse;
+            m_Results.Verify("14.E0", errorResponse != null, "Error response has correct type: PositionCloseErrorResponse");
+         }
+
+         // closeout open position 
+         request.longUnits = "ALL";
+         response = await Rest20.ClosePositionAsync(AccountId, m_TestInstrument, request);
          m_LastTransactionID = response.lastTransactionID;
          m_Results.Verify("14." + increment.ToString(), response.longOrderCreateTransaction != null && response.longOrderCreateTransaction.id > 0, "Position close order created.");
          m_Results.Verify("14." + (increment + 1).ToString(), response.longOrderFillTransaction != null && response.longOrderFillTransaction.id > 0, "Position close fill order created.");

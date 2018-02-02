@@ -540,5 +540,31 @@ namespace OkonkwoOandaV20Tests
          }
       }
       #endregion
+
+      #region Errors
+      [TestMethod]
+      public void test_Error_response_has_correct_type()
+      {
+         var caughtAccountConfigurationError = m_Results.Items.FirstOrDefault(x => x.Key == "05.E0").Value as Restv20TestResult;
+         var caughtOrderPostError = m_Results.Items.FirstOrDefault(x => x.Key == "11.E0").Value as Restv20TestResult;
+         var caughtOrderClientExtensionsModifyError = m_Results.Items.FirstOrDefault(x => x.Key == "11.E1").Value as Restv20TestResult;
+         var caughtOrderCancelReplaceError = m_Results.Items.FirstOrDefault(x => x.Key == "11.E2").Value as Restv20TestResult;
+         var caughtOrderCancelError = m_Results.Items.FirstOrDefault(x => x.Key == "11.E3").Value as Restv20TestResult;
+         var caughtTradeClientExtensionsModifyError = m_Results.Items.FirstOrDefault(x => x.Key == "13.E0").Value as Restv20TestResult;
+         var caughtTradePatchExitOrdersError = m_Results.Items.FirstOrDefault(x => x.Key == "13.E1").Value as Restv20TestResult;
+         var caughtTradeCloseError = m_Results.Items.FirstOrDefault(x => x.Key == "13.E2").Value as Restv20TestResult;
+         var caughtPositionCloseError = m_Results.Items.FirstOrDefault(x => x.Key == "14.E0").Value as Restv20TestResult;
+
+         Assert.IsTrue(caughtAccountConfigurationError.Success, caughtAccountConfigurationError.Success.ToString() + ": " + caughtAccountConfigurationError.Details);
+         Assert.IsTrue(caughtOrderPostError.Success, caughtOrderPostError.Success.ToString() + ": " + caughtOrderPostError.Details);
+         Assert.IsTrue(caughtOrderClientExtensionsModifyError.Success, caughtOrderClientExtensionsModifyError.Success.ToString() + ": " + caughtOrderClientExtensionsModifyError.Details);
+         Assert.IsTrue(caughtOrderCancelReplaceError.Success, caughtOrderCancelReplaceError.Success.ToString() + ": " + caughtOrderCancelReplaceError.Details);
+         Assert.IsTrue(caughtOrderCancelError.Success, caughtOrderCancelError.Success.ToString() + ": " + caughtOrderCancelError.Details);
+         Assert.IsTrue(caughtTradeClientExtensionsModifyError.Success, caughtTradeClientExtensionsModifyError.Success.ToString() + ": " + caughtTradeClientExtensionsModifyError.Details);
+         Assert.IsTrue(caughtTradePatchExitOrdersError.Success, caughtTradePatchExitOrdersError.Success.ToString() + ": " + caughtTradePatchExitOrdersError.Details);
+         Assert.IsTrue(caughtTradeCloseError.Success, caughtTradeCloseError.Success.ToString() + ": " + caughtTradeCloseError.Details);
+         Assert.IsTrue(caughtPositionCloseError.Success, caughtPositionCloseError.Success.ToString() + ": " + caughtPositionCloseError.Details);
+      }
+      #endregion
    }
 }

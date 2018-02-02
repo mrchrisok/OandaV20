@@ -49,6 +49,7 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="Framework\Attributes.cs" />
     <Compile Include="Framework\Common.cs" />
+    <Compile Include="Framework\Factories\ErrorResponseFactory.cs" />
     <Compile Include="Framework\Factories\OrderFactory.cs" />
     <Compile Include="Framework\Factories\PriceObjectFactory.cs" />
     <Compile Include="Framework\Factories\TransactionFactory.cs" />

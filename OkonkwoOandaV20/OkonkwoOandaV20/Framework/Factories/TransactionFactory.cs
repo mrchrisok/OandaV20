@@ -5,7 +5,7 @@ namespace OkonkwoOandaV20.Framework.Factories
 {
    public class TransactionFactory
    {
-      public static List<ITransaction> Create (IEnumerable<ITransaction> data)
+      public static List<ITransaction> Create(IEnumerable<ITransaction> data)
       {
          var transactions = new List<ITransaction>();
 
@@ -19,10 +19,10 @@ namespace OkonkwoOandaV20.Framework.Factories
 
       public static ITransaction Create(string type)
       {
-         switch(type)
+         switch (type)
          {
             case TransactionType.Create: return new CreateTransaction();
-            case TransactionType.Close: return new CloseTransaction(); 
+            case TransactionType.Close: return new CloseTransaction();
             case TransactionType.Reopen: return new ReopenTransaction();
             case TransactionType.ClientConfigure: return new ClientConfigureTransaction();
             case TransactionType.ClientConfigureReject: return new ClientConfigureRejectTransaction();

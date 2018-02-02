@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications;
 using OkonkwoOandaV20.TradeLibrary.Primitives;
 using System;
 using System.Collections;
@@ -21,6 +22,7 @@ namespace OkonkwoOandaV20
       private static string AccessToken { get { return Credentials.GetDefaultCredentials().AccessToken; } }
 
       #region request
+
       /// <summary>
       /// Primary (internal) request handler
       /// </summary>
@@ -30,6 +32,19 @@ namespace OkonkwoOandaV20
       /// <param name="requestParams">optional parameters (if provided, it's assumed the requestString doesn't contain any)</param>
       /// <returns>response via type T</returns>
       private static async Task<T> MakeRequestAsync<T>(string requestString, string method = "GET", Dictionary<string, string> requestParams = null)
+      {
+         return await MakeRequestAsync<T, ErrorResponse>(requestString, method, requestParams);
+      }
+
+      /// <summary>
+      /// Primary (internal) request handler
+      /// </summary>
+      /// <typeparam name="T">The response type</typeparam>
+      /// <param name="requestString">the request to make</param>
+      /// <param name="method">method for the request (defaults to GET)</param>
+      /// <param name="requestParams">optional parameters (if provided, it's assumed the requestString doesn't contain any)</param>
+      /// <returns>response via type T</returns>
+      private static async Task<T> MakeRequestAsync<T, E>(string requestString, string method = "GET", Dictionary<string, string> requestParams = null) where E : IErrorResponse
       {
          if (requestParams != null && requestParams.Count > 0)
          {
@@ -42,7 +57,7 @@ namespace OkonkwoOandaV20
          request.Method = method;
          request.ContentType = "application/json";
 
-         return await GetWebResponse<T>(request);
+         return await GetWebResponse<T, E>(request);
       }
 
       /// <summary>
@@ -53,7 +68,7 @@ namespace OkonkwoOandaV20
       /// <param name="body">request body (must be a valid json string)</param>
       /// <param name="requestString">the request to make</param>
       /// <returns>response, via type T</returns>
-      private static async Task<T> MakeRequestWithJSONBody<T>(string method, string requestBody, string requestString)
+      private static async Task<T> MakeRequestWithJSONBody<T, E>(string method, string requestBody, string requestString) where E : IErrorResponse
       {
          // Create the request
          HttpWebRequest request = WebRequest.CreateHttp(requestString);
@@ -68,7 +83,7 @@ namespace OkonkwoOandaV20
             await writer.WriteAsync(requestBody);
          }
 
-         return await GetWebResponse<T>(request);
+         return await GetWebResponse<T, E>(request);
       }
 
       /// <summary>
@@ -79,11 +94,11 @@ namespace OkonkwoOandaV20
       /// <param name="requestParams">the parameters to pass in the request body</param>
       /// <param name="requestString">the request to make</param>
       /// <returns>response, via type T</returns>
-      private static async Task<T> MakeRequestWithJSONBody<T, P>(string method, P requestParams, string requestString)
+      private static async Task<T> MakeRequestWithJSONBody<T, E, P>(string method, P requestParams, string requestString) where E : IErrorResponse
       {
          var requestBody = CreateJSONBody(requestParams);
 
-         return await MakeRequestWithJSONBody<T>(method, requestBody, requestString);
+         return await MakeRequestWithJSONBody<T, E>(method, requestBody, requestString);
       }
       #endregion
 
@@ -94,7 +109,7 @@ namespace OkonkwoOandaV20
       /// <typeparam name="T">>Type of returned by the remote server</typeparam>
       /// <param name="request">Request sent to the remote server</param>
       /// <returns>The object of type T returned by the remote server</returns>
-      private static async Task<T> GetWebResponse<T>(HttpWebRequest request)
+      private static async Task<T> GetWebResponse<T, E>(HttpWebRequest request)
       {
          while (DateTime.UtcNow < m_LastRequestTime.AddMilliseconds(501))
          {
@@ -118,7 +133,13 @@ namespace OkonkwoOandaV20
             var stream = GetResponseStream(ex.Response);
             var reader = new StreamReader(stream);
             var result = reader.ReadToEnd();
-            throw new Exception(result);
+
+            // add a 'type' property for the ErrorResultFactory
+            dynamic error = JsonConvert.DeserializeObject(result);
+            error.type = typeof(E).Name;
+            var errorResult = JsonConvert.SerializeObject(error);
+
+            throw new Exception(errorResult);
          }
          finally
          {

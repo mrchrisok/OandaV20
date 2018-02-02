@@ -27,7 +27,7 @@ namespace OkonkwoOandaV20
          order.Add("order", request);
 
          string body = ConvertToJSON(order);
-         var response = await MakeRequestWithJSONBody<OrderPostResponse>("POST", body, requestString);
+         var response = await MakeRequestWithJSONBody<OrderPostResponse, OrderPostErrorResponse>("POST", body, requestString);
 
          return response;
       }
@@ -110,7 +110,7 @@ namespace OkonkwoOandaV20
          order.Add("order", request);
 
          string body = ConvertToJSON(order);
-         var response = await MakeRequestWithJSONBody<OrderCancelReplaceResponse>("PUT", body, requestString);
+         var response = await MakeRequestWithJSONBody<OrderCancelReplaceResponse, OrderCancelReplaceErrorResponse>("PUT", body, requestString);
 
          return response;
       }
@@ -125,7 +125,7 @@ namespace OkonkwoOandaV20
       {
          string requestString = Server(EServer.Account) + "accounts/" + account + "/orders/" + orderId + "/cancel";
 
-         var response = await MakeRequestAsync<OrderCancelResponse>(requestString, "PUT");
+         var response = await MakeRequestAsync<OrderCancelResponse, OrderCancelErrorResponse>(requestString, "PUT");
 
          return response;
       }
@@ -147,7 +147,7 @@ namespace OkonkwoOandaV20
          if(tradeExtensions != null)
             extensions.Add("tradeClientExtensions", tradeExtensions);
 
-         var response = await MakeRequestWithJSONBody<OrderClientExtensionsModifyResponse, Dictionary<string, ClientExtensions>>("PUT", extensions, requestString);
+         var response = await MakeRequestWithJSONBody<OrderClientExtensionsModifyResponse, OrderClientExtensionsModifyErrorResponse, Dictionary<string, ClientExtensions>>("PUT", extensions, requestString);
 
          return response;
       }
