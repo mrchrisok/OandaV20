@@ -51,7 +51,7 @@ namespace OkonkwoOandaV20
          if (orderIDs != null)
          {
             string idsParam = GetCommaSeparatedList(orderIDs);
-            requestParams.Add("ids", Uri.EscapeDataString(idsParam));
+            requestParams.Add("ids", idsParam);
          }
 
          OrdersResponse response = await MakeRequestAsync<OrdersResponse>(requestString, "GET", requestParams);

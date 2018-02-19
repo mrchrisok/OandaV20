@@ -53,47 +53,20 @@ namespace OkonkwoOandaV20
          };
 
 
-      private static Credentials m_Instance;
+      private static Credentials m_DefaultCredentials;
 
       public string AccessToken { get; set; }
       public string DefaultAccountId { get; set; }
       public EEnvironment Environment { get; set; }
-      public string Username { get; set; }
 
       public static Credentials GetDefaultCredentials()
       {
-         if (m_Instance == null)
-         {
-            //_instance = GetPracticeCredentials();
-            //_instance = GetSandboxCredentials();
-         }
-         return m_Instance;
-      }
-
-      private static Credentials GetPracticeCredentials()
-      {
-         return new Credentials()
-         {
-            DefaultAccountId = "621396",
-            Environment = EEnvironment.Practice,
-            AccessToken = "73eba38ad5b44778f9a0c0fec1a66ed1-44f47f052c897b3e1e7f24196bbc071f"
-         };
-      }
-
-      private static Credentials GetLiveCredentials()
-      {
-         // You'll need to add your own accessToken and account if desired
-         return new Credentials()
-         {
-            DefaultAccountId = "001-001-432582-001",
-            AccessToken = "5a0478f89da0cac4ee02ed60ff9329a6-0450b6274d7bbbc7fac532029be78d66",
-            Environment = EEnvironment.Trade
-         };
+         return m_DefaultCredentials;
       }
 
       public static void SetCredentials(EEnvironment environment, string accessToken, string defaultAccount = "0")
       {
-         m_Instance = new Credentials
+         m_DefaultCredentials = new Credentials
          {
             Environment = environment,
             AccessToken = accessToken,

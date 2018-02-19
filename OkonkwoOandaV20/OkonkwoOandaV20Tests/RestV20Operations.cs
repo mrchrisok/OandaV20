@@ -35,7 +35,7 @@ namespace OkonkwoOandaV20Tests
       static string m_TestAccount;
       static short m_TokenAccounts;
       static string m_Currency = "USD";
-      static string m_TestInstrument = InstrumentName.Currency.USDJPY;
+      static string m_TestInstrument = InstrumentName.Currency.USDCHF;
       static List<Instrument> m_OandaInstruments;
       static List<Price> m_OandaPrices;
       static long m_FirstTransactionID;
@@ -339,7 +339,6 @@ namespace OkonkwoOandaV20Tests
             units = 1, // buy
             timeInForce = TimeInForce.GoodUntilDate,
             gtdTime = expiry,
-            //price = price,
             priceBound = price * (decimal)1.01,
             clientExtensions = new ClientExtensions()
             {
@@ -360,39 +359,71 @@ namespace OkonkwoOandaV20Tests
          openOrders.ForEach(async x => await Rest20.CancelOrderAsync(AccountId, x.id));
 
          // error test - create order
-         OrderPostResponse response = null;
+         OrderPostResponse response1 = null;
          request1.price = -1;
-         try { response = await Rest20.PostOrderAsync(AccountId, request1); }
+         try { response1 = await Rest20.PostOrderAsync(AccountId, request1); }
          catch (Exception ex)
          {
             var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderPostErrorResponse;
             m_Results.Verify("11.E0", errorResponse != null, "Error response has correct type: OrderPostErrorResponse");
          }
 
-         // create order
+         // create order1
          request1.price = price;
-         response = await Rest20.PostOrderAsync(AccountId, request1);
-         var orderTransaction = response.orderCreateTransaction;
+         response1 = await Rest20.PostOrderAsync(AccountId, request1);
+         var orderTransaction1 = response1.orderCreateTransaction;
 
-         m_Results.Verify("11.0", orderTransaction != null && orderTransaction.id > 0, "Order successfully opened");
-         m_Results.Verify("11.1", orderTransaction.type == TransactionType.MarketIfTouchedOrder, "Order type is correct.");
+         m_Results.Verify("11.0", orderTransaction1 != null && orderTransaction1.id > 0, "Order successfully opened");
+         m_Results.Verify("11.1", orderTransaction1.type == TransactionType.MarketIfTouchedOrder, "Order type is correct.");
+
+         // create order2
+         var request2 = new MarketIfTouchedOrderRequest(GetOandaInstrument())
+         {
+            units = -1, // sell
+            timeInForce = TimeInForce.GoodUntilDate,
+            gtdTime = expiry,
+            priceBound = price * (decimal)0.99,
+            clientExtensions = new ClientExtensions()
+            {
+               id = "test_order_2",
+               comment = "test order 2 comment",
+               tag = "test_order_2"
+            },
+            tradeClientExtensions = new ClientExtensions()
+            {
+               id = "test_trade_2",
+               comment = "test trade 2 comment",
+               tag = "test_trade_2"
+            }
+         };
+         request2.price = price;
+         OrderPostResponse response2 = await Rest20.PostOrderAsync(AccountId, request2);
+         var orderTransaction2 = response2.orderCreateTransaction;
 
          // Get all orders
          var allOrders = await Rest20.GetOrderListAsync(AccountId);
          m_Results.Verify("11.2", allOrders != null && allOrders.Count > 0, "All orders list successfully retrieved");
-         m_Results.Verify("11.3", allOrders.FirstOrDefault(x => x.id == orderTransaction.id) != null, "Test order in all orders return.");
-
+         m_Results.Verify("11.3", allOrders.Where(x => x.id == orderTransaction1.id || x.id == orderTransaction2.id).Count() == 2, "Test orders in all orders return.");
+         
          // Get pending orders
          var pendingOrders = await Rest20.GetPendingOrderListAsync(AccountId);
          m_Results.Verify("11.4", pendingOrders != null && pendingOrders.Count > 0, "Pending orders list successfully retrieved");
          m_Results.Verify("11.5", pendingOrders.Where(x => x.state != OrderState.Pending).Count() == 0, "Only pending orders returned.");
-         m_Results.Verify("11.6", pendingOrders.FirstOrDefault(x => x.id == orderTransaction.id) != null, "Test order in pending orders return.");
+         m_Results.Verify("11.6", pendingOrders.Where(x => x.id == orderTransaction1.id || x.id == orderTransaction2.id).Count() == 2, "Test orders in pending orders return.");
+
+         // Get orders by ID list
+         var pendingOrderIDs = new List<string>();
+         pendingOrders.ForEach(pendingOrder => pendingOrderIDs.Add(pendingOrder.id.ToString()));
+         var allPendingOrders = await Rest20.GetOrderListAsync(AccountId, pendingOrderIDs);
+         m_Results.Verify("11.29", allPendingOrders.Where(x => x.id == orderTransaction1.id || x.id == orderTransaction2.id).Count() == 2, "Test orders in orders by ID list return.");
+         // kill orderTransaction2 because it is no longer needed
+         await Rest20.CancelOrderAsync(AccountId, orderTransaction2.id);
 
          // Get order details
-         var order = await Rest20.GetOrderDetailsAsync(AccountId, pendingOrders[0].id) as MarketIfTouchedOrder;
-         m_Results.Verify("11.7", order != null && order.id == orderTransaction.id, "Order details successfully retrieved.");
-         m_Results.Verify("11.8", (order.clientExtensions == null) == (request1.clientExtensions == null), "order client extensions successfully retrieved.");
-         m_Results.Verify("11.9", (order.tradeClientExtensions == null) == (request1.tradeClientExtensions == null), "order trade client extensions successfully retrieved.");
+         var order1 = await Rest20.GetOrderDetailsAsync(AccountId, orderTransaction1.id) as MarketIfTouchedOrder;
+         m_Results.Verify("11.7", order1 != null && order1.id == orderTransaction1.id, "Order details successfully retrieved.");
+         m_Results.Verify("11.8", (order1.clientExtensions == null) == (request1.clientExtensions == null), "order client extensions successfully retrieved.");
+         m_Results.Verify("11.9", (order1.tradeClientExtensions == null) == (request1.tradeClientExtensions == null), "order trade client extensions successfully retrieved.");
 
          // create extensions
          var newOrderExtensions = request1.clientExtensions;
@@ -409,17 +440,17 @@ namespace OkonkwoOandaV20Tests
          }
 
          // Udpate extensions
-         extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, order.id, newOrderExtensions, newTradeExtensions);
+         extensionsModifyResponse = await Rest20.ModifyOrderClientExtensionsAsync(AccountId, order1.id, newOrderExtensions, newTradeExtensions);
 
          m_Results.Verify("11.10", extensionsModifyResponse != null, "Order extensions update received successfully.");
-         m_Results.Verify("11.11", extensionsModifyResponse.orderClientExtensionsModifyTransaction.orderID == order.id, "Correct order extensions updated.");
+         m_Results.Verify("11.11", extensionsModifyResponse.orderClientExtensionsModifyTransaction.orderID == order1.id, "Correct order extensions updated.");
          m_Results.Verify("11.12", extensionsModifyResponse.orderClientExtensionsModifyTransaction.clientExtensionsModify.comment == "updated order 1 comment", "Order extensions comment updated successfully.");
          m_Results.Verify("11.13", extensionsModifyResponse.orderClientExtensionsModifyTransaction.tradeClientExtensionsModify.comment == "updated trade 1 comment", "Order trade extensions comment updated successfully.");
 
          // error test - cancel+replace an existing order
          OrderCancelReplaceResponse cancelReplaceResponse = null;
          request1.price = -1;
-         try { cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1); }
+         try { cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order1.id, request1); }
          catch (Exception ex) {
             var errorResponse = ErrorResponseFactory.Create(ex.Message) as OrderCancelReplaceErrorResponse;
             m_Results.Verify("11.E2", errorResponse != null, "Error response has correct type: OrderCancelReplaceErrorResponse");
@@ -428,12 +459,12 @@ namespace OkonkwoOandaV20Tests
          // Cancel & Replace an existing order
          request1.price = price;
          request1.units += 10;
-         cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order.id, request1);
+         cancelReplaceResponse = await Rest20.CancelReplaceOrderAsync(AccountId, order1.id, request1);
          var cancelTransaction = cancelReplaceResponse.orderCancelTransaction;
          var newOrderTransaction = cancelReplaceResponse.orderCreateTransaction;
 
-         m_Results.Verify("11.14", cancelTransaction != null && cancelTransaction.orderID == order.id, "Order ancel+replace cancelled successfully.");
-         m_Results.Verify("11.15", newOrderTransaction != null && newOrderTransaction.id > 0 && newOrderTransaction.id != order.id, "Order cancel+replace replaced successfully.");
+         m_Results.Verify("11.14", cancelTransaction != null && cancelTransaction.orderID == order1.id, "Order ancel+replace cancelled successfully.");
+         m_Results.Verify("11.15", newOrderTransaction != null && newOrderTransaction.id > 0 && newOrderTransaction.id != order1.id, "Order cancel+replace replaced successfully.");
 
          // Get new order details
          var newOrder = await Rest20.GetOrderDetailsAsync(AccountId, newOrderTransaction.id) as MarketIfTouchedOrder;

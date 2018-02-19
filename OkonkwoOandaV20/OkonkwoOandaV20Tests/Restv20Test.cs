@@ -195,9 +195,11 @@ namespace OkonkwoOandaV20Tests
       {
          var allOrdersRetrieved = m_Results.Items.FirstOrDefault(x => x.Key == "11.2").Value as Restv20TestResult;
          var testOrderTypeReturned = m_Results.Items.FirstOrDefault(x => x.Key == "11.3").Value as Restv20TestResult;
+         var allOrdersByIDRetrieved = m_Results.Items.FirstOrDefault(x => x.Key == "11.29").Value as Restv20TestResult;
 
          Assert.IsTrue(allOrdersRetrieved.Success, allOrdersRetrieved.Success.ToString() + ": " + allOrdersRetrieved.Details);
          Assert.IsTrue(testOrderTypeReturned.Success, testOrderTypeReturned.Success.ToString() + ": " + testOrderTypeReturned.Details);
+         Assert.IsTrue(allOrdersByIDRetrieved.Success, $"11.29,{allOrdersByIDRetrieved.Success}: { allOrdersByIDRetrieved.Details}");
       }
 
       [TestMethod]
