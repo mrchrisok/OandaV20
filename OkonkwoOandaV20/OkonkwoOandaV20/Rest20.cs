@@ -51,13 +51,8 @@ namespace OkonkwoOandaV20
             var parameters = CreateParamString(requestParams);
             requestString = requestString + "?" + parameters;
          }
-         HttpWebRequest request = WebRequest.CreateHttp(requestString);
-         request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
-         request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
-         request.Method = method;
-         request.ContentType = "application/json";
 
-         return await GetWebResponse<T, E>(request);
+         return await GetWebResponse<T, E>(CreateHttpRequest(requestString, method));
       }
 
       /// <summary>
@@ -71,17 +66,11 @@ namespace OkonkwoOandaV20
       private static async Task<T> MakeRequestWithJSONBody<T, E>(string method, string requestBody, string requestString) where E : IErrorResponse
       {
          // Create the request
-         HttpWebRequest request = WebRequest.CreateHttp(requestString);
-         request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
-         request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
-         request.Method = method;
-         request.ContentType = "application/json";
+         HttpWebRequest request = CreateHttpRequest(requestString, method);
 
+         // Write the body
          using (var writer = new StreamWriter(await request.GetRequestStreamAsync()))
-         {
-            // Write the body
             await writer.WriteAsync(requestBody);
-         }
 
          return await GetWebResponse<T, E>(request);
       }
@@ -111,9 +100,9 @@ namespace OkonkwoOandaV20
       /// <returns>The object of type T returned by the remote server</returns>
       private static async Task<T> GetWebResponse<T, E>(HttpWebRequest request)
       {
-         while (DateTime.UtcNow < m_LastRequestTime.AddMilliseconds(501))
+         while (DateTime.UtcNow < m_LastRequestTime.AddMilliseconds(11))
          {
-            // speed bump
+            // Oanda speed limit .. 100 requests/second
             // http://developer.oanda.com/rest-live-v20/best-practices/
          }
 
@@ -210,6 +199,28 @@ namespace OkonkwoOandaV20
       #endregion
 
       #region utilities
+      /// <summary>
+      /// Helper function to create the parameter string out of a dictionary of parameters
+      /// </summary>
+      /// <param name="requestParams">the parameters to convert</param>
+      /// <returns>string containing all the parameters for use in requests</returns>
+      protected static HttpWebRequest CreateHttpRequest(string requestString, string method)
+      {
+         // Create the request
+         HttpWebRequest request = WebRequest.CreateHttp(requestString);
+         request.Headers[HttpRequestHeader.Authorization] = "Bearer " + AccessToken;
+         request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate";
+         request.Method = method;
+         request.ContentType = "application/json";
+
+         return request;
+      }
+
+      /// <summary>
+      /// Converts a list of strings into a comma-separated values list (csv)
+      /// </summary>
+      /// <param name="items">The list of strings to convert to csv</param>
+      /// <returns>A csv string of the list items</returns>
       private static string GetCommaSeparatedList(List<string> items)
       {
          StringBuilder result = new StringBuilder();

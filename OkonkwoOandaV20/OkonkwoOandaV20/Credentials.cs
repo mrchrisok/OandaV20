@@ -33,25 +33,24 @@ namespace OkonkwoOandaV20
       }
 
       private static readonly Dictionary<EEnvironment, Dictionary<EServer, string>> Servers = new Dictionary<EEnvironment, Dictionary<EServer, string>>
-         {
-            {EEnvironment.Practice, new Dictionary<EServer, string>
-               {
-                  {EServer.Account, "https://api-fxpractice.oanda.com/v3/"},
-                  {EServer.Labs, "https://api-fxpractice.oanda.com/labs/v3/"},
-                  {EServer.StreamingPrices, "https://stream-fxpractice.oanda.com/v3/"},
-                  {EServer.StreamingTransactions, "https://stream-fxpractice.oanda.com/v3/"},
-               }
-            },
-            {EEnvironment.Trade, new Dictionary<EServer, string>
-               {
-                  {EServer.Account, "https://api-fxtrade.oanda.com/v3/"},
-                  {EServer.Labs, "https://api-fxtrade.oanda.com/labs/v3/"},
-                  {EServer.StreamingPrices, "https://stream-fxtrade.oanda.com/v3/"},
-                  {EServer.StreamingTransactions, "https://stream-fxtrade.oanda.com/v3/"}
-               }
+      {
+         {  EEnvironment.Practice, new Dictionary<EServer, string>
+            {
+               {EServer.Account, "https://api-fxpractice.oanda.com/v3/"},
+               {EServer.Labs, "https://api-fxpractice.oanda.com/labs/v3/"},
+               {EServer.StreamingPrices, "https://stream-fxpractice.oanda.com/v3/"},
+               {EServer.StreamingTransactions, "https://stream-fxpractice.oanda.com/v3/"},
             }
-         };
-
+         },
+         {  EEnvironment.Trade, new Dictionary<EServer, string>
+            {
+               {EServer.Account, "https://api-fxtrade.oanda.com/v3/"},
+               {EServer.Labs, "https://api-fxtrade.oanda.com/labs/v3/"},
+               {EServer.StreamingPrices, "https://stream-fxtrade.oanda.com/v3/"},
+               {EServer.StreamingTransactions, "https://stream-fxtrade.oanda.com/v3/"}
+            }
+         }
+      };
 
       private static Credentials m_DefaultCredentials;
 
