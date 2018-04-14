@@ -41,9 +41,17 @@ namespace OkonkwoOandaV20
          catch (WebException ex)
          {
             var response = (HttpWebResponse)ex.Response;
-            var stream = new StreamReader(response.GetResponseStream());
-            var result = stream.ReadToEnd();
-            throw new Exception(result);
+            
+            if (response != null)
+            {
+                var stream = new StreamReader(response.GetResponseStream());
+                var result = stream.ReadToEnd();
+                throw new Exception(result);
+            }
+            else
+            {
+                throw ex;
+            }
          }
       }
 

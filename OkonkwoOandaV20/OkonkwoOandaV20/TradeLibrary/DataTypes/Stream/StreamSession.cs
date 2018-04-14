@@ -35,18 +35,18 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Communications
 
         protected abstract Task<WebResponse> GetSession();
 
-        public virtual async void StartSession()
+        public virtual async Task StartSession()
         {
-            _shutdown = false;
             _response = await GetSession();
 
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 try
                 {
                     using (_response)
                     {
                         StreamReader reader = new StreamReader(_response.GetResponseStream());
+                        _shutdown = false;
                         while (!_shutdown)
                         {
                             string line = reader.ReadLine();
