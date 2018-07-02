@@ -1,7 +1,7 @@
 # OANDAV20
 C# Library for OANDA REST V20 Api
 
-Provides programmatic access to OANDA's v20 trading endpoints.
+Provides programmatic access to OANDA's v20 REST endpoints.
 
 To get the repo, run: git clone https://github.com/mrchrisok/OANDAV20.git
 
