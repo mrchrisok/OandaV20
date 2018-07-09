@@ -1,6 +1,6 @@
 # OANDAV20
 
-Spot Forex trading midleware that provides programmatic access to the OANDA© v20 REST endpoints.
+Spot Forex trading middleware that provides programmatic access to the OANDA© v20 REST endpoints.
 
 Written in C# 7.0
 
