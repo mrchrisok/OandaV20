@@ -125,11 +125,11 @@ namespace OkonkwoOandaV20Tests
          var aliasReverted = m_Results.Items.FirstOrDefault(x => x.Key == "05.3").Value as Restv20TestResult;
          var marginRateReverted = m_Results.Items.FirstOrDefault(x => x.Key == "05.4").Value as Restv20TestResult;
 
-         Assert.IsTrue(configRetrieved.Success, configRetrieved.Success.ToString() + ": " + configRetrieved.Details);
-         Assert.IsTrue(aliasChanged.Success, aliasChanged.Success.ToString() + ": " + aliasChanged.Details);
-         Assert.IsTrue(marginRateChanged.Success, marginRateChanged.Success.ToString() + ": " + marginRateChanged.Details);
-         Assert.IsTrue(aliasReverted.Success, aliasReverted.Success.ToString() + ": " + aliasReverted.Details);
-         Assert.IsTrue(marginRateReverted.Success, marginRateReverted.Success.ToString() + ": " + marginRateReverted.Details);
+         Assert.IsTrue(configRetrieved.Success, $"05.0,{configRetrieved.Success}: {configRetrieved.Details}");
+         Assert.IsTrue(aliasChanged.Success, $"05.1,{aliasChanged.Success}: {aliasChanged.Details}");
+         Assert.IsTrue(marginRateChanged.Success, $"05.2,{marginRateChanged.Success}: {marginRateChanged.Details}");
+         Assert.IsTrue(aliasReverted.Success, $"05.3,{aliasReverted.Success}: {aliasReverted.Details}");
+         Assert.IsTrue(marginRateReverted.Success, $"05.4,{marginRateReverted.Success}: {marginRateReverted.Details}");
       }
 
       [TestMethod]
