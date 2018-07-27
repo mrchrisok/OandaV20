@@ -1007,7 +1007,7 @@ namespace OkonkwoOandaV20Tests
          m_TestEnvironment = EEnvironment.Practice;
 
          // set this to the correct number of v20 accounts associated with the token     
-         m_TokenAccounts = 1;
+         m_TokenAccounts = 2;
 
          Credentials.SetCredentials(m_TestEnvironment, m_TestToken, m_TestAccount);
       }
