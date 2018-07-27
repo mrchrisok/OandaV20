@@ -35,7 +35,7 @@ namespace OkonkwoOandaV20App
       {
          WriteNewLine("Setting your V20 credentials ...");
 
-         AccountID = "101-001-1913854-002";
+         AccountID = "101-001-1913854-001";
          var environment = EEnvironment.Practice;
          var token = "c9e9494d79013cac1d34f0e4dcb590cd-977a37b80762fb48cdb3b0b2e832628a";
 
