@@ -1,5 +1,6 @@
 using OkonkwoOandaV20;
 using OkonkwoOandaV20.Framework;
+using OkonkwoOandaV20.Framework.Factories;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Communications.Requests.Order;
 using OkonkwoOandaV20.TradeLibrary.DataTypes.Stream;
@@ -24,7 +25,7 @@ namespace OkonkwoOandaV20App
          PutOnATrade().Wait();
 
          StopTransactionsStream();
-
+           
          Console.ReadKey();
       }
 
@@ -44,6 +45,7 @@ namespace OkonkwoOandaV20App
          WriteNewLine("Nice! Credentials are set.");
       }
 
+      #region trading
       static private async Task PutOnATrade()
       {
          WriteNewLine("Checking to see if EUR_USD is open for trading ...");
@@ -91,13 +93,16 @@ namespace OkonkwoOandaV20App
                   }
                }
             }
+            else
+            {
+               WriteNewLine($"Looks like something went awry with the trade. you need to learn some money-making strategies. :(");
+            }
          }
          else
          {
             WriteNewLine("Sorry, Oanda markets are closed or Euro market is not tradeable.");
             WriteNewLine("Try again another time.");
          }
-
       }
 
       static async Task<long?> PlaceMarketOrder(string side = "buy")
@@ -118,13 +123,18 @@ namespace OkonkwoOandaV20App
             response = await Rest20.PostOrderAsync(AccountID, request);
             WriteNewLine("Congrats! You've put on a trade! Let it run! :)");
          }
-         catch
+         catch (Exception ex)
          {
+            var errorResponse = ErrorResponseFactory.Create(ex.Message);
+
             WriteNewLine("Oops. Order creation failed.");
+            WriteNewLine($"The failure message is: {errorResponse.errorMessage}.");
+            WriteNewLine("Try again later.");
          }
 
          return response?.orderFillTransaction?.tradeOpened?.tradeID;
       }
+      #endregion
 
       #region transactions stream
       static Semaphore _transactionReceived;
@@ -164,7 +174,7 @@ namespace OkonkwoOandaV20App
 
       static void WriteNewLine(string message)
       {
-         Console.WriteLine("\n" + message);
+         Console.WriteLine($"\n{message}");
       }
    }
 }
