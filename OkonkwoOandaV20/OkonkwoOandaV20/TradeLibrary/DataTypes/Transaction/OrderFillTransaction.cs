@@ -15,7 +15,7 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
         /// tradesClosed, tradeReduced and tradeOpened fields contain the
         /// exact/official price each unit was filled at.
         /// </summary>
-        [Obsolete("Deprecated: Will be removed in a future API update.", false)]
+        [Obsolete("Deprecated: Will be removed in a future API update.", true)]
         public decimal price { get; set; }
 
         public string reason { get; set; }
