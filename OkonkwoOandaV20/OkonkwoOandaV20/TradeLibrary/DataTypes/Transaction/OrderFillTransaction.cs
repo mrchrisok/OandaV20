@@ -23,6 +23,10 @@ namespace OkonkwoOandaV20.TradeLibrary.DataTypes.Transaction
         public decimal financing { get; set; }
         public decimal commission { get; set; }
         public decimal accountBalance { get; set; }
+
+        /// <summary>
+        /// The Trade that was opened when the Order was filled (only provided if filling the Order resulted in a new Trade).
+        /// </summary>
         public TradeOpen tradeOpened { get; set; }
 
         /// <summary>
